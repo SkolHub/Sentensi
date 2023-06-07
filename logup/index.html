@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="style.css">
+        <title>Log In/Sign Up</title>
+        <link rel="icon" href="../icon.ico">
+    </head>
+    <body>
+        <div class="mainDiv">
+            <h1>Welcome to Sentensi!</h1>
+            <div style="display:flex; justify-content: space-around;">
+                <div class="logDiv">
+                    <h3>Log In</h3>
+                    <input id="email2" placeholder="Email">
+                    <input id="pass2" placeholder="Password" type="password">
+                </div>
+                <hr style="width: 2px; height: auto; display: inline-block; background-color: black; border-width: 0px;">
+                <div class="logDiv">
+                    <h3>Sign Up</h3>
+                    <input id="email" placeholder="Email">
+                    <input id="pass" placeholder="Password" type="password">
+                    <input id="Rpass" placeholder="Repeat password" type="password">
+                </div>
+            </div>
+            <div style="display:flex; justify-content: space-around; margin-top: 20px;">
+                <button id="log">Log In!</button>
+                <button id="sign">Sign Up!</button>
+            </div>
+            <p id="error">If you're a student, ask your teacher for a classroom link.</p>
+        </div>
+        <script type="module" src="main.js"></script>
+    </body>
+</html>

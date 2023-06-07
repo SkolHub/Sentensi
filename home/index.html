@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="module" src="../init.js"></script>
+        <link rel="stylesheet" href="style.css">
+        <title>Home</title>
+        <link rel="icon" href="../icon.ico">
+    </head>
+    <body style="width:100%">
+        <div id="popup" style="display:none; justify-content: center; align-items: center; position: fixed; width: 100vw; height:100vh;">
+            <div style="background-color: aliceblue; border-radius: 20px; display: block;">
+                <h1>Set a lesson as activity</h1>
+                <form>
+                    <label>Remember & write</label>
+                    <input type="radio" name="actType" value="0">
+                    <label>Listen & write</label>
+                    <input type="radio" name="actType" value="1">
+                    <label>another</label>
+                    <input type="radio" name="actType" value="2">
+                    <label>another x2</label>
+                    <input type="radio" name="actType" value="3">
+                </form>
+            </div>
+        </div>
+        <div class="bar">
+            <div>
+                <a>My lessons</a>
+                <a>My assignments</a>
+            </div>
+            <button onclick="window.location.href = '../create/'" id="create-lesson">create lesson</button>
+        </div>
+        <div class="lessons" id="lessons">
+        </div>        
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
+            import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+            import { getAuth } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js";
+
+            const firebaseApp = initializeApp({
+                apiKey: "AIzaSyCp7hFFVEOTQhya1YTpmlDLXEzoBJ7HWzQ",
+                authDomain: "sentensi-4aedd.firebaseapp.com",
+                projectId: "sentensi-4aedd",
+                storageBucket: "sentensi-4aedd.appspot.com",
+                messagingSenderId: "927772530939",
+                appId: "1:927772530939:web:eeb1d50bc68f48aa4b785e",
+                measurementId: "G-CGTFDKKXDF"
+            });
+
+            const db = getFirestore(firebaseApp);
+            const auth = getAuth(firebaseApp);
+
+            auth.onAuthStateChanged(async function (user){
+                const data = await getDocs(collection(db, "tempWork"));
+                console.log(data.docs[0])
+                data.docs.forEach(cls => {
+                    let id = cls.id;
+                    cls = cls.data();
+                    document.getElementById('lessons').innerHTML += `
+                    <div class="lesson">
+                        <div style="background-color: #2929bb; border-top-right-radius: 5px; border-top-left-radius: 5px;">
+                            <h5 style="padding-top: 10px; padding-bottom:10px; margin-top:0;">${id}</h5>
+                        </div>
+                        <div style="display: flex; justify-content: center; flex-direction: column;">
+                            <button class="enter" onclick = "window.location.href="https://sentensi.com/Experimental/create/?q=${id}" style="margin-top:20px;">Edit lesson</button>
+                            <p style="margin-bottom:0px;">Class link:</p>
+                            <a style="margin-top: 3px; margin-bottom:3px; overflow:hidden;" onclick="navigator.clipboard.writeText(this.innerText); console.log('Content copied to clipboard');")">https://sentensi.com/create/?q=${id}</a>
+                            <p style="margin-top:0px; text-align: center;">(click to copy)</p>
+                            <button class="enter setacc" id="${id}" style="margin-bottom:20px;">Set as activity</button>
+                        </div>
+                    </div>
+                    `
+                });
+                let lessons = document.getElementsByClassName('setacc');
+                for (let i = 0; i < lessons.length; i++){
+                    lessons[i].onclick = function(e){
+                        document.getElementById('popup').style.display = 'flex';
+                    }
+                }
+            });
+
+            var studentList = [];
+
+            document.addEventListener("keydown", function (e){
+                if (e.key == 'Escape'){
+                    document.getElementById('addWindow').style.display = 'none';
+                }
+            });
+        </script>
+    </body>
+</html>
