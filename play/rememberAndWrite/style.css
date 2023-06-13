@@ -76,8 +76,8 @@ button {
 	font-family: Font;
 	font-size: 32px;
 	border-radius: 5px;
-	border-style: solid;
 	border-width: 0px;
+	border-style: solid;
 	width: 300px;
 	margin: auto;
 	margin-top: 30px;
@@ -113,11 +113,6 @@ button {
 
 .brown {
 	background-color: #8a4b15;
-}
-
-.switchMaker {
-	background: rgb(0,134,255); 
-	background: linear-gradient(90deg, rgba(0,134,255,1) 0%, rgba(222,17,13,1) 33%, rgba(7,168,7,1) 66%, rgba(255,138,5,1) 100%);
 }
 
 button:hover {
