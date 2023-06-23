@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script type="module" src="../init.js"></script>
+		<!--<script type="module" src="../init.js"></script>-->
 		<title>Sentensi</title>
 		<link rel="icon" href="icon.ico">
 		<link rel="stylesheet" href="style.css">
@@ -44,7 +44,7 @@
 					<button onclick="document.getElementById('color').value = '#000000';" class="clr sideB" style="background-color: #000000; width: 100%; color: white; font-size: 1.8vw;"></button>
 					<input id="color" type="color" style="width:50%; height: 3vh;">
 				</div>
-				<button id="double" style="display:flex; flex-wrap: wrap; margin-top: 2%; justify-content: center; width: 7vw; font-size: 3vh; border-width: 0.04vw;" onclick="this.innerHTML = this.innerHTML=='Double color: Off'?'Double color: On':'Double color: Off'; document.getElementById('custom').style.display = document.getElementById('custom').style.display=='none'?'flex':'none'">Double color: Off</button>
+				<button id="double" style="display:flex; flex-wrap: wrap; margin-top: 2%; justify-content: center; width: 7vw; font-size: 3vh; border-width: 0.04vw;">Double color: Off</button>
 				<div style="display:flex; flex-wrap: wrap; margin-top: 2%; justify-content: center;">
 					<button id="scale" class="sideB action" style="width: 70%;">Stretch</button>
 				</div>
@@ -65,30 +65,41 @@
 		<div id="makerSide" style="background-color: #0086ff; width: 14%; display:flex; flex-direction: column; justify-content: space-between; display: none;">
 			<div>
 				<div style="display:flex; flex-wrap: wrap; margin-top: 0px; justify-content: center;">
-					<button id="addLesson2" class="sideB" style="width:50%; font-size: 2.5vh; margin-bottom: 1.2vh; margin-top: 1.2vh; border-radius: 5px; height: 6vh !important;" disabled>Save lesson</button>
+					<button id="addLesson2" class="sideB" style="width: 50%; font-size: 2.5vh; margin-bottom: 1.2vh; margin-top: 1.2vh; border-radius: 5px; height: 6vh !important;" disabled>Save lesson</button>
 				</div>
 				<div style="display:flex; flex-wrap: wrap;">
-					<button id="." class="sideB" style="font-size: 3vh; background-color: #0086ff;">.</button>
-					<button id="," class="sideB" style="font-size: 3vh; background-color: #0086ff;">,</button>
-					<button id="?" class="sideB" style="font-size: 3vh; background-color: #0086ff;">?</button>
-					<button id="!" class="sideB" style="font-size: 3vh; background-color: #0086ff;">!</button>
-					<button id='"' class="sideB" style="font-size: 3vh; background-color: #0086ff;">"</button>
-					<button id="-" class="sideB" style="font-size: 3vh; background-color: #0086ff;">-</button>
-					<button id=";" class="sideB" style="font-size: 3vh; background-color: #0086ff;">;</button>
-					<button id=":" class="sideB" style="font-size: 3vh; background-color: #0086ff;">:</button>
-					<button id="'" class="sideB" style="font-size: 3vh; background-color: #0086ff; width: 100%;">'</button>
+					<button id="." class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">.</button>
+					<button id="," class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">,</button>
+					<button id="?" class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">?</button>
+					<button id="!" class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">!</button>
+					<button id='"' class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">"</button>
+					<button id="-" class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">-</button>
+					<button id=";" class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">;</button>
+					<button id=":" class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff;">:</button>
+					<button id="'" class="sideB punctuation" style="font-size: 3vh; background-color: #0086ff; width: 100%;">'</button>
 					<div style="display:flex; justify-content: center; width: 100%;">
 						<button id="glue" class="sideB action" style="padding:0; height:4vh !important; margin-bottom: 0; width: 50%; font-size: 1.8vw;"><b>Glue</b></button>
 						<button id="capitalise" class="sideB action" style="padding:0; height:4vh !important; margin-bottom: 0; width: 20%; font-size: 1.8vw;"><b>Aa</b></button>
 					</div>
 					<div style="display:flex; justify-content: center; width: 100%;">
+						<select id="activityType" class="sideB" style="width: 80%; text-align: center; margin-top: 1vh; font-size: 2vh; height: 4vh;">
+							<option>Remember & write</option>
+							<option>Right & Wrong</option>
+							<option>Listen & Write</option>
+						</select>
+					</div>
+					<div id="right&wrong" style="display:flex; justify-content: center; width: 100%; display: none;">
 						<button id="yes" class="sideB action" style="font-size: 5vh !important; padding:0; height:7vh !important; margin-bottom: 3vh; color:#07a807"><b>✓</b></button>
 						<button id="no" class="sideB action" style="font-size: 5vh !important; padding:0; height:7vh !important; margin-bottom: 3vh; color:#de110d"><b>✘</b></button>
+					</div>
+					<div id="listen&Write" style="display: none;">
+						<input type="file" style="font-size: 2vh; width: 12vw;">
 					</div>
 				</div>
 			</div>
 			<div style="display:flex; flex-wrap: wrap; margin-top: 0px; justify-content: center; flex-direction: column;">
 				<input id="canvasSelector" type="number" min="1" max="1" value="1" onkeydown="return false" style="width: 70%; margin-bottom: 2vh; text-align: center; font-size: 7vh;">
+				<button id="nextPage" style="width: 70%; margin-top: 1vh; margin-bottom: 1vh;" disabled>Next page</button>
 				<button id="stcm" class="sideB switchMaker" style="width:70%; font-size: 1.7vw; margin-bottom: 3vh; border-radius: 5px; height: 12vh !important;">Switch to canvas maker</button>
 			</div>
 		</div>

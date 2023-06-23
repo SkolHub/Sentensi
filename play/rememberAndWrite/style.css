@@ -207,7 +207,7 @@ button:hover {
 }
 
 .tbt:hover {
-	cursor: grab;
+	cursor: cell;
 }
 
 #mes {
@@ -254,9 +254,18 @@ textPath {
 }
 
 use:hover {
-	cursor: grab;
+	cursor: cell;
 }
 
 input[type=number] {
 	outline: none;
+}
+
+#popup {
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    width: 100vw;
+    height:100vh;
+    background-color: #000000c0;
 }

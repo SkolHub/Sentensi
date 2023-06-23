@@ -1,4 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
+import { sentensiCanvas, pageMaker, canvasWord } from "../sentensiClasses.js";
+/*import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js";
 
@@ -24,16 +25,198 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 	get: (searchParams, prop) => searchParams.get(prop),
 });
 
-const db = getFirestore(firebaseApp);
-
-
-var s = document.styleSheets[0];
+const db = getFirestore(firebaseApp);*/
 
 var canvas = document.getElementById('cnv');
 var canvasBox = document.getElementById('canvasBox');
+var makerBox = document.getElementById('makerBox');
+
+var styleSheet = document.styleSheets[0];
 
 var characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '@', '#', '$', '%', '^', '*', '(', ')', '_', '+', '=', '-', '[', ']', '{', '}', '\\', '|', '/', '~', '`', '÷', '<', '>', ' ', '&', '.', ',', '?', '!', ':', ';', '"', "'"]
 
+const sen = new sentensiCanvas();
+
+sen.pt = canvas.createSVGPoint();
+sen.canvas = canvas;
+sen.canvasBox = canvasBox;
+sen.makerBox = makerBox;
+sen.colorPicker = document.getElementById('color');
+
+canvas.onmousedown = function(e){
+	if (sen.canvasMode){
+		sen.canvasMakerMouseDown(e);
+	} else {
+		sen.canvasTextMouseDown(e);
+	}
+}
+
+canvas.onmouseup = function(){
+	sen.canvasMouseUp();
+}
+
+canvas.onmousemove = function(e){
+	sen.canvasMouseMove(e);
+}
+
+document.onkeydown = function(e){
+	if (sen.canvasMode){
+		sen.documentMakerKeyDown(e);
+	} else {
+		sen.documentTextKeyDown(e);
+	}
+}
+
+sen.rectScale = document.getElementById('rectScale');
+sen.rect = document.getElementById('rectSelect');
+sen.moveCircle = document.getElementById('moveCircle');
+sen.rotCircle = document.getElementById('rotCircle');
+sen.originScaleCircle = document.getElementById('originScaleCircle');
+sen.colorCircle = document.getElementById('colorCircle');
+
+let colors = document.getElementsByClassName('clr');
+for (let i = 0; i < colors.length; i++){
+	colors[i].onclick = function (){
+		sen.colorPicker.value = sen.colorValues[colors[i].innerText];
+		sen.color = sen.colorPicker.value;
+		sen.erasing = false;
+		sen.canvas.style.cursor = 'auto';
+	}
+}
+
+document.getElementById('double').onclick = function(){
+	sen.doubleColor = !sen.doubleColor;
+	this.innerHTML = sen.doubleColor?'Double color: On':'Double color: Off';
+}
+
+function sizeBackground(index){
+	for (let i = 1; i <= 4; i++){
+		document.getElementById('s'+i).style.backgroundColor = '#f0f0f0';
+	}
+	document.getElementById('s'+index).style.backgroundColor = "#aaaaaa";
+}
+
+document.getElementById('s1').onclick = function(){
+	sen.setSize('2.1', styleSheet);
+	sen.initSize = 55.59;
+	sizeBackground(1);
+}
+
+document.getElementById('s2').onclick = function(){
+	sen.setSize('3.045', styleSheet);
+	sen.initSize = 79.43;
+	sizeBackground(2);
+}
+
+document.getElementById('s3').onclick = function(){
+	sen.setSize('4.2', styleSheet);
+	sen.initSize = 109.22;
+	sizeBackground(3);
+}
+
+document.getElementById('s4').onclick = function(){
+	sen.setSize('8.4', styleSheet);
+	sen.initSize = 213.48;
+	sizeBackground(4);
+}
+
+document.getElementById('color').oninput = function(){
+	sen.color = sen.colorPicker.value;
+}
+
+document.getElementById('scale').onclick = function(e){
+	sen.scaling = !sen.scaling;
+	e.target.innerHTML = e.target.innerHTML=='Scale'?'Stretch':'Scale';
+}
+
+document.getElementById('bin').onclick = function(){
+	sen.erasing = true;
+	sen.canvas.style.cursor = 'crosshair';
+	sen.color = '';
+	sen.colorCircle.setAttribute('cx', -100);
+	sen.colorCircle.setAttribute('cy', -100);
+}
+
+document.getElementById('canvasBox').onmouseup = function(){
+	sen.canvasBoxMouseUp();
+}
+
+document.getElementById('sttm').onclick = function(){
+	document.getElementById('canvasSide').style.display = 'none';
+	document.getElementById('makerSide').style.display = 'flex';
+	sen.canvasBox.style.display = 'none';
+	sen.makerBox.style.display = 'flex';
+	sen.changeStylesheetRule(styleSheet, 'use:hover', 'cursor', 'cell');
+	sen.canvasMode = false;
+}
+
+document.getElementById('stcm').onclick = function(){
+	document.getElementById('makerSide').style.display = 'none';
+	document.getElementById('canvasSide').style.display = 'flex';
+	sen.makerBox.style.display = 'none';
+	sen.canvasBox.style.display = 'flex';
+	sen.changeStylesheetRule(styleSheet, 'use:hover', 'cursor', 'grab');
+	sen.canvasMode = true;
+}
+
+var punctuations = document.getElementsByClassName('punctuation');
+
+for (let i = 0; i < punctuations.length; i++){
+	punctuations[i].onclick = function(e){
+		sen.addPunctuation(e.target.innerHTML);
+	}
+}
+
+document.getElementById('capitalise').onclick = function(){
+	sen.capitalise();
+}
+
+document.getElementById('glue').onclick = function(){
+	sen.glue();
+}
+
+document.getElementById('activityType').oninput = function(e){
+	switch (e.target.value){
+		case "Remember & write":
+			document.getElementById('right&wrong').style.display = 'none';
+			document.getElementById('listen&Write').style.display = 'none';
+			break;
+
+		case "Right & Wrong":
+			document.getElementById('right&wrong').style.display = 'flex';
+			document.getElementById('listen&Write').style.display = 'none';
+			break;
+
+		case "Listen & Write":
+			document.getElementById('right&wrong').style.display = 'none';
+			document.getElementById('listen&Write').style.display = 'flex';
+			break;
+	}
+}
+
+document.getElementById('nextPage').onclick = function(){
+	let type = document.getElementById('activityType').value;
+	switch (type){
+		case "Remember & write":
+			sen.pages.push(currentPage(type, null));
+			break;
+
+		case "Right & Wrong":
+			sen.pages.push(currentPage(type, null));
+			break;
+
+		case "Listen & Write":
+			sen.pages.push(currentPage(type, null));
+			break;
+	}
+}
+
+document.getElementById('canvasSelector').oninput = function(){
+	
+}
+
+
+/*
 class canvasWord {
 	constructor (word){
 		if (word[0] == undefined){
@@ -123,7 +306,9 @@ class pageMaker {
 		}
 	}
 }
+*/
 
+/*
 function changeStylesheetRule(stylesheet, selector, property, value) {
 	selector = selector.toLowerCase();
 	property = property.toLowerCase();
@@ -144,7 +329,7 @@ function getSize(text, mod = 64){
 	return [+(measure.clientWidth + 1)*mod/64, +(measure.clientHeight + 1)*mod/64];
 }
 
-function pyth (x1, y1, x2, y2){
+function pyth(x1, y1, x2, y2){
 	return Math.sqrt((x1-x2)**2 + (y1-y2)**2);
 }
 
@@ -215,7 +400,6 @@ function pressTE (e){
 	} else {
 		alert("You may only have a maximum of 64 words on the canvas!");
 	}
-	
 }
 
 function pressMW (word){
@@ -725,7 +909,6 @@ document.onkeydown = function (e){
 			}
 		}
 	}
-	
 }
 
 document.getElementById('main').onmousemove = function (e){
@@ -855,7 +1038,6 @@ document.getElementById('canvasSelector').onchange = function (){
 			pages[previous-1] = new pageMaker(wordList, textBoxWords, pages[previous-1].rightness, existingWords);
 		}
 	} else {
-		console.log(6969696969696)
 		lastPage = [[], ''];
 		var textBoxWords = document.getElementById('makerBox').children;
 		if (textBoxWords.length){
@@ -963,7 +1145,6 @@ document.getElementById('canvasSelector').onchange = function (){
 			}
 		}
 	} else {
-		console.log(lastPage);
 		let sentence = lastPage[1].split(/([& ])/g);
 		document.getElementById('makerBox').innerHTML = '';
 		currentMakerWord = 0;
@@ -1043,7 +1224,6 @@ document.getElementById('canvasSelector').onchange = function (){
 			}
 		}
 	}
-	console.log(previous, 555);
 	previous = +document.getElementById('canvasSelector').value;
 }
 
@@ -1214,8 +1394,6 @@ document.getElementById('save').onclick = function (e){
 		changes += '0';
 	}
 
-	console.log(changes);
-
 	let changeString = '';
 
 	for (let i = 0; i < changes.length; i += 8){
@@ -1319,7 +1497,6 @@ async function loadLesson(){
 					}
 					poz += 7;
 				}
-				console.log(changes);
 				for (let i = 0; i < changes.length; i++){
 					let wordList = [], existingWords = [];
 					for (let j = 0; j < changes[i].words.length; j++){
@@ -1340,7 +1517,6 @@ async function loadLesson(){
 				<circle id="colorCircle" cx="-100" cy="-100" r="10" stroke="#000000" stroke-width="2" fill="#ff0000" />
 				<rect id="rectScale" x="-100" y="-100" width="20" height="20" stroke="#000000" stroke-width="2" fill="#98fb98" />
 				<circle id="originScaleCircle" cx="-100" cy="-100" r="5" stroke="#000000" stroke-width="2" fill="#000000" />`
-				console.log(pages)
 				wordCount = 0;
 				let id = +document.getElementById('canvasSelector').max-1;
 				for (let i = 0; i < pages[id-1].wordList.length; i++){
@@ -1396,25 +1572,36 @@ async function loadLesson(){
 				throw e;
 			}
 		}
-		
 	}
 }
 
 loadLesson();
 
-//increase arrow size and put them on the sides _/
-//Only delete punctuation first _/
-//Make the cursor lighter, thinner, make it flashing and make it not apear when typing a non-canvas character _/
-//for the moment, remove cursor _/
-//When hovering over words, in the canvas maker the cursor should be a grabber and in the text maker it should be a big plus _/
-//Disable the save button until at least one sentence was added _/
-//Copy link button _/
-//Add lessons button in home _/
-//Add create lesson button _/
-//Disable classes _/
-//Future Idea: Add animations between canvas transitions (accelerating and then decelerating); creation and deletion of words is made by fading
+*/
 
-//Make read and remember: 1. Words apear in the textBox 2. The textbox words dissapear and the canvas words were always there 3. When you're ready, you click next and clear the textBox and now the canvas words are faded and when you click on them you need to recreate the text box and then submit. If you do it correct and then you pause for a second and then the next sentence automatically loads. If you get it wrong, there's a red X and then you may reset and redo the sentence 4. Repeat
-//For the read & remember: We have to store Time to solve, how many answers they got wrong
-//When you start an activity, let students add a name and then start
-//On the teacher's dashboard, you will see name, score etc
+/*
+To do list:
+
+	- increase arrow size and put them on the sides _/
+	- Only delete punctuation first _/
+	- Make the cursor lighter, thinner, make it flashing and make it not apear when typing a non-canvas character _/
+	- for the moment, remove cursor _/
+	- When hovering over words, in the canvas maker the cursor should be a grabber and in the text maker it should be a big plus _/
+	- Disable the save button until at least one sentence was added _/
+	- Copy link button _/
+	- Add lessons button in home _/
+	- Add create lesson button _/
+	- Disable classes _/
+	- Future Idea: Add animations between canvas transitions (accelerating and then decelerating); creation and deletion of words is made by fading
+	- Make read and remember: 1. Words apear in the textBox 2. The textbox words dissapear and the canvas words were always there 3. When you're ready, you click next and clear the textBox and now the canvas words are faded and when you click on them you need to recreate the text box and then submit. If you do it correct and then you pause for a second and then the next sentence automatically loads. If you get it wrong, there's a red X and then you may reset and redo the sentence 4. Repeat
+	- For the read & remember: We have to store Time to solve, how many answers they got wrong
+	- When you start an activity, let students add a name and then start
+	- On the teacher's dashboard, you will see name, score etc
+	- Clear textbox after answering
+	-  Origninal message not showing when clicking try again
+	- repair the home page
+*/
+
+/*
+000
+*/

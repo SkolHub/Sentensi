@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script type="module" src="../init.js"></script>
+		<!--<script type="module" src="../../init.js"></script>-->
 		<title>Sentensi</title>
 		<link rel="icon" href="icon.ico">
 		<link rel="stylesheet" href="style.css">
@@ -36,16 +36,24 @@
                 </div>
 			</div>
             <div>
-                <p style="text-align: center; font-size: 2vh;">Right answers: <span style="color: green;">0</span></p>
-                <p style="text-align: center; font-size: 2vh;">Wrong answers: <span style="color: red;">0</span></p>
-                <p style="text-align: center; font-size: 2vh;">Number of tries: <span style="color: orange;">0</span></p>
-                <p style="font-size: 25vh; margin: 2vh; text-align: center; border-width: 0.1vw; border-style: solid; border-color: black; border-radius: 2vw; height: 30vh;">?</p>
+                <p style="text-align: center; font-size: 2vh;">Right answers: <span id="correct" style="color: green;">0</span></p>
+                <p style="text-align: center; font-size: 2vh;">Wrong answers: <span id="wrong" style="color: red;">0</span></p>
+                <p style="text-align: center; font-size: 2vh;">Number of tries: <span id="tries" style="color: orange;">0</span></p>
+                <p id="rightness" style="font-size: 25vh; margin: 2vh; text-align: center; border-width: 0.1vw; border-style: solid; border-color: black; border-radius: 2vw; height: 30vh;">?</p>
             </div>
             <div style="display: flex; justify-content: center; flex-direction: column;">
-                <p style="text-align: center; font-size: 3vh;">Question 1/5</p>
-                <button id="stcm" class="sideB switchMaker" style="width:70%; font-size: 1.7vw; margin-bottom: 3vh; border-radius: 5px; height: 6vh !important; background-color: #b6b6b6;">Check</button>    
+                <p style="text-align: center; font-size: 3vh;">Question <span id="qNo">1</span>/<span id="qTotal"></span></p>
+                <button id="stcm" class="sideB switchMaker" style="width:70%; font-size: 1.7vw; margin-bottom: 1vh; border-radius: 5px; height: 6vh !important; background-color: #b6b6b6;">Solve</button>
+                <button id="try" class="sideB switchMaker" style="width:70%; font-size: 1.7vw; margin-bottom: 1vh; border-radius: 5px; height: 6vh !important; background-color: #b6b6b6; display: none;">Try again?</button>
             </div>
 		</div>
+        <div id="popup">
+            <div style="display: flex; justify-content: center; align-items: center; background-color: aliceblue; border-radius: 2vw; padding: 2vw; flex-direction: column;">
+                <h1 style="margin-top: 0.5vh;">Enter your name</h1>
+                <input id="namee" placeholder="name">
+                <button style="margin-top: 2vh;" onclick="document.getElementById('popup').style.display = 'none'">Done</button>
+            </div>
+        </div>
 		<script type="module" src="main.js"></script>
 	</body>
 </html>
