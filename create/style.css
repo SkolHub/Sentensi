@@ -43,16 +43,10 @@ canvas {
 .save {
 	display: flex;
 	margin: auto;
-	width:400px;
-	height:300px;
 	background-color:rgb(202, 202, 202);
 	border-radius: 25px;
-	position: absolute;
-	top:0;
-	bottom: 0;
-	left: 0;
-	right: 0;
 	flex-direction: column;
+	padding: 2vw;
 }
 
 h1 {
@@ -264,4 +258,8 @@ use:hover {
 
 input[type=number] {
 	outline: none;
+}
+
+#cancel:hover {
+	cursor: pointer;
 }

@@ -9,7 +9,11 @@
     <body style="width:100%">
         <div id="picker" style="display: none;"></div>
         <div id="popup">
-            
+            <div style="background-color: white; border-radius: 3vw; display: flex; flex-direction: column; padding: 2vw;">
+                <h1 id="setTarget"></h1>
+                <input id="name" placeholder="activity name">
+                <button id="create" style="margin-top: 1vh;">Create</button>
+            </div>
         </div>
         <div class="bar">
             <div>
@@ -22,7 +26,7 @@
         </div>
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-app.js";
-            import { getFirestore, collection, addDoc, query, where, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
+            import { getFirestore, collection, setDoc, query, where, getDocs, doc } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-firestore.js";
             import { getAuth } from "https://www.gstatic.com/firebasejs/9.4.0/firebase-auth.js";
 
             const firebaseApp = initializeApp({
@@ -38,10 +42,8 @@
             const db = getFirestore(firebaseApp);
             const auth = getAuth(firebaseApp);
 
-            var selectedActivity = "";
-
             auth.onAuthStateChanged(async function (user){
-                const data = await getDocs(collection(db, "Activities"));
+                const data = await getDocs(collection(db, "tempWork"));
                 console.log(data.docs[0])
                 data.docs.forEach(cls => {
                     let id = cls.id;
@@ -49,46 +51,17 @@
                     document.getElementById('lessons').innerHTML += `
                     <div class="lesson">
                         <div style="background-color: #2929bb; border-top-right-radius: 5px; border-top-left-radius: 5px;">
-                            <h5 style="padding-top: 10px; padding-bottom:10px; margin-top:0;">${id}</h5>
+                            <h5 style="margin-top: 0px;">${id}</h5>
                         </div>
                         <div style="display: flex; justify-content: center; flex-direction: column;">
-                            <button id="${id}" class="enter" style="margin-top:20px;">See results</button>
+                            <button class="enter" onclick = window.location.href="https://sentensi.com/create/?q=${id}" style="margin-top: 1vh;">Edit lesson</button>
                             <p style="margin-bottom:0px;">Class link:</p>
-                            <a style="margin-top: 3px; margin-bottom:3px; overflow:hidden;" onclick="navigator.clipboard.writeText(this.innerText); console.log('Content copied to clipboard');")">https://sentensi.com/play/rememberAndWrite/?q=${id}</a>
+                            <a style="margin-top: 3px; margin-bottom:3px; overflow:hidden;" onclick="navigator.clipboard.writeText(this.innerText); console.log('Content copied to clipboard');")">https://sentensi.com/create/?q=${id}</a>
                             <p style="margin-top:0px; text-align: center;">(click to copy)</p>
+                            <button class="enter" onclick="document.getElementById('setTarget').innerHTML = '${id}'; document.getElementById('popup').style.display = 'flex'" style="margin-bottom: 1vh;">Set as activity</button>
                         </div>
                     </div>
-                    `;
-                    document.getElementById(id).onclick = function(){
-                        document.getElementById('popup').style.display = 'flex';
-                        var ht = `
-                        <table>
-                            <tr>
-                                <td>Name</td>
-                                <td>Right</td>
-                                <td>Wrong</td>
-                                <td>Tries</td>
-                                <td>Time</td>
-                            </tr>
-                        `
-                        let keys = Object.keys(cls);
-                        console.log(cls)
-                        for (let i = 0; i < keys.length; i++){
-                            if (keys[i] != "target"){
-                                ht += `
-                                <tr>
-                                    <td>${keys[i]}</td>
-                                    <td>${cls[keys[i]][1]}</td>
-                                    <td>${cls[keys[i]][2]}</td>
-                                    <td>${cls[keys[i]][3]}</td>
-                                    <td>${cls[keys[i]][4]}</td>
-                                </tr>
-                                `
-                            }
-                        }
-                        ht += `</tables>`;
-                        document.getElementById('popup').innerHTML += ht;
-                    }
+                    `
                 });
             });
 
@@ -99,6 +72,12 @@
                     document.getElementById('addWindow').style.display = 'none';
                 }
             });
+
+            document.getElementById('create').onclick = function(){
+                setDoc(doc(db, "Activities/", document.getElementById('name').value), {target: document.getElementById('setTarget').innerHTML}).then(p => {
+                    window.location.reload();
+                });
+            }
         </script>
     </body>
 </html>

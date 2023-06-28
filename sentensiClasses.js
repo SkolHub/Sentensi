@@ -18,10 +18,8 @@ export class sentensiCanvas {
 		this.pages = [];
 		this.totalWords = 0;
 		this.erasing = false;
-		this.lastPage = [[], ""];
 		this.doubleColor = false;
 		this.canvasMode = true;
-		this.previous;
 	}
 
 	changeStylesheetRule(stylesheet, selector, property, value) {
@@ -78,11 +76,11 @@ export class sentensiCanvas {
 
 	createWord(id, startX, startY, focusX, focusY, endX, endY, fontSize, content, topColor="#000000", bottomColor="#000000"){
 		this.canvas.innerHTML += 
-			`<path id="p${id}" d="M ${startX} ${startY} q ${focusX} 0 ${endX} 0" stroke="none" stroke-width="1" fill="none"></path>
+			`<path id="p${id}" d="M ${startX} ${startY} q ${focusX} ${focusY} ${endX} ${endY}" stroke="none" stroke-width="1" fill="none"></path>
 			<text id="t${id}" font-size="${fontSize}">
 				<textPath id="tp${id}" class="pathText" style="font-size: ${fontSize}" alignment-baseline="middle" href="#p${id}" startOffset="0%">${content}</textPath>
 			</text>
-			<path id="dp${id}" d="M ${startX} ${startY} q ${focusY} 0 ${endY} 0 l 0 -172" stroke="none" stroke-width="1" fill="none"></path>
+			<path id="dp${id}" d="M ${startX} ${startY} q ${focusX} ${focusY} ${endX} ${endY} l 0 -172" stroke="none" stroke-width="1" fill="none"></path>
 			<clipPath id="cp${id}">
 				<use href="#dp${id}" />
 			</clipPath>
@@ -235,7 +233,7 @@ export class sentensiCanvas {
 	}
 
 	documentTextKeyDown(e){
-		if (e.key == 'Backspace'){
+		if (e.key == 'Backspace' && this.makerBox.innerHTML.trim() != ""){
 			if (this.selectedMakerWord == -1){
 				if (".,?!\"-:;'".includes(this.makerBox.lastChild.innerHTML.at(-1))){
 					this.makerBox.lastChild.innerText = this.makerBox.lastChild.innerHTML.slice(0, -1);
@@ -582,92 +580,36 @@ export class sentensiCanvas {
 		document.getElementById('mw'+this.selectedMakerWord).style.color = '#000000';
 	}
 
-	selectPage(){
-		if (this.previous != +document.getElementById('canvasSelector').max){ //Saving current page data
-			if (this.makerBox.children.length > 0){
-				let wordList = [], existingWords = [];
-				for (let i = 0; i < this.wordCount; i++){
-					try {
-						wordList.push(new canvasWord(document.getElementById('t' + i))); // solve error regarding word deletion
-						existingWords.push('t' + i);
-					} catch {
-						wordList.push(null);
-					}
-				}
-				var textBoxWords = this.makerBox.children;
-				this.pages[this.previous-1] = new pageMaker(wordList, textBoxWords, this.pages[this.previous-1].rightness, existingWords);
-			}
-		} else {
-			this.lastPage = [[], ''];
-			var textBoxWords = this.makerBox.children;
-			if (textBoxWords.length){
-				this.lastPage[1] = textBoxWords[0].innerText;
-			}
-			for (let i = 1; i < this.textBoxWords.length; i++){
-				this.lastPage[1] += (this.textBoxWords[i].style.paddingLeft == '0vw'?'&':' ') + this.textBoxWords[i].innerHTML;
-			}
-			for (let i = 0; i < this.wordCount; i++){
-				try {
-					this.lastPage[0].push(new canvasWord(document.getElementById('t' + i))); // solve error regarding word deletion
-				} catch {
-					this.lastPage[0].push(null);
-				}
-			}
-		}
-		let sentence, page;
-		if (+document.getElementById('canvasSelector').value != +document.getElementById('canvasSelector').max){ //Loading new page
-			id = +document.getElementById('canvasSelector').value;
-			if (this.pages[id-1].rightness){
-				document.getElementById('yes').style.backgroundColor = '#aaaaaa';
-				document.getElementById('no').style.backgroundColor = '#f0f0f0';
-			} else {
-				document.getElementById('no').style.backgroundColor = '#aaaaaa';
-				document.getElementById('yes').style.backgroundColor = '#f0f0f0';
-			}
-			sentence = this.pages[id-1].sentence.split(/([& ])/g);
-			page = this.pages[id-1].wordList;
-		} else {
-			sentence = this.lastPage[1].split(/([& ])/g);
-			page = this.lastPage[0];
-			document.getElementById('yes').style.backgroundColor = '#f0f0f0';
-			document.getElementById('no').style.backgroundColor = '#f0f0f0';
-			
-			
-		}
-		this.makerBox.innerHTML = '';
-		this.currentMakerWord = 0;
-		this.currentMakerWord++;
-		let element = document.createElement('p');
-		element.className = 'tbt';
-		element.id = 'mw'+this.currentMakerWord;
-		element.onmousedown = this.pressMWB;
-		element.innerHTML = sentence[0];
-		this.makerBox.appendChild(element);
-		for (let i = 2; i < sentence.length; i += 2){
-			this.currentMakerWord++;
-			element = document.createElement('p');
-			element.className = 'tbt';
-			element.id = 'mw'+this.currentMakerWord;
-			element.onmousedown = this.pressMWB;
-			element.innerHTML = sentence[i];
-			if (sentence[i-1] == '&'){
-				element.style.padding = '0px';
-			}
-			this.makerBox.appendChild(element);
-		}
+	selectPage(pageNumber){
+		let page = this.pages[pageNumber].wordList;
 		this.resetCanvas();
 		this.wordCount = 0;
-		for (let i = 0; i < page[0].length; i++){
+		for (let i = 0; i < page.length; i++){
 			if (page[i] != null){
-				this.createWord(this.wordCount, this.pages[id-1].wordList[i].start[0], this.pages[id-1].wordList[i].start[1], this.pages[id-1].wordList[i].focus[0], this.pages[id-1].wordList[i].focus[1], this.pages[id-1].wordList[i].end[0], this.pages[id-1].wordList[i].end[1], this.pages[id-1].wordList[i].fontSize + "px", this.pages[id-1].wordList[i].content, this.pages[id-1].wordList[i].topColor, this.pages[id-1].wordList[i].bottomColor);
+				this.createWord(this.wordCount, page[i].start[0], page[i].start[1], page[i].focus[0], page[i].focus[1], page[i].end[0], page[i].end[1], page[i].fontSize + "px", page[i].content, page[i].topColor, page[i].bottomColor);
 				document.getElementById('tp'+this.wordCount).setAttribute("textLength", document.getElementById('p'+this.wordCount).getTotalLength() + "px");
-				document.getElementById('tp'+this.wordCount).style.fontSize = lastPage[0][i].fontSize + "px";
+				document.getElementById('tp'+this.wordCount).style.fontSize = page[i].fontSize + "px";
 				this.updateClipPath(this.wordCount);
 				this.wordCount++;
 			}
 		}
-
-		previous = +document.getElementById('canvasSelector').value;
+		if (this.pages[pageNumber].sentence){
+			let sentence = this.pages[pageNumber].sentence.split(/([& ])/g);
+			this.makerBox.innerHTML = '';
+			this.currentMakerWord = 1;
+			let element = document.createElement('p');
+			element.className = 'tbt', element.id = 'mw'+this.currentMakerWord, element.onmousedown = this.pressMWB, element.innerHTML = sentence[0];
+			this.makerBox.appendChild(element);
+			for (let i = 2; i < sentence.length; i += 2){
+				this.currentMakerWord++;
+				element = document.createElement('p');
+				element.className = 'tbt', element.id = 'mw'+this.currentMakerWord, element.onmousedown = this.pressMWB, element.innerHTML = sentence[i];
+				if (sentence[i-1] == '&'){
+					element.style.padding = '0px';
+				}
+				this.makerBox.appendChild(element);
+			}
+		}
 	}
 
 	capitalise(){
@@ -729,11 +671,10 @@ export class sentensiCanvas {
 
 	en(c){var x='charCodeAt',b,e={},f=c.split(""),d=[],a=f[0],g=256;for(b=1;b<f.length;b++)c=f[b],null!=e[a+c]?a+=c:(d.push(1<a.length?e[a]:a[x](0)),e[a+c]=g,g++,a=c);d.push(1<a.length?e[a]:a[x](0));for(b=0;b<d.length;b++)d[b]=String.fromCharCode(d[b]);return d.join("")}
 
-	de(b){var f, o; var a,e={},d=b.split(""),c=f=d[0],g=[c],h=o=256;for(b=1;b<d.length;b++)a=d[b].charCodeAt(0),a=h>a?d[b]:e[a]?e[a]:f+c,g.push(a),c=a.charAt(0),e[o]=f+c,o++,f=a;return g.join("")}
+	de(b){var f,o;var a,e={},d=b.split(""),c=f=d[0],g=[c],h=o=256;for(b=1;b<d.length;b++)a=d[b].charCodeAt(0),a=h>a?d[b]:e[a]?e[a]:f+c,g.push(a),c=a.charAt(0),e[o]=f+c,o++,f=a;return g.join("")}
 
 	currentPage(type, typeData){
 		let wordList = [], existingWords = [];
-	
 		for (let i = 0; i < this.wordCount; i++){
 			try {
 				wordList.push(new canvasWord(document.getElementById('t' + i))); // solve error "regarding word deletion"
@@ -742,61 +683,34 @@ export class sentensiCanvas {
 				wordList.push(null);
 			}
 		}
-
 		var textBoxWords = this.makerBox.children;
-
 		return new pageMaker(wordList, textBoxWords, existingWords, type, typeData);
 	}
 
-	createPage(rightness){
-		if (document.getElementById('canvasSelector').max == document.getElementById('canvasSelector').value){
-			if (this.makerBox.children.length > 0){
-				document.getElementById('addLesson1').disabled = false;
-				document.getElementById('addLesson2').disabled = false;
-				document.getElementById('canvasSelector').max++;
-				document.getElementById('canvasSelector').value++;
-				this.previous = +document.getElementById('canvasSelector').value;
-				let wordList = [], existingWords = [];
-		
-				for (let i = 0; i < this.wordCount; i++){
-					try {
-						wordList.push(new canvasWord(document.getElementById('t' + i)));
-						existingWords.push('t' + i);
-					} catch {
-						wordList.push(null);
-					}
-				}
-		
-				var textBoxWords = this.makerBox.children;
-		
-				this.pages.push(new pageMaker(wordList, textBoxWords, rightness, existingWords));
-				this.makerBox.innerHTML = '';
-			}
-		} else {
-			this.pages[+document.getElementById('canvasSelector').value-1].rightness = rightness;
-			document.getElementById('yes').style.backgroundColor = '#f0f0f0';
-			document.getElementById('no').style.backgroundColor = '#f0f0f0';
-			if (this.pages[+document.getElementById('canvasSelector').value-1].rightness){
-				document.getElementById('yes').style.backgroundColor = '#aaaaaa';
-			} else {
-				document.getElementById('no').style.backgroundColor = '#aaaaaa';
-			}
-		}
-	}
-
 	save(){
-		for (let i = 0; i < pages.length; i++){
+		for (let i = 0; i < this.pages.length; i++){
 			this.pages[i].compressAll();
 		}
 		var page = this.pages[0];
-		
 		var changes = '';
-		
 		for (let i = 0; i < page.wordList.length; i++){ // check for deleted words /////////////////////////////////////////////////////
 			changes += '00' + page.wordList[i].comp;
 		}
-		
-		changes += '11' + (page.rightness?'1':'0') + page.compressString(page.sentence);
+		changes += '11';
+		switch (page.type){
+			case "Remember & write":
+				changes += '0000';
+				break;
+
+			case "Listen & write":
+				changes += '0001' + this.compressString(page.typeData);
+				break;
+
+			case "Right & wrong":
+				changes += '0010' + (page.typeData?'1':'0');
+				break;
+		}
+		 changes += this.compressString(page.sentence);
 	
 		for (let i = 1; i < this.pages.length; i++){
 			let wordNr = +this.pages[i].existingWords.at(-1).replace('t', '')+1;
@@ -812,21 +726,17 @@ export class sentensiCanvas {
 						} else {
 							modifications += '0';
 						}
-	
 						if (this.pages[i].wordList[j].topColor[0] != this.pages[i-1].wordList[j].topColor[0] || this.pages[i].wordList[j].topColor[1] != this.pages[i-1].wordList[j].topColor[1] || this.pages[i].wordList[j].topColor[2] != this.pages[i-1].wordList[j].topColor[2] || this.pages[i].wordList[j].bottomColor[0] != this.pages[i-1].wordList[j].bottomColor[0] || this.pages[i].wordList[j].bottomColor[1] != this.pages[i-1].wordList[j].bottomColor[1] || this.pages[i].wordList[j].bottomColor[2] != this.pages[i-1].wordList[j].bottomColor[2]){
 							modifications += '1';
 						} else {
 							modifications += '0';
 						}
-	
 						if (this.pages[i].wordList[j].fontSize != this.pages[i-1].wordList[j].fontSize){
 							modifications += '1';
 						} else {
 							modifications += '0';
 						}
-	
 						changes += modifications;
-	
 						if (modifications[0] == '1'){
 							changes += this.pages[i].wordList[j].start[0] + this.pages[i].wordList[j].start[1] + this.pages[i].wordList[j].focus[0] + this.pages[i].wordList[j].focus[1] + this.pages[i].wordList[j].end[0] + this.pages[i].wordList[j].end[1];
 						}
@@ -845,192 +755,160 @@ export class sentensiCanvas {
 					changes += '00' + this.pages[i].wordList[j].comp;
 				} // else {} //the word existed at some point in the second page, however it was deleted, so we ignore it since it is like nothing happened
 			}
-			changes += '11' + (this.pages[i].rightness?'1':'0') + this.pages[i].compressString(this.pages[i].sentence);
+			changes += '11';
+			console.log(6969)
+			switch (this.pages[i].type){
+				case "Remember & write":
+					console.log(0)
+					changes += '0000';
+					break;
+
+				case "Listen & write":
+					console.log(1)
+					changes += '0001' + this.compressString(this.pages[i].typeData);
+					break;
+
+				case "Right & wrong":
+					console.log(2)
+					changes += '0010' + (this.pages[i].typeData?'1':'0');
+					console.log('0010' + (this.pages[i].typeData?'1':'0'));
+					break;
+			}
+			changes += this.compressString(this.pages[i].sentence);
 		}
-	
 		for (let i = (8-changes.length%8)%8; i; i--){
 			changes += '0';
 		}
-	
+		console.log(changes);
 		let changeString = '';
-	
 		for (let i = 0; i < changes.length; i += 8){
 			changeString += String.fromCharCode(parseInt(changes.slice(i, i+8), 2));
 		}
-	
-		changeString = en(changeString);
-	
-		setDoc(doc(db, "tempWork/", document.getElementById('lessonName').value), {"v": changeString}).then(p => {
-			window.location.href = '../../home';
-		});
+		console.log(changeString, this.en(changeString))
+		return this.en(changeString);
 	}
 	
-	async loadLesson(){
-		if (params.q != null){
-			let changes = [], poz = 0;
-			try {
-				await getDoc(doc(db, "tempWork/", params.q)).then(dat => {
-					dat = de(dat.data()['v']);
-			
-					let bin = '';
-					
-					for (let i = 0; i < dat.length; i++){
-						let char = dat.charCodeAt(i).toString(2);
-						bin += '0'.repeat(8-char.length)+char.toString(2);
+	loadLesson(dat){
+		//Inits and parsing data
+		let changes = [], poz = 0;
+		let bin = '';
+		for (let i = 0; i < dat.length; i++){
+			let char = dat.charCodeAt(i).toString(2);
+			bin += '0'.repeat(8-char.length)+char.toString(2);
+		}
+		while (bin.slice(bin.length-7, bin.length) != '1100000'){
+			bin = bin.slice(0, -1);
+		}
+		changes[0] = {'words':[], 'sentence':'', 'type':null, 'typeData':null};
+		//Starting to format data
+		for (let i = 0; poz < bin.length; i++){
+			if (i){
+				changes[i] = {'words':[], 'sentence':'', 'type':null, 'typeData':null};
+				let j = 0;
+				for (j = 0; j < changes[i-1].words.length; j++){
+					if (changes[i-1].words[j] == null){
+						changes[i].words.push(null);
+					} else {
+						changes[i].words.push({});
+						changes[i].words[j].top = [changes[i-1].words[j].top[0], changes[i-1].words[j].top[1], changes[i-1].words[j].top[2]];
+						changes[i].words[j].bottom = [changes[i-1].words[j].bottom[0], changes[i-1].words[j].bottom[1], changes[i-1].words[j].bottom[2]];
+						changes[i].words[j].start = [changes[i-1].words[j].start[0], changes[i-1].words[j].start[1]];
+						changes[i].words[j].focus = [changes[i-1].words[j].focus[0], changes[i-1].words[j].focus[1]];
+						changes[i].words[j].end = [changes[i-1].words[j].end[0], changes[i-1].words[j].end[1]];
+						changes[i].words[j].size = changes[i-1].words[j].size;
+						changes[i].words[j].content = changes[i-1].words[j].content;
 					}
 					
-					
-					while (bin.slice(bin.length-7, bin.length) != '1100000'){
-						bin = bin.slice(0, -1);
-					}
-	
-					console.log(bin);
-	
-					document.getElementById('addLesson1').disabled = false;
-					document.getElementById('addLesson2').disabled = false;
-					
-					changes[0] = {'words':[], 'rightness':true, 'sentence':''};
-					for (let i = 0; poz < bin.length; i++){
-						if (i){
-							changes[i] = {'words':[], 'rightness':true, 'sentence':''};
-							let j = 0;
-							for (j = 0; j < changes[i-1].words.length; j++){
-								if (changes[i-1].words[j] == null){
-									changes[i].words.push(null);
-								} else {
-									changes[i].words.push({});
-									changes[i].words[j].top = [changes[i-1].words[j].top[0], changes[i-1].words[j].top[1], changes[i-1].words[j].top[2]];
-									changes[i].words[j].bottom = [changes[i-1].words[j].bottom[0], changes[i-1].words[j].bottom[1], changes[i-1].words[j].bottom[2]];
-									changes[i].words[j].start = [changes[i-1].words[j].start[0], changes[i-1].words[j].start[1]];
-									changes[i].words[j].focus = [changes[i-1].words[j].focus[0], changes[i-1].words[j].focus[1]];
-									changes[i].words[j].end = [changes[i-1].words[j].end[0], changes[i-1].words[j].end[1]];
-									changes[i].words[j].size = changes[i-1].words[j].size;
-									changes[i].words[j].content = changes[i-1].words[j].content;
-								}
-								
-							}
-						}
-						while (bin.slice(poz, poz+2) != '11'){
-							switch (bin.slice(poz, poz+2)){
-								case '00':
-									let word = {'top':[parseInt(bin.slice(poz+2, poz+6), 2)*16, parseInt(bin.slice(poz+6, poz+10), 2)*16, parseInt(bin.slice(poz+10, poz+14), 2)*16], 'bottom':[parseInt(bin.slice(poz+14, poz+18), 2)*16, parseInt(bin.slice(poz+18, poz+22), 2)*16, parseInt(bin.slice(poz+22, poz+26), 2)*16], 'start':[parseInt(bin.slice(poz+26, poz+33), 2)*16, parseInt(bin.slice(poz+33, poz+39), 2)*16], 'focus':[parseInt(bin.slice(poz+39, poz+46), 2)*16, parseInt(bin.slice(poz+46, poz+52), 2)*16], 'end':[parseInt(bin.slice(poz+52, poz+59), 2)*16, parseInt(bin.slice(poz+59, poz+65), 2)*16], 'size':parseInt(bin.slice(poz+65, poz+73), 2)*4, 'content':''};
-									poz += 73;
-									while (bin.slice(poz, poz+7) != '1100000'){
-										word.content += characters[parseInt(bin.slice(poz, poz+7), 2)];
-										poz += 7;
-									}
-									poz += 7;
-									changes[i].words.push(word);
-									break;
-								case '01':
-									let occured = bin.slice(poz+8, poz+11), target = parseInt(bin.slice(poz+2, poz+8), 2);
-									poz += 11;
-									if (occured[0] == '1'){
-										changes[i].words[target].start = [parseInt(bin.slice(poz, poz+7), 2)*16, parseInt(bin.slice(poz+7, poz+13), 2)*16];
-										changes[i].words[target].focus = [parseInt(bin.slice(poz+13, poz+20), 2)*16, parseInt(bin.slice(poz+20, poz+26), 2)*16];
-										changes[i].words[target].end = [parseInt(bin.slice(poz+26, poz+33), 2)*16, parseInt(bin.slice(poz+33, poz+39), 2)*16];
-										poz += 39;
-									}
-									if (occured[1] == '1'){
-										changes[i].words[target].top = [parseInt(bin.slice(poz, poz+4), 2)*16, parseInt(bin.slice(poz+4, poz+8), 2)*16, parseInt(bin.slice(poz+8, poz+12), 2)*16];
-										changes[i].words[target].bottom = [parseInt(bin.slice(poz+12, poz+16), 2)*16, parseInt(bin.slice(poz+16, poz+20), 2)*16, parseInt(bin.slice(poz+20, poz+24), 2)*16];
-										poz += 24;
-									}
-									if (occured[2] == '1'){
-										changes[i].words[target].size = parseInt(bin.slice(poz, poz+8), 2)*4;
-										poz += 8;
-									}
-									break;
-								case '10':
-									changes[i].words[parseInt(bin.slice(poz+2, poz+8), 2)] = null;
-									poz += 8;
-									break;
-							}
-						}
-						changes[i].rightness = (bin[poz+2]=='1'?true:false);
-						poz += 3;
+				}
+			}
+			while (bin.slice(poz, poz+2) != '11'){
+				switch (bin.slice(poz, poz+2)){
+					case '00':
+						let word = {'top':[parseInt(bin.slice(poz+2, poz+6), 2)*16, parseInt(bin.slice(poz+6, poz+10), 2)*16, parseInt(bin.slice(poz+10, poz+14), 2)*16], 'bottom':[parseInt(bin.slice(poz+14, poz+18), 2)*16, parseInt(bin.slice(poz+18, poz+22), 2)*16, parseInt(bin.slice(poz+22, poz+26), 2)*16], 'start':[parseInt(bin.slice(poz+26, poz+33), 2)*16, parseInt(bin.slice(poz+33, poz+39), 2)*16], 'focus':[parseInt(bin.slice(poz+39, poz+46), 2)*16, parseInt(bin.slice(poz+46, poz+52), 2)*16], 'end':[parseInt(bin.slice(poz+52, poz+59), 2)*16, parseInt(bin.slice(poz+59, poz+65), 2)*16], 'size':parseInt(bin.slice(poz+65, poz+73), 2)*4, 'content':''};
+						poz += 73;
 						while (bin.slice(poz, poz+7) != '1100000'){
-							changes[i].sentence += characters[parseInt(bin.slice(poz, poz+7), 2)];
+							word.content += this.characters[parseInt(bin.slice(poz, poz+7), 2)];
 							poz += 7;
 						}
 						poz += 7;
-					}
-					for (let i = 0; i < changes.length; i++){
-						let wordList = [], existingWords = [];
-						for (let j = 0; j < changes[i].words.length; j++){
-							if (changes[i].words[j] != null){
-								wordList.push(new canvasWord([changes[i].words[j].content, [changes[i].words[j].start[0], changes[i].words[j].start[1]], [changes[i].words[j].focus[0]-changes[i].words[j].start[0], changes[i].words[j].focus[1]-changes[i].words[j].start[1]], [changes[i].words[j].end[0]-changes[i].words[j].start[0], changes[i].words[j].end[1]-changes[i].words[j].start[1]], '#'+('00'+changes[i].words[j].top[0].toString(16)).slice(-2)+('00'+changes[i].words[j].top[1].toString(16)).slice(-2)+('00'+changes[i].words[j].top[2].toString(16)).slice(-2), '#'+('00'+changes[i].words[j].bottom[0].toString(16)).slice(-2)+('00'+changes[i].words[j].bottom[1].toString(16)).slice(-2)+('00'+changes[i].words[j].bottom[2].toString(16)).slice(-2), changes[i].words[j].size]));
-								existingWords.push('t'+j);
-							}
+						changes[i].words.push(word);
+						break;
+					case '01':
+						let occured = bin.slice(poz+8, poz+11), target = parseInt(bin.slice(poz+2, poz+8), 2);
+						poz += 11;
+						if (occured[0] == '1'){
+							changes[i].words[target].start = [parseInt(bin.slice(poz, poz+7), 2)*16, parseInt(bin.slice(poz+7, poz+13), 2)*16];
+							changes[i].words[target].focus = [parseInt(bin.slice(poz+13, poz+20), 2)*16, parseInt(bin.slice(poz+20, poz+26), 2)*16];
+							changes[i].words[target].end = [parseInt(bin.slice(poz+26, poz+33), 2)*16, parseInt(bin.slice(poz+33, poz+39), 2)*16];
+							poz += 39;
 						}
-						this.pages.push(new pageMaker(wordList, changes[i].sentence, changes[i].rightness, existingWords));
-						document.getElementById('canvasSelector').max++;
-						document.getElementById('canvasSelector').value++;
-					}
-					this.previous = +document.getElementById('canvasSelector').max;
-					this.canvas.innerHTML = 
-					`<rect id="rectSelect" x="100" y="100" rx="5" width="0" height="0" stroke="black" stroke-width="3" fill="#00000000" />
-					<circle id="rotCircle" cx="-100" cy="-100" r="60" stroke="#000000a0" stroke-width="3" fill="#00000000" />
-					<circle id="moveCircle" cx="-100" cy="-100" r="10" stroke="#303030" stroke-width="3" fill="#303030" />
-					<circle id="colorCircle" cx="-100" cy="-100" r="10" stroke="#000000" stroke-width="2" fill="#ff0000" />
-					<rect id="rectScale" x="-100" y="-100" width="20" height="20" stroke="#000000" stroke-width="2" fill="#98fb98" />
-					<circle id="originScaleCircle" cx="-100" cy="-100" r="5" stroke="#000000" stroke-width="2" fill="#000000" />`
-					this.wordCount = 0;
-					let id = +document.getElementById('canvasSelector').max-1;
-					for (let i = 0; i < this.pages[id-1].wordList.length; i++){
-						if (this.pages[id-1].wordList[i] != null){
-							this.canvas.innerHTML +=
-							`<path id="p${this.wordCount}" d="M ${this.pages[id-1].wordList[i].start[0]} ${this.pages[id-1].wordList[i].start[1]} q ${this.pages[id-1].wordList[i].focus[0]} ${this.pages[id-1].wordList[i].focus[1]} ${this.pages[id-1].wordList[i].end[0]} ${this.pages[id-1].wordList[i].end[1]}" stroke="none" stroke-width="1" fill="none"></path>
-							<text id="t${this.wordCount}" font-size="${this.pages[id-1].wordList[i].fontSize + "px"}">
-								<textPath id="tp${this.wordCount}" class="pathText" alignment-baseline="middle" href="#p${this.wordCount}" startOffset="0%">${this.pages[id-1].wordList[i].content}</textPath>
-							</text>
-							<path id="dp${this.wordCount}" d="M ${this.pages[id-1].wordList[i].start[0]} ${this.pages[id-1].wordList[i].start[1]} q ${this.pages[id-1].wordList[i].focus[0]} ${this.pages[id-1].wordList[i].focus[1]} ${this.pages[id-1].wordList[i].end[0]} ${this.pages[id-1].wordList[i].end[1]} l 0 -172" stroke="none" stroke-width="1" fill="none"></path>
-							<clipPath id="cp${this.wordCount}">
-								<use href="#dp${this.wordCount}" />
-							</clipPath>
-							<use id="c1${this.wordCount}" href="#t${this.wordCount}" fill="${this.pages[id-1].wordList[i].topColor}" />
-							<use id="c2${this.wordCount}" href="#t${this.wordCount}" fill="${this.pages[id-1].wordList[i].bottomColor}" clip-path="url(#cp${wordCount})" />`
-							document.getElementById('tp'+this.wordCount).setAttribute("textLength", document.getElementById('p'+this.wordCount).getTotalLength() + "px");
-							document.getElementById('tp'+this.wordCount).style.fontSize = this.pages[id-1].wordList[i].fontSize + "px";
-							let path = document.getElementById('dp'+this.wordCount);
-							let points = document.getElementById('p'+this.wordCount).getAttribute('d').split(' ');
-							for (let i = 0; i < points.length; i++){
-								points[i] = +(points[i]);
-							}
-							let radius = this.pyth(points[1]+points[6], points[2]+points[7], points[1], points[2]), ang = -this.angFromPoint(points[1], points[2], points[1]+points[6], points[2]+points[7]);
-							
-							let exA = [
-								this.xFromAng(points[1], radius*2, ang),
-								this.yFromAng(points[2], radius*2,ang),
-							];
-	
-							let exAa = [
-								this.xFromAng(points[1], radius, ang + Math.PI/4),
-								this.yFromAng(points[2], radius, ang + Math.PI/4),
-							];
-	
-							ang = -this.angFromPoint(points[1]+points[6], points[2]+points[7], points[1], points[2]);
-							
-							let exB = [
-								this.xFromAng(points[1]+points[6],radius*2, ang),
-								this.yFromAng(points[2]+points[7],radius*2, ang),
-							];
-	
-							path.setAttribute('d', `M ${points[1]} ${points[2]} q ${points[4]} ${points[5]} ${points[6]} ${points[7]} L ${exA[0]} ${exA[1]} L ${exAa[0]} ${exAa[1]} L ${exB[0]} ${exB[1]}`);
-							this.wordCount++;
+						if (occured[1] == '1'){
+							changes[i].words[target].top = [parseInt(bin.slice(poz, poz+4), 2)*16, parseInt(bin.slice(poz+4, poz+8), 2)*16, parseInt(bin.slice(poz+8, poz+12), 2)*16];
+							changes[i].words[target].bottom = [parseInt(bin.slice(poz+12, poz+16), 2)*16, parseInt(bin.slice(poz+16, poz+20), 2)*16, parseInt(bin.slice(poz+20, poz+24), 2)*16];
+							poz += 24;
 						}
-					}
-				});
-			} catch (e) {
-				if (e.name == 'TypeError'){
-					console.log(e);
-					alert("The page you were trying to load does not exist or something else happened. An empty canvas will be loaded instead.");
-				} else {
-					console.log(changes);
-					throw e;
+						if (occured[2] == '1'){
+							changes[i].words[target].size = parseInt(bin.slice(poz, poz+8), 2)*4;
+							poz += 8;
+						}
+						break;
+					case '10':
+						changes[i].words[parseInt(bin.slice(poz+2, poz+8), 2)] = null;
+						poz += 8;
+						break;
 				}
 			}
+			console.log(bin.slice(poz+2, poz+6));
+			switch (bin.slice(poz+2, poz+6)){
+				case '0000':
+					changes[i].type = "Remember & write";
+					changes[i].typeData = null;
+					poz += 6;
+					break;
+
+				case '0001':
+					changes[i].type = "Listen & write";
+					poz += 6;
+					changes[i].typeData = "";
+					while (bin.slice(poz, poz+7) != '1100000'){
+						changes[i].typeData += this.characters[parseInt(bin.slice(poz, poz+7), 2)];
+						poz += 7;
+					}
+					poz += 7;
+					break;
+
+				case '0010':
+					changes[i].type = "Right & wrong";
+					changes[i].typeData = (bin[poz+6]=='1'?true:false);
+					console.log("cv xv", (bin[poz+6]=='1'?true:false))
+					poz += 7;
+					break;
+			}
+			console.log(poz, bin.slice(poz, poz+7))
+			while (bin.slice(poz, poz+7) != '1100000'){
+				try{
+					changes[i].sentence += this.characters[parseInt(bin.slice(poz, poz+7), 2)];
+				} catch {
+					console.log(bin, bin.slice(poz, poz+7), parseInt(bin.slice(poz, poz+7), 2), this.characters[parseInt(bin.slice(poz, poz+7), 2)], poz);
+					return;
+				}
+				poz += 7;
+			}
+			poz += 7;
 		}
+		for (let i = 0; i < changes.length; i++){
+			let wordList = [], existingWords = [];
+			for (let j = 0; j < changes[i].words.length; j++){
+				if (changes[i].words[j] != null){
+					wordList.push(new canvasWord([changes[i].words[j].content, [changes[i].words[j].start[0], changes[i].words[j].start[1]], [changes[i].words[j].focus[0]-changes[i].words[j].start[0], changes[i].words[j].focus[1]-changes[i].words[j].start[1]], [changes[i].words[j].end[0]-changes[i].words[j].start[0], changes[i].words[j].end[1]-changes[i].words[j].start[1]], '#'+('00'+changes[i].words[j].top[0].toString(16)).slice(-2)+('00'+changes[i].words[j].top[1].toString(16)).slice(-2)+('00'+changes[i].words[j].top[2].toString(16)).slice(-2), '#'+('00'+changes[i].words[j].bottom[0].toString(16)).slice(-2)+('00'+changes[i].words[j].bottom[1].toString(16)).slice(-2)+('00'+changes[i].words[j].bottom[2].toString(16)).slice(-2), changes[i].words[j].size]));
+					existingWords.push('t'+j);
+				}
+			}
+			this.pages.push(new pageMaker(wordList, changes[i].sentence, existingWords, changes[i].type, changes[i].typeData));
+		}
+		this.resetCanvas()
+		this.selectPage(0);
+		console.log(this.pages);
 	}
 
 	cursorPoint(e){
@@ -1038,49 +916,18 @@ export class sentensiCanvas {
 		return this.pt.matrixTransform(this.canvas.getScreenCTM().inverse());
 	}
 
-    compressString(str) {
+	compressString(str) {
 		let content = '';
 		for (let i = 0; i < str.length; i++){
-			content += ('000000' + characters.indexOf(str[i]).toString(2)).slice(-7);
+			content += ('000000' + this.characters.indexOf(str[i]).toString(2)).slice(-7);
 		}
 		return content + '1100000';
-	}
-
-    compressColor(color) {
-		return [('000' + Math.floor(parseInt(color.substring(1, 3), 16)/16).toString(2)).slice(-4), ('000' + Math.floor(parseInt(color.substring(3, 5), 16)/16).toString(2)).slice(-4), ('000' + Math.floor(parseInt(color.substring(5, 7), 16)/16).toString(2)).slice(-4)];
-	}
-
-    compressAll_Word(){
-		this.content = this.compressString(this.content);
-		this.focus = [('0000000' + Math.min(Math.floor(Math.abs(+this.focus[0]+(+this.start[0]))/16), 127).toString(2)).slice(-7), ('000000' + Math.min(Math.floor(Math.abs(+this.focus[1]+(+this.start[1]))/16), 63).toString(2)).slice(-6)];
-		this.end = [('0000000' + Math.min(Math.floor(Math.abs(+this.end[0]+(+this.start[0]))/16), 127).toString(2)).slice(-7), ('000000' + Math.min(Math.floor(Math.abs(+this.end[1]+(+this.start[1]))/16), 63).toString(2)).slice(-6)];
-		this.start = [('0000000' + Math.min(Math.floor(Math.abs(+this.start[0])/16), 127).toString(2)).slice(-7), ('000000' + Math.min(Math.floor(Math.abs(this.start[1])/16), 63).toString(2)).slice(-6)];
-		this.topColor = this.compressColor(this.topColor);
-		this.bottomColor = this.compressColor(this.bottomColor);
-		this.fontSize = ('00000000' + Math.min(Math.floor(+(this.fontSize)/4), 255).toString(2)).slice(-8);
-		this.comp = this.topColor[0] + this.topColor[1] + this.topColor[2] +
-		this.bottomColor[0] + this.bottomColor[1] + this.bottomColor[2] +
-		this.start[0] +
-		this.start[1] +
-		this.focus[0] +
-		this.focus[1] +
-		this.end[0] +
-		this.end[1] +
-		this.fontSize +
-		this.content;
-	}
-
-    compressAll_Page(){
-		for (let i = 0; i < this.wordList.length; i++){
-			if (this.wordList[i] != null){
-				this.wordList[i].compressAll();
-			}
-		}
 	}
 }
 
 export class canvasWord {
 	constructor (word){
+		this.characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '@', '#', '$', '%', '^', '*', '(', ')', '_', '+', '=', '-', '[', ']', '{', '}', '\\', '|', '/', '~', '`', '÷', '<', '>', ' ', '&', '.', ',', '?', '!', ':', ';', '"', "'"];
 		if (word[0] == undefined){
 			let points = document.getElementById(word.id.replace('t', 'p')).getAttribute('d').split(' ');
 			this.content = document.getElementById(word.id.replace('t', 'tp')).innerHTML;
@@ -1100,6 +947,39 @@ export class canvasWord {
 			this.fontSize = word[6];
 		}
 	}
+
+	compressColor(color) {
+		return [('000' + Math.floor(parseInt(color.substring(1, 3), 16)/16).toString(2)).slice(-4), ('000' + Math.floor(parseInt(color.substring(3, 5), 16)/16).toString(2)).slice(-4), ('000' + Math.floor(parseInt(color.substring(5, 7), 16)/16).toString(2)).slice(-4)];
+	}
+
+	compressString(str) {
+		let content = '';
+		for (let i = 0; i < str.length; i++){
+			content += ('000000' + this.characters.indexOf(str[i]).toString(2)).slice(-7);
+		}
+		return content + '1100000';
+	}
+
+	compressAll(){
+		this.content = this.compressString(this.content);
+		this.focus = [('0000000' + Math.min(Math.floor(Math.abs(+this.focus[0]+(+this.start[0]))/16), 127).toString(2)).slice(-7), ('000000' + Math.min(Math.floor(Math.abs(+this.focus[1]+(+this.start[1]))/16), 63).toString(2)).slice(-6)];
+		this.end = [('0000000' + Math.min(Math.floor(Math.abs(+this.end[0]+(+this.start[0]))/16), 127).toString(2)).slice(-7), ('000000' + Math.min(Math.floor(Math.abs(+this.end[1]+(+this.start[1]))/16), 63).toString(2)).slice(-6)];
+		this.start = [('0000000' + Math.min(Math.floor(Math.abs(+this.start[0])/16), 127).toString(2)).slice(-7), ('000000' + Math.min(Math.floor(Math.abs(this.start[1])/16), 63).toString(2)).slice(-6)];
+		console.log(this.topColor)
+		this.topColor = this.compressColor(this.topColor);
+		this.bottomColor = this.compressColor(this.bottomColor);
+		this.fontSize = ('00000000' + Math.min(Math.floor(+(this.fontSize)/4), 255).toString(2)).slice(-8);
+		this.comp = this.topColor[0] + this.topColor[1] + this.topColor[2] +
+		this.bottomColor[0] + this.bottomColor[1] + this.bottomColor[2] +
+		this.start[0] +
+		this.start[1] +
+		this.focus[0] +
+		this.focus[1] +
+		this.end[0] +
+		this.end[1] +
+		this.fontSize +
+		this.content;
+	}
 }
 
 export class pageMaker {
@@ -1107,7 +987,7 @@ export class pageMaker {
 		this.wordList = wordList;
 		if (typeof textBoxWords == 'string'){
 			this.sentence = textBoxWords;
-		} else {
+		} else if (textBoxWords.length){
 			this.sentence = textBoxWords[0].innerText;
 			for (let i = 1; i < textBoxWords.length; i++){
 				this.sentence += (textBoxWords[i].style.paddingLeft == '0vw'?'&':' ') + textBoxWords[i].innerHTML;
@@ -1121,5 +1001,13 @@ export class pageMaker {
 			- Listen & write:     Stores audio. Will be more compressed later ~ 0001
 			- Right & wrong:      Stores the rightness of the page. One bit ~ 0010
 		*/
+	}
+
+	compressAll(){
+		for (let i = 0; i < this.wordList.length; i++){
+			if (this.wordList[i] != null){
+				this.wordList[i].compressAll();
+			}
+		}
 	}
 }

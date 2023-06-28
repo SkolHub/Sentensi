@@ -38,6 +38,12 @@
             const db = getFirestore(firebaseApp);
             const auth = getAuth(firebaseApp);
 
+            auth.onAuthStateChanged(function (user){
+                if (user == null){
+                    window.location.href = '../../logup';
+                }
+            });
+
             var selectedActivity = "";
 
             auth.onAuthStateChanged(async function (user){
