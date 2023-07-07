@@ -106,6 +106,19 @@ export class sentensiCanvas {
 			<circle id="originScaleCircle" cx="-100" cy="-100" r="5" stroke="#000000" stroke-width="2" fill="#000000" />`
 	}
 
+	resetMakerBox(){
+		this.makerBox.innerHTML = '';
+	}
+
+	stringfyMakerBox(){
+		let textBoxWords = this.makerBox.children;
+		let sentence = textBoxWords[0].innerText;
+		for (let i = 1; i < textBoxWords.length; i++){
+			sentence += (textBoxWords[i].style.paddingLeft == '0vw'?'&':' ') + textBoxWords[i].innerHTML;
+		}
+		return sentence;
+	}
+
 	updateClipPath(id){
 		let path = document.getElementById(`dp${id}`);
 		let points = document.getElementById(`p${id}`).getAttribute('d').split(' ');
@@ -710,6 +723,7 @@ export class sentensiCanvas {
 				changes += '0010' + (page.typeData?'1':'0');
 				break;
 		}
+		console.log(page.sentence);
 		 changes += this.compressString(page.sentence);
 	
 		for (let i = 1; i < this.pages.length; i++){
@@ -992,6 +1006,8 @@ export class pageMaker {
 			for (let i = 1; i < textBoxWords.length; i++){
 				this.sentence += (textBoxWords[i].style.paddingLeft == '0vw'?'&':' ') + textBoxWords[i].innerHTML;
 			}
+		} else {
+			this.sentence = '';
 		}
 		this.existingWords = existingWords;
 		this.type = type;

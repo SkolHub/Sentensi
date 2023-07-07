@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script type="module" src="../../init.js"></script>
         <link rel="stylesheet" href="style.css">
         <title>Home</title>
         <link rel="icon" href="../../icon.ico">
     </head>
     <body style="width:100%">
         <div id="picker" style="display: none;"></div>
-        <div id="popup">
+        <div id="bigPopup">
+            <div id="popup">
+                <p>press esc to exit</p>
+            </div>
+        </div>
             
         </div>
         <div class="bar">
             <div>
-                <a>My lessons</a>
+                <a href="../lessons/">My lessons</a>
                 <a>My assignments</a>
             </div>
             <button onclick="window.location.href = '../../create/'" id="create-lesson">create lesson</button>
@@ -48,7 +51,6 @@
 
             auth.onAuthStateChanged(async function (user){
                 const data = await getDocs(collection(db, "Activities"));
-                console.log(data.docs[0])
                 data.docs.forEach(cls => {
                     let id = cls.id;
                     cls = cls.data();
@@ -60,13 +62,17 @@
                         <div style="display: flex; justify-content: center; flex-direction: column;">
                             <button id="${id}" class="enter" style="margin-top:20px;">See results</button>
                             <p style="margin-bottom:0px;">Class link:</p>
-                            <a style="margin-top: 3px; margin-bottom:3px; overflow:hidden;" onclick="navigator.clipboard.writeText(this.innerText); console.log('Content copied to clipboard');")">https://sentensi.com/play/rememberAndWrite/?q=${id}</a>
+                            <a style="margin-top: 3px; margin-bottom:3px; overflow:hidden;" onclick="navigator.clipboard.writeText(this.innerText); console.log('Content copied to clipboard');")">https://sentensi.com/play/?q=${id}</a>
                             <p style="margin-top:0px; text-align: center;">(click to copy)</p>
                         </div>
                     </div>
                     `;
-                    document.getElementById(id).onclick = function(){
-                        document.getElementById('popup').style.display = 'flex';
+                });
+                let buttons = document.getElementsByClassName('enter');
+                for (let i = 0; i < buttons.length; i++){
+                    let cls = data.docs[i].data();
+                    buttons[i].onclick = function(){
+                        document.getElementById('bigPopup').style.display = 'flex';
                         var ht = `
                         <table>
                             <tr>
@@ -77,17 +83,16 @@
                                 <td>Time</td>
                             </tr>
                         `
-                        let keys = Object.keys(cls);
-                        console.log(cls)
+                        let keys = Object.keys(cls.scores);
                         for (let i = 0; i < keys.length; i++){
                             if (keys[i] != "target"){
                                 ht += `
                                 <tr>
                                     <td>${keys[i]}</td>
-                                    <td>${cls[keys[i]][0]}</td>
-                                    <td>${cls[keys[i]][1]}</td>
-                                    <td>${cls[keys[i]][2]}</td>
-                                    <td>${cls[keys[i]][3]}</td>
+                                    <td>${cls.scores[keys[i]][0]}</td>
+                                    <td>${cls.scores[keys[i]][1]}</td>
+                                    <td>${cls.scores[keys[i]][2]}</td>
+                                    <td>${cls.scores[keys[i]][3]}</td>
                                 </tr>
                                 `
                             }
@@ -95,14 +100,14 @@
                         ht += `</tables>`;
                         document.getElementById('popup').innerHTML += ht;
                     }
-                });
+                }
             });
 
             var studentList = [];
 
             document.addEventListener("keydown", function (e){
                 if (e.key == 'Escape'){
-                    document.getElementById('addWindow').style.display = 'none';
+                    document.getElementById('bigPopup').style.display = 'none';
                 }
             });
         </script>

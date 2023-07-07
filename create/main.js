@@ -12,15 +12,15 @@ const firebaseApp = initializeApp({
     appId: "1:927772530939:web:eeb1d50bc68f48aa4b785e",
     measurementId: "G-CGTFDKKXDF"
 })
-/*
+
 const auth = getAuth(firebaseApp);
 
 auth.onAuthStateChanged(function (user){
     if (user == null){
-        window.location.href = '../../logup';
+        window.location.href = '../logup';
     }
 });
-*/
+
 const db = getFirestore(firebaseApp);
 
 const params = new Proxy(new URLSearchParams(window.location.search), {
@@ -99,6 +99,50 @@ function sizeBackground(index){
 		document.getElementById('s'+i).style.backgroundColor = '#f0f0f0';
 	}
 	document.getElementById('s'+index).style.backgroundColor = "#aaaaaa";
+}
+
+function saveProgress(page){
+	let type = activityType.value;
+	switch (type){
+		case "Remember & write":
+			sen.pages[page] = sen.currentPage(type, null);
+			break;
+
+		case "Right & wrong":
+			sen.pages[page] = sen.currentPage(type, (yes.style.backgroundColor=='rgb(170, 170, 170)'?true:(no.style.backgroundColor=='rgb(170, 170, 170)'?false:null)));
+			break;
+
+		case "Listen & write":
+			sen.pages[page] = sen.currentPage(type, audioURL.value);
+			break;
+	}
+}
+
+function updateType(){
+	switch (activityType.value){
+		case "Remember & write":
+			document.getElementById('right&wrong').style.display = 'none';
+			document.getElementById('listen&Write').style.display = 'none';
+			break;
+
+		case "Right & wrong":
+			document.getElementById('right&wrong').style.display = 'flex';
+			document.getElementById('listen&Write').style.display = 'none';
+			if (sen.pages[previous].typeData){
+				yes.style.backgroundColor = '#AAAAAA';
+				no.style.backgroundColor = '#F0F0F0';
+			} else {
+				yes.style.backgroundColor = '#F0F0F0';
+				no.style.backgroundColor = '#AAAAAA';
+			}
+			break;
+
+		case "Listen & write":
+			document.getElementById('right&wrong').style.display = 'none';
+			document.getElementById('listen&Write').style.display = 'flex';
+			audioURL.value = sen.pages[previous].typeData;
+			break;
+	}
 }
 
 document.getElementById('s1').onclick = function(){
@@ -181,7 +225,6 @@ document.getElementById('glue').onclick = function(){
 }
 
 activityType.oninput = function(){
-	console.log(sen.pages);
 	switch (activityType.value){
 		case "Remember & write":
 			document.getElementById('right&wrong').style.display = 'none';
@@ -210,55 +253,13 @@ no.onclick = function(){
 	no.style.backgroundColor = '#AAAAAA';
 }
 
-function saveProgress(page){
-	let type = activityType.value;
-	switch (type){
-		case "Remember & write":
-			sen.pages[page] = sen.currentPage(type, null);
-			break;
-
-		case "Right & wrong":
-			sen.pages[page] = sen.currentPage(type, (yes.style.backgroundColor=='rgb(170, 170, 170)'?true:(no.style.backgroundColor=='rgb(170, 170, 170)'?false:null)));
-			break;
-
-		case "Listen & write":
-			sen.pages[page] = sen.currentPage(type, audioURL.value);
-			break;
-	}
-}
-
 nextPage.onclick = function(){
 	saveProgress(sen.pages.length-1);
 	sen.makerBox.innerHTML = "";
 	sen.pages.push(structuredClone(sen.pages[sen.pages.length-1]));
-	console.log(sen.pages[0].type, sen.pages[1].type);
 	sen.pages[sen.pages.length-1].type = "Remember & write";
-	console.log(sen.pages[0].type, sen.pages[1].type);
 	activityType.value = "Remember & write";
-	switch (activityType.value){
-		case "Remember & write":
-			document.getElementById('right&wrong').style.display = 'none';
-			document.getElementById('listen&Write').style.display = 'none';
-			break;
-
-		case "Right & wrong":
-			document.getElementById('right&wrong').style.display = 'flex';
-			document.getElementById('listen&Write').style.display = 'none';
-			if (sen.pages[previous].typeData){
-				yes.style.backgroundColor = '#AAAAAA';
-				no.style.backgroundColor = '#F0F0F0';
-			} else {
-				yes.style.backgroundColor = '#F0F0F0';
-				no.style.backgroundColor = '#AAAAAA';
-			}
-			break;
-
-		case "Listen & write":
-			document.getElementById('right&wrong').style.display = 'none';
-			document.getElementById('listen&Write').style.display = 'flex';
-			audioURL.value = sen.pages[previous].typeData;
-			break;
-	}
+	updateType();
 	canvasSelector.max++, canvasSelector.value++;
 	previous = canvasSelector.max-1;
 }
@@ -275,30 +276,7 @@ document.getElementById('deletePage').onclick = function(){
 		previous = canvasSelector.value-1;
 		sen.selectPage(previous);
 		activityType.value = sen.pages[previous].type;
-		switch (activityType.value){
-			case "Remember & write":
-				document.getElementById('right&wrong').style.display = 'none';
-				document.getElementById('listen&Write').style.display = 'none';
-				break;
-	
-			case "Right & wrong":
-				document.getElementById('right&wrong').style.display = 'flex';
-				document.getElementById('listen&Write').style.display = 'none';
-				if (sen.pages[previous].typeData){
-					yes.style.backgroundColor = '#AAAAAA';
-					no.style.backgroundColor = '#F0F0F0';
-				} else {
-					yes.style.backgroundColor = '#F0F0F0';
-					no.style.backgroundColor = '#AAAAAA';
-				}
-				break;
-	
-			case "Listen & write":
-				document.getElementById('right&wrong').style.display = 'none';
-				document.getElementById('listen&Write').style.display = 'flex';
-				audioURL.value = sen.pages[previous].typeData;
-				break;
-		}
+		updateType();
 	}
 }
 
@@ -308,30 +286,7 @@ canvasSelector.oninput = function(){
 	previous = canvasSelector.value-1;
 	sen.selectPage(previous);
 	activityType.value = sen.pages[previous].type;
-	switch (activityType.value){
-		case "Remember & write":
-			document.getElementById('right&wrong').style.display = 'none';
-			document.getElementById('listen&Write').style.display = 'none';
-			break;
-
-		case "Right & wrong":
-			document.getElementById('right&wrong').style.display = 'flex';
-			document.getElementById('listen&Write').style.display = 'none';
-			if (sen.pages[previous].typeData){
-				yes.style.backgroundColor = '#AAAAAA';
-				no.style.backgroundColor = '#F0F0F0';
-			} else {
-				yes.style.backgroundColor = '#F0F0F0';
-				no.style.backgroundColor = '#AAAAAA';
-			}
-			break;
-
-		case "Listen & write":
-			document.getElementById('right&wrong').style.display = 'none';
-			document.getElementById('listen&Write').style.display = 'flex';
-			audioURL.value = sen.pages[previous].typeData;
-			break;
-	}
+	updateType();
 }
 
 document.getElementById('addLesson1').onclick = function (){
@@ -345,7 +300,7 @@ document.getElementById('addLesson2').onclick = function (){
 document.getElementById('save').onclick = function(){
 	saveProgress(previous);
 	setDoc(doc(db, "tempWork/", document.getElementById('lessonName').value), {"v": sen.save()}).then(p => {
-		window.location.href = '../../home';
+		window.location.href = '../home/lessons/';
 	});
 }
 
@@ -356,31 +311,8 @@ async function load(){
 			sen.loadLesson(sen.de(dat.data()['v']));
 			canvasSelector.max = sen.pages.length, canvasSelector.value = 1;
 			sen.selectPage(previous);
-		activityType.value = sen.pages[previous].type;
-		switch (activityType.value){
-			case "Remember & write":
-				document.getElementById('right&wrong').style.display = 'none';
-				document.getElementById('listen&Write').style.display = 'none';
-				break;
-	
-			case "Right & wrong":
-				document.getElementById('right&wrong').style.display = 'flex';
-				document.getElementById('listen&Write').style.display = 'none';
-				if (sen.pages[previous].typeData){
-					yes.style.backgroundColor = '#AAAAAA';
-					no.style.backgroundColor = '#F0F0F0';
-				} else {
-					yes.style.backgroundColor = '#F0F0F0';
-					no.style.backgroundColor = '#AAAAAA';
-				}
-				break;
-	
-			case "Listen & write":
-				document.getElementById('right&wrong').style.display = 'none';
-				document.getElementById('listen&Write').style.display = 'flex';
-				audioURL.value = sen.pages[previous].typeData;
-				break;
-		}
+			activityType.value = sen.pages[previous].type;
+			updateType();
 		});
 	} catch (e){
 		if (e.name == 'TypeError'){

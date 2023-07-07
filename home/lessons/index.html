@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <script type="module" src="../../init.js"></script>
         <link rel="stylesheet" href="style.css">
         <title>Home</title>
         <link rel="icon" href="../../icon.ico">
@@ -9,7 +8,8 @@
     <body style="width:100%">
         <div id="picker" style="display: none;"></div>
         <div id="popup">
-            <div style="background-color: white; border-radius: 3vw; display: flex; flex-direction: column; padding: 2vw;">
+            <div style="background-color: white; border-radius: 3vw; display: flex; flex-direction: column; padding: 0.5vw 2vw 2vw 2vw; ">
+                <p style="text-align: center;">press esc to exit</p>
                 <h1 id="setTarget"></h1>
                 <input id="name" placeholder="activity name">
                 <button id="create" style="margin-top: 1vh;">Create</button>
@@ -18,7 +18,7 @@
         <div class="bar">
             <div>
                 <a>My lessons</a>
-                <a>My assignments</a>
+                <a href="../assignments/">My assignments</a>
             </div>
             <button onclick="window.location.href = '../../create/'" id="create-lesson">create lesson</button>
         </div>
@@ -41,6 +41,12 @@
 
             const db = getFirestore(firebaseApp);
             const auth = getAuth(firebaseApp);
+
+            auth.onAuthStateChanged(function (user){
+                if (user == null){
+                    window.location.href = '../../logup';
+                }
+            });
 
             auth.onAuthStateChanged(async function (user){
                 const data = await getDocs(collection(db, "tempWork"));
@@ -69,12 +75,12 @@
 
             document.addEventListener("keydown", function (e){
                 if (e.key == 'Escape'){
-                    document.getElementById('addWindow').style.display = 'none';
+                    document.getElementById('popup').style.display = 'none';
                 }
             });
 
             document.getElementById('create').onclick = function(){
-                setDoc(doc(db, "Activities/", document.getElementById('name').value), {target: document.getElementById('setTarget').innerHTML}).then(p => {
+                setDoc(doc(db, "Activities/", document.getElementById('name').value), {target: document.getElementById('setTarget').innerHTML, scores:{}}).then(p => {
                     window.location.reload();
                 });
             }

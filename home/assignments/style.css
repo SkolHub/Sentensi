@@ -95,6 +95,7 @@ p, label {
     font-size: 20px;
     width: fit-content;
     margin:auto;
+    margin-top:20px;
 }
 
 .enter:hover {
@@ -164,11 +165,60 @@ input {
 }
 
 #popup {
-    display:none;
     justify-content: center;
     align-items: center;
     position: fixed;
-    width: 100vw;
-    height:100vh;
+    width: 80vw;
+    height:80vh;
     background-color: #ffffff;
+    border-radius: 2vh;
+    text-align: center;
+    overflow-y: scroll;
+}
+
+#popup tr:first-child {
+    font-size: 5vh;
+}
+
+#popup tr:not(:first-child) {
+    font-size: 3vh;
+}
+
+#popup table {
+    width: 100%;
+}
+
+#bigPopup {
+    font-family: Font;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000000c0;
+}
+
+.second {
+    background-color: #2929bb; border-top-right-radius: 5px; border-top-left-radius: 5px;
+}
+
+.title {
+    padding-top: 10px; padding-bottom:10px; margin-top:0;
+}
+
+.third {
+    display: flex; justify-content: center; flex-direction: column;
+}
+
+.class-link {
+    margin-bottom: 0;
+}
+
+.href {
+    margin-top: 3px; margin-bottom:3px; overflow:hidden;
+}
+
+.copy {
+    margin-top:0px; text-align: center;
 }

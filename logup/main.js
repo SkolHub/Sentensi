@@ -83,6 +83,6 @@ document.getElementById('log').onclick = function (e){
 
 auth.onAuthStateChanged(function (user){
     if (user != null){
-        window.location.href = '../home';
+        window.location.href = '../home/lessons';
     }
 });
