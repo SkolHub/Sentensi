@@ -72,6 +72,7 @@
                 for (let i = 0; i < buttons.length; i++){
                     let cls = data.docs[i].data();
                     buttons[i].onclick = function(){
+                        document.getElementById('popup').innerHTML = '';
                         document.getElementById('bigPopup').style.display = 'flex';
                         var ht = `
                         <table>

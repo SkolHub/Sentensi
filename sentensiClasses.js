@@ -339,7 +339,14 @@ export class sentensiCanvas {
 			this.canvas.style.cursor = 'auto';
 			this.resetTools(1, 1, 1, 1, 1, 1);
 		} else if (this.contained(eventX, eventY, +this.rectScale.getAttribute('x'), +this.rectScale.getAttribute('y'), 20, 20)){
-			this.details = [this.pyth(+this.rect.getAttribute('x'), +this.rect.getAttribute('y'), +this.rectScale.getAttribute('x') + 10, +this.rectScale.getAttribute('y') + 10), +this.rect.getAttribute('x'), +this.rect.getAttribute('y'), this.angFromPoint(+this.rect.getAttribute('x'), +this.rect.getAttribute('y'), +this.rect.getAttribute('x') + +this.rect.getAttribute('width'), +this.rect.getAttribute('y') + +this.rect.getAttribute('height')), this.pyth(+this.rect.getAttribute('x'), +this.rect.getAttribute('y'), +this.rectScale.getAttribute('x') + +this.rect.getAttribute('width'), +this.rectScale.getAttribute('y') + +this.rect.getAttribute('height')), +this.rectScale.getAttribute('x') + +this.rect.getAttribute('width'), []];
+			this.details = [this.pyth(+this.rect.getAttribute('x'), +this.rect.getAttribute('y'), +this.rectScale.getAttribute('x') + 10, +this.rectScale.getAttribute('y') + 10),
+			+this.rect.getAttribute('x'),
+			+this.rect.getAttribute('y'),
+			this.angFromPoint(+this.rect.getAttribute('x'), +this.rect.getAttribute('y'), +this.rect.getAttribute('x') + +this.rect.getAttribute('width'), +this.rect.getAttribute('y') + +this.rect.getAttribute('height')),
+			this.pyth(+this.rect.getAttribute('x'), +this.rect.getAttribute('y'), +this.rectScale.getAttribute('x') + +this.rect.getAttribute('width'), +this.rectScale.getAttribute('y') + +this.rect.getAttribute('height')),
+			+this.rectScale.getAttribute('x') + +this.rect.getAttribute('width'),
+			[]];
+			
 			this.originScaleCircle.setAttribute('cx', +this.rect.getAttribute('x'));
 			this.originScaleCircle.setAttribute('cy', +this.rect.getAttribute('y'));
 			this.action = 'groupSize';
@@ -537,7 +544,7 @@ export class sentensiCanvas {
 			for (let i = 0; i < points.length; i++){
 				points[i] = +(points[i]);
 			}
-			this.details = [Math.sqrt(points[4]**2 + points[5]**2)/Math.sqrt(points[6]**2 + points[7]**2), -this.angFromPoint(0, 0, points[4], points[5])+this.angFromPoint(0, 0, eventX-points[1], eventY-points[2])];
+			this.details = [Math.sqrt((points[4]**2 + points[5]**2)/(points[6]**2 + points[7]**2)), -this.angFromPoint(0, 0, points[4], points[5])+this.angFromPoint(0, 0, eventX-points[1], eventY-points[2])];
 		} else {
 			this.action = 'bend';
 		}
