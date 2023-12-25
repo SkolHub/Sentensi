@@ -25,7 +25,7 @@
   "include": [
     "src",
     "custom.d.ts"
-  ],
+, "src/assets/icons"  ],
   "references": [
     {
       "path": "./tsconfig.node.json"
