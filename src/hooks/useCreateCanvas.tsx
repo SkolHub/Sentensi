@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 import { Tools } from '../logic/tools.ts';
 import { Renderer } from '../logic/renderer.ts';
 import { General } from '../logic/general.ts';
@@ -9,20 +9,27 @@ import {
 	getSlope,
 	groupRotateAngles,
 	groupRotateLengths,
-	pyth, stretchAngle, stretchLength
+	pyth,
+	stretchAngle,
+	stretchLength
 } from '../logic/math.ts';
 import {
 	handleBend,
-	handleGroupMove, handleGroupRotate, handleGroupScale,
+	handleGroupMove,
+	handleGroupRotate,
+	handleGroupScale,
 	handleGroupSelect,
 	handleMove,
 	handleSelectBox,
 	handleStretch
 } from '../logic/word-handlers.ts';
 
-// TODO: The canvas should be just a simple tool where you can load text and interact with it. Any other action is outside (GREAT IDEA!!!!!)
-
-const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, generalRef: React.MutableRefObject<General>) => {
+const useCanvas = (
+	color: string,
+	doubleColor: boolean,
+	sizingMode: string,
+	generalRef: MutableRefObject<General>
+) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
@@ -32,6 +39,8 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 
 		const tools = new Tools();
 		const renderer = new Renderer(canvas);
+
+		general.renderer = renderer;
 
 		const getClick = (e: MouseEvent) => {
 			const rect = canvas.getBoundingClientRect();
@@ -49,7 +58,8 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 		const handleMouseDown = (e: MouseEvent) => {
 			const point = getClick(e);
 
-			if (contained(point, tools.scaleThumb.state.x - 10, tools.scaleThumb.state.y - 10, 20, 20)) { // Clicked on scale thumb
+			if (contained(point, tools.scaleThumb.state.x - 10, tools.scaleThumb.state.y - 10, 20, 20)) {
+				// Clicked on scale thumb
 				general.action.type = 'groupScale';
 
 				general.action.details = {
@@ -94,7 +104,7 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 					targets: general.action.details.targets
 				};
 
-				tools.scaleOrigin.state = { ...tools.selectBox.state }
+				tools.scaleOrigin.state = { ...tools.selectBox.state };
 
 				tools.rotationTrack.reset();
 				tools.rotationThumb.reset();
@@ -103,7 +113,8 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 				return;
 			}
 
-			if (pyth(point, tools.rotationThumb.state) <= 10) { // Clicked on rotation thumb
+			if (pyth(point, tools.rotationThumb.state) <= 10) {
+				// Clicked on rotation thumb
 				general.action.type = 'groupRotate';
 
 				general.action.details = {
@@ -128,7 +139,8 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 					tools.selectBox.state.width,
 					tools.selectBox.state.height
 				)
-			) { // Clicked inside select box
+			) {
+				// Clicked inside select box
 				general.action.type = 'groupMove';
 
 				general.action.details.x = point.x;
@@ -240,7 +252,10 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 						x,
 						y,
 						sizingMode === 'scale',
-						renderer.measure(general.action.details.target!.content, `${general.action.details.target!.fontSize}px Whiteboard`).width
+						renderer.measure(
+							general.action.details.target!.content,
+							`${general.action.details.target!.fontSize}px Whiteboard`
+						).width
 					);
 
 					break;
@@ -270,7 +285,6 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 					break;
 
 				case 'color':
-
 					break;
 			}
 
@@ -318,7 +332,6 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 					break;
 
 				case 'color':
-
 					return;
 			}
 
@@ -331,6 +344,8 @@ const useCanvas = (color: string, doubleColor: boolean, sizingMode: string, gene
 
 			render();
 		};
+
+		handleResize();
 
 		canvas.addEventListener('mousedown', handleMouseDown);
 		canvas.addEventListener('mousemove', handleMouseMove);

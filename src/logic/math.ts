@@ -4,25 +4,12 @@ const pyth = (P1: Point, P2: Point = { x: 0, y: 0 }): number => {
 	return Math.sqrt((P2.x - P1.x) ** 2 + (P2.y - P1.y) ** 2);
 };
 
-const getPointOnBezier = (
-	start: Point,
-	control: Point,
-	end: Point,
-	time: number
-): Point => {
+const getPointOnBezier = (start: Point, control: Point, end: Point, time: number): Point => {
 	return {
-		x:
-			(1 - time) ** 2 * start.x +
-			2 * (1 - time) * time * control.x +
-			time ** 2 * end.x,
-		y:
-			(1 - time) ** 2 * start.y +
-			2 * (1 - time) * time * control.y +
-			time ** 2 * end.y,
-		rotX:
-			2 * (1 - time) * (control.x - start.x) + 2 * time * (end.x - control.x),
-		rotY:
-			2 * (1 - time) * (control.y - start.y) + 2 * time * (end.y - control.y)
+		x: (1 - time) ** 2 * start.x + 2 * (1 - time) * time * control.x + time ** 2 * end.x,
+		y: (1 - time) ** 2 * start.y + 2 * (1 - time) * time * control.y + time ** 2 * end.y,
+		rotX: 2 * (1 - time) * (control.x - start.x) + 2 * time * (end.x - control.x),
+		rotY: 2 * (1 - time) * (control.y - start.y) + 2 * time * (end.y - control.y)
 	};
 };
 
@@ -49,30 +36,18 @@ const getAngleAndDistance = (A: Point, B: Point) => {
 	};
 };
 
-const getPointOnCircle = (
-	origin: Point,
-	radius: number,
-	angle: number
-): Point => {
+const getPointOnCircle = (origin: Point, radius: number, angle: number): Point => {
 	return {
 		x: origin.x + radius * Math.cos(angle),
 		y: origin.y + radius * Math.sin(angle)
 	};
 };
 
-const getXOnCircle = (
-	origin: number,
-	radius: number,
-	angle: number
-): number => {
+const getXOnCircle = (origin: number, radius: number, angle: number): number => {
 	return origin + radius * Math.cos(angle);
 };
 
-const getYOnCircle = (
-	origin: number,
-	radius: number,
-	angle: number
-): number => {
+const getYOnCircle = (origin: number, radius: number, angle: number): number => {
 	return origin + radius * Math.sin(angle);
 };
 
@@ -81,15 +56,12 @@ const checkPointSide = (P: Point, P1: Point, P2: Point): boolean => {
 };
 
 const stretchAngle = (word: Word): number => {
-	return (
-		getSlope({ x: 0, y: 0 }, word.end) - getSlope({ x: 0, y: 0 }, word.control)
-	);
+	return getSlope({ x: 0, y: 0 }, word.end) - getSlope({ x: 0, y: 0 }, word.control);
 };
 
 const stretchLength = (word: Word): number => {
 	return Math.sqrt(
-		(word.control.x ** 2 + word.control.y ** 2) /
-		(word.end.x ** 2 + word.end.y ** 2)
+		(word.control.x ** 2 + word.control.y ** 2) / (word.end.x ** 2 + word.end.y ** 2)
 	);
 };
 
@@ -107,13 +79,7 @@ const getSlope = (A: Point, B: Point) => {
 	return slope;
 };
 
-const contained = (
-	P: Point,
-	x: number,
-	y: number,
-	w: number,
-	h: number
-): boolean => {
+const contained = (P: Point, x: number, y: number, w: number, h: number): boolean => {
 	return P.x >= x && P.x <= x + w && P.y >= y && P.y <= y + h;
 };
 
