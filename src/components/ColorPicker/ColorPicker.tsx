@@ -1,4 +1,4 @@
-import './ColorPicker.scss';
+import './color-picker.module.scss';
 
 const ColorPicker = () => {
 	return (

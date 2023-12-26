@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEvent, useState } from 'react';
 import { Switch, switchClasses } from '@mui/joy';
 

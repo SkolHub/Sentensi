@@ -1,9 +1,9 @@
-import './SimpleButton.scss';
+import styles from './simple-button.module.scss';
 
 const SimpleButton = ({ symbol }: { symbol: string }) => {
 	return (
-		<div className='outer-simple-button'>
-			<div className='simple-button'>{symbol}</div>
+		<div className={styles.outerSimpleButton}>
+			<div className={styles.simpleButton}>{symbol}</div>
 		</div>
 	);
 };
