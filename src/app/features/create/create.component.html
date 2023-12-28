@@ -1,1 +1,15 @@
-<p>create works!</p>
+@defer {
+  <div class="w-5/6 h-full gap-4 flex flex-col">
+    <app-canvas class="grow h-0" />
+    @if (mode) {
+      <app-canvas-maker-text-box class="bg-white section w-full max-h-[22%] min-h-[18%] h-0 grow" />
+    } @else {
+      <app-text-maker-text-box />
+    }
+  </div>
+  @if (mode) {
+    <app-canvas-maker-side-bar class="w-1/6 h-full flex flex-col gap-4" />
+  } @else {
+    <app-text-maker-side-bar />
+  }
+}

@@ -1,1 +1,16 @@
-<p>canvas-maker-side-bar works!</p>
+<div class="section bg-section-dim">
+  <app-color-picker />
+</div>
+<div class="section bg-section-dim">
+  <app-canvas-button [content]='"Stretch"' [src]='"Canvas.svg"' />
+  <mat-slider min="1" max="4" showTickMarks>
+    <input matSliderThumb>
+  </mat-slider>
+  <app-canvas-button [content]="'Pen'" [src]='"Canvas.svg"' />
+  <app-canvas-button [content]="'Eraser'" [src]='"Canvas.svg"' />
+</div>
+<div class="flex flex-col gap-2.5 section bg-section-dim">
+  <app-canvas-button [content]='"Text maker"' [src]='"Canvas.svg"' />
+  <app-canvas-button [content]="'Save'" [src]='"Canvas.svg"' />
+  <app-canvas-button [content]="'Clear'" [src]='"Canvas.svg"' />
+</div>
