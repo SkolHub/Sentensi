@@ -4,7 +4,6 @@ import Button from '@/components/Button/Button';
 import { Glue, Text } from '../../../../../public/icons/icons-module';
 import { useContext } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
-import useTextMakerTextBox from '@/app/create/components/text-maker-text-box/useTextMakerTextBox';
 
 const symbols = ['.', '?', ';', ',', '!', ':', '"', "'", '-'];
 
@@ -13,8 +12,6 @@ const PunctuationSection = () => {
 		useContext(CreateContext)!;
 
 	const general = generalRef.current;
-
-	useTextMakerTextBox();
 
 	const handleGlueClick = () => {
 		const sel = selected != -1 ? selected : general.answer.length - 1;
@@ -65,11 +62,14 @@ const PunctuationSection = () => {
 				{symbols.map((symbol: string, index: number) => (
 					<SimpleButton
 						onClick={() => {
-							general.answer[selected] += symbol;
+							if (general.answer.length) {
+								const sel = selected === -1 ? general.answer.length - 1 : selected;
+								general.answer[sel] += symbol;
 
-							setSelected(-1);
+								setSelected(-1);
 
-							setUpdater(!updater);
+								setUpdater(!updater);
+							}
 						}}
 						symbol={symbol}
 						key={index}

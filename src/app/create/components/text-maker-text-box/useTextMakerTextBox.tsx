@@ -11,11 +11,13 @@ const useTextMakerTextBox = () => {
 		const general = generalRef.current;
 
 		const handleKeyDown = (e: KeyboardEvent) => {
+			const sel = selected === -1 ? general.answer.length - 1 : selected;
+
 			if (e.key === 'Backspace' && general.answer.length) {
-				if (punctuation.includes(general.answer[selected].at(-1)!)) {
-					general.answer[selected] = general.answer[selected].slice(0, -1);
+				if (punctuation.includes(general.answer[sel].at(-1)!)) {
+					general.answer[sel] = general.answer[sel].slice(0, -1);
 				} else {
-					general.answer.pop();
+					general.answer.splice(sel, 1);
 
 					setSelected(-1);
 				}
