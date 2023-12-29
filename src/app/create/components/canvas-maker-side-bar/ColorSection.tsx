@@ -7,7 +7,7 @@ const ColorSection = () => {
 		<div className="section">
 			<ColorPicker />
 			<div className={styles.doubleColor}>
-				<label>Double color</label>
+				<label style={{ userSelect: 'none' }}>Double color</label>
 				<CustomSwitch />
 			</div>
 		</div>

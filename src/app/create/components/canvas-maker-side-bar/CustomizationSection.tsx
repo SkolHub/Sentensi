@@ -4,7 +4,7 @@ import {
 	Eraser,
 	Pen,
 	Resize,
-	Stretch,
+	Stretch
 } from '../../../../../public/icons/icons-module';
 import Button from '@/components/Button/Button';
 import { extendTheme, Slider, ThemeProvider } from '@mui/joy';
@@ -14,16 +14,16 @@ const muiTheme = extendTheme({
 		JoySlider: {
 			styleOverrides: {
 				track: {
-					background: '#004B88',
+					background: '#004B88'
 				},
 				thumb: {
 					'::before': {
-						borderColor: '#004B88',
-					},
-				},
-			},
-		},
-	},
+						borderColor: '#004B88'
+					}
+				}
+			}
+		}
+	}
 });
 
 const CustomizationSection = () => {
@@ -34,7 +34,7 @@ const CustomizationSection = () => {
 		setPen,
 		eraser,
 		setEraser,
-		setFontSize,
+		setFontSize
 	} = useContext(CreateContext)!;
 
 	const handleStretchClick = () => {
@@ -53,9 +53,9 @@ const CustomizationSection = () => {
 	};
 
 	const handleSlider = (
-		event: Event,
+		_event: Event,
 		value: number | number[],
-		activeThumb: number,
+		_activeThumb: number
 	) => {
 		setFontSize(value as number);
 	};
@@ -63,7 +63,7 @@ const CustomizationSection = () => {
 	return (
 		<div className="section">
 			<Button onClick={handleStretchClick} title={title} Logo={logo} active />
-			<label>Font size</label>
+			<label style={{ userSelect: 'none' }}>Font size</label>
 			<ThemeProvider theme={muiTheme}>
 				<Slider
 					onChange={handleSlider}
