@@ -90,9 +90,15 @@ const useCreateCanvas = () => {
 			}
 		};
 
-		const handleMouseUp = () => {
-			if (mode === 'canvas') {
-				tools.finishTools();
+		const handleMouseUp = (e: MouseEvent) => {
+			const point = common.getClick(e);
+
+			if (mode === 'canvas' && general.action) {
+				if (pen) {
+					draw.finishDraw(point);
+				} else {
+					tools.finishTools();
+				}
 
 				general.action = null;
 
@@ -112,6 +118,7 @@ const useCreateCanvas = () => {
 		canvas.addEventListener('mousedown', handleMouseDown);
 		canvas.addEventListener('mousemove', handleMouseMove);
 		canvas.addEventListener('mouseup', handleMouseUp);
+		canvas.addEventListener('mouseout', handleMouseUp);
 
 		window.addEventListener('resize', handleResize);
 
@@ -119,6 +126,7 @@ const useCreateCanvas = () => {
 			canvas.removeEventListener('mousedown', handleMouseDown);
 			canvas.removeEventListener('mousemove', handleMouseMove);
 			canvas.removeEventListener('mouseup', handleMouseUp);
+			canvas.removeEventListener('mouseout', handleMouseUp);
 
 			window.addEventListener('resize', handleResize);
 		};

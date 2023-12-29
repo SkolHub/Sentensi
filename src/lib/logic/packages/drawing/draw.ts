@@ -34,6 +34,10 @@ export class Draw extends SentensiPackage<CreateGeneral> {
 		}
 	}
 
+	finishDraw(point: Point): void {
+		this.general.lines[this.general.lines.length - 1].points.push(point);
+	}
+
 	render() {
 		this.general.lines.forEach((line, index) => {
 			this.ctx.lineWidth = line.width;

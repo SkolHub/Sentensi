@@ -51,6 +51,7 @@ export class CreateGeneral extends General {
 
 	clearPage() {
 		this.pages[this.currentPage].words = [];
+		this.pages[this.currentPage].lines = [];
 		this.render!();
 	}
 
