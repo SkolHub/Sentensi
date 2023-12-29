@@ -1,4 +1,4 @@
-import { Point, Word } from '@/lib/logic/models';
+import { PageModel, Point, Word } from '@/lib/logic/models';
 import { General } from '@/lib/logic/packages/generals/general';
 import { Common } from '@/lib/logic/packages/common/common';
 
@@ -11,6 +11,7 @@ type ActionType =
 	| 'groupRotate'
 	| 'groupScale'
 	| 'color'
+	| 'draw'
 	| null;
 
 export interface ActionDetails {
@@ -40,6 +41,8 @@ export class CreateGeneral extends General {
 
 	common: Common | undefined;
 
+	lastDrawPoint: Point = { x: 0, y: 0 };
+
 	render: (() => void) | undefined;
 
 	constructor() {
@@ -51,7 +54,25 @@ export class CreateGeneral extends General {
 		this.render!();
 	}
 
-	createPage() {}
+	createPage() {
+		const copy: PageModel = JSON.parse(
+			JSON.stringify(this.pages[this.currentPage])
+		);
 
-	deletePage() {}
+		copy.answer = [];
+
+		this.pages.push(copy);
+
+		this.currentPage = this.pages.length - 1;
+	}
+
+	deletePage() {
+		if (this.pages.length > 1) {
+			this.pages.splice(this.currentPage, 1);
+
+			if (this.currentPage > this.pages.length - 1) {
+				this.currentPage = this.pages.length - 1;
+			}
+		}
+	}
 }

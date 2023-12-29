@@ -57,12 +57,20 @@ body, html {
   padding: 1rem;
 
   span {
-    font-family: 'Whiteboard';
+    font-family: 'Whiteboard', serif;
     user-select: none;
   }
 }
 
 * {
-  font-family: 'Poppins';
+  font-family: 'Poppins', serif;
 }
 
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}

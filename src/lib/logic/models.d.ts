@@ -36,8 +36,15 @@ export type ActionType =
 	| 'Listen and Write'
 	| 'Remember and Write';
 
+export interface LineModel {
+	color: string;
+	width: number;
+	points: Point[];
+}
+
 export interface PageModel {
 	words: [];
+	lines: LineModel[];
 	answer: string[];
 	type: ActionType;
 }

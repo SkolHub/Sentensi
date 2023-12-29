@@ -5,6 +5,7 @@ import { CreateContext } from '@/app/create/components/CreateContext';
 import { Common } from '@/lib/logic/packages/common/common';
 import { Tools } from '@/lib/logic/packages/tools/tools';
 import { Words } from '@/lib/logic/packages/words/words';
+import { Draw } from '@/lib/logic/packages/drawing/draw';
 
 const useCreateCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,6 +18,7 @@ const useCreateCanvas = () => {
 		mode,
 		setUpdater,
 		updater,
+		pen
 	} = useContext(CreateContext)!;
 
 	useEffect(() => {
@@ -26,12 +28,14 @@ const useCreateCanvas = () => {
 		const common = new Common(canvas, general);
 		const tools = new Tools(canvas, general);
 		const words = new Words(canvas, general, sizingMode);
+		const draw = new Draw(canvas, general);
 
 		general.common = common;
 
 		const render = () => {
 			common.clear();
 
+			draw.render();
 			words.render();
 			tools.render();
 		};
@@ -42,14 +46,18 @@ const useCreateCanvas = () => {
 			const point = common.getClick(e);
 
 			if (mode === 'canvas') {
-				let ok = tools.checkTools(point);
+				if (pen) {
+					draw.checkDraw(point);
+				} else {
+					let ok = tools.checkTools(point);
 
-				if (!ok) {
-					ok = words.checkWords(point);
-				}
+					if (!ok) {
+						ok = words.checkWords(point);
+					}
 
-				if (!ok) {
-					tools.selectArea(point);
+					if (!ok) {
+						tools.selectArea(point);
+					}
 				}
 
 				render();
@@ -68,10 +76,14 @@ const useCreateCanvas = () => {
 			const point = common.getClick(e);
 
 			if (mode === 'canvas') {
-				let ok = words.handleWords(point);
+				if (pen) {
+					draw.handleDraw(point);
+				} else {
+					let ok = words.handleWords(point);
 
-				if (!ok) {
-					tools.handleTools(point);
+					if (!ok) {
+						tools.handleTools(point);
+					}
 				}
 
 				render();
@@ -110,7 +122,7 @@ const useCreateCanvas = () => {
 
 			window.addEventListener('resize', handleResize);
 		};
-	}, [color, doubleColor, sizingMode, mode, setUpdater, updater]);
+	}, [color, doubleColor, sizingMode, mode, setUpdater, updater, pen]);
 
 	return {
 		canvasRef,
