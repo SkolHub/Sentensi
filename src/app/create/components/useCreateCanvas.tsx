@@ -117,14 +117,14 @@ const useCreateCanvas = () => {
 
 		canvas.addEventListener('mousedown', handleMouseDown);
 		window.addEventListener('mousemove', handleMouseMove);
-		canvas.addEventListener('mouseup', handleMouseUp);
+		window.addEventListener('mouseup', handleMouseUp);
 
 		window.addEventListener('resize', handleResize);
 
 		return () => {
 			canvas.removeEventListener('mousedown', handleMouseDown);
 			window.removeEventListener('mousemove', handleMouseMove);
-			canvas.removeEventListener('mouseup', handleMouseUp);
+			window.removeEventListener('mouseup', handleMouseUp);
 
 			window.addEventListener('resize', handleResize);
 		};
