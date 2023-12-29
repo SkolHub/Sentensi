@@ -5,53 +5,55 @@ import { CreateContext } from '@/app/create/components/CreateContext';
 
 const useCanvasMakerTextBox = (
 	words: string[],
-	setWords: Dispatch<SetStateAction<string[]>>,
+	setWords: Dispatch<SetStateAction<string[]>>
 ) => {
-
-	const { generalRef, canvasTextBox, setCanvasTextBox } = useContext(CreateContext)!;
+	const { generalRef, canvasTextBox, setCanvasTextBox, pen } =
+		useContext(CreateContext)!;
 
 	const handleTextBoxWordClick = (index: number, _e: MouseEvent) => {
 		const general = generalRef.current;
 
-		let width = 0;
+		if (!pen) {
+			let width = 0;
 
-		for (const letter of canvasTextBox[index]) {
-			width += general.common!.measure(letter, 64).width;
-		}
+			for (const letter of canvasTextBox[index]) {
+				width += general.common!.measure(letter, 64).width;
+			}
 
-		general.words.push({
-			start: {
-				x: 0,
-				y: 0,
-			},
-			control: {
-				x: width / 2,
-				y: 0,
-			},
-			end: {
-				x: width,
-				y: 0,
-			},
-			color: {
-				top: '#000000',
-				bottom: '#000000',
-			},
-			content: canvasTextBox[index],
-			fontSize: 64,
-		});
+			general.words.push({
+				start: {
+					x: 0,
+					y: 0
+				},
+				control: {
+					x: width / 2,
+					y: 0
+				},
+				end: {
+					x: width,
+					y: 0
+				},
+				color: {
+					top: '#000000',
+					bottom: '#000000'
+				},
+				content: canvasTextBox[index],
+				fontSize: 64
+			});
 
-		general.action = 'move';
+			general.action = 'move';
 
-		general.details = {
-			point: { x: 0, y: 0 },
-			target: general.words[general.words.length - 1],
-		};
+			general.details = {
+				point: { x: 0, y: 0 },
+				target: general.words[general.words.length - 1]
+			};
 
-		if (canvasTextBox.length === 1) {
-			setCanvasTextBox(['']);
-		} else {
-			canvasTextBox.splice(index, 1);
-			setCanvasTextBox([...canvasTextBox]);
+			if (canvasTextBox.length === 1) {
+				setCanvasTextBox(['']);
+			} else {
+				canvasTextBox.splice(index, 1);
+				setCanvasTextBox([...canvasTextBox]);
+			}
 		}
 	};
 
