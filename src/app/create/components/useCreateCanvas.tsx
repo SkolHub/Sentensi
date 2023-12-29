@@ -18,7 +18,8 @@ const useCreateCanvas = () => {
 		mode,
 		setUpdater,
 		updater,
-		pen
+		pen,
+		eraser
 	} = useContext(CreateContext)!;
 
 	useEffect(() => {
@@ -46,7 +47,9 @@ const useCreateCanvas = () => {
 			const point = common.getClick(e);
 
 			if (mode === 'canvas') {
-				if (pen) {
+				if (eraser) {
+					draw.checkErase(point);
+				} else if (pen) {
 					draw.checkDraw(point);
 				} else {
 					let ok = tools.checkTools(point);
@@ -75,35 +78,43 @@ const useCreateCanvas = () => {
 		const handleMouseMove = (e: MouseEvent) => {
 			const point = common.getClick(e);
 
-			if (mode === 'canvas') {
+			if (mode !== 'canvas') return;
+
+			if (eraser) {
 				if (pen) {
-					draw.handleDraw(point);
+					draw.handleErase(point);
 				} else {
-					let ok = words.handleWords(point);
-
-					if (!ok) {
-						tools.handleTools(point);
-					}
+					words.handleErase(point);
 				}
-
-				render();
 			}
+
+			if (pen) {
+				draw.handleDraw(point);
+			} else {
+				let ok = words.handleWords(point);
+
+				if (!ok) {
+					tools.handleTools(point);
+				}
+			}
+
+			render();
 		};
 
 		const handleMouseUp = (e: MouseEvent) => {
 			const point = common.getClick(e);
 
-			if (mode === 'canvas' && general.action) {
-				if (pen) {
-					draw.finishDraw(point);
-				} else {
-					tools.finishTools();
-				}
+			if (mode !== 'canvas' || !general.action) return;
 
-				general.action = null;
-
-				render();
+			if (general.action === 'draw') {
+				draw.finishDraw(point);
+			} else {
+				tools.finishTools();
 			}
+
+			general.action = null;
+
+			render();
 		};
 
 		const handleResize = () => {
@@ -128,11 +139,11 @@ const useCreateCanvas = () => {
 
 			window.addEventListener('resize', handleResize);
 		};
-	}, [color, doubleColor, sizingMode, mode, setUpdater, updater, pen]);
+	}, [color, doubleColor, sizingMode, mode, setUpdater, updater, pen, eraser]);
 
 	return {
 		canvasRef,
-		generalRef,
+		generalRef
 	};
 };
 

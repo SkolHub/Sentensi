@@ -12,6 +12,7 @@ type ActionType =
 	| 'groupScale'
 	| 'color'
 	| 'draw'
+	| 'erase'
 	| null;
 
 export interface ActionDetails {

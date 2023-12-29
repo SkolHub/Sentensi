@@ -5,6 +5,7 @@ import { WordData } from '@/lib/logic/packages/words/word-data';
 import {
 	checkPointSide,
 	getPointOnCircle,
+	segmentsIntersect,
 	stretchAngle,
 	stretchLength
 } from '@/lib/logic/math';
@@ -149,6 +150,51 @@ export class Words extends SentensiPackage<CreateGeneral> {
 		}
 
 		return false;
+	}
+
+	handleErase(point: Point) {
+		if (this.general.action !== 'erase') return;
+
+		let ok = true;
+
+		for (let j = 0; j < this.general.words.length && ok; j++) {
+			const wordData = new WordData(this.general.words[j], this.ctx);
+
+			for (let i = 0; i < this.general.words[j].content.length; i++) {
+				const { pos, ang } = wordData.getPosAndAngle();
+
+				const actualHeight =
+					wordData.prevLetterMetrics.actualBoundingBoxAscent +
+					wordData.prevLetterMetrics.actualBoundingBoxDescent;
+
+				const dAng = Math.atan(actualHeight / wordData.prevLetterMetrics.width);
+
+				const { A, B, C, D } = Words.getLetterBox(
+					pos,
+					ang,
+					dAng,
+					wordData.prevLetterMetrics.width,
+					actualHeight
+				);
+
+				if (
+					segmentsIntersect(A, B, point, this.general.lastDrawPoint) ||
+					segmentsIntersect(B, C, point, this.general.lastDrawPoint) ||
+					segmentsIntersect(C, D, point, this.general.lastDrawPoint) ||
+					segmentsIntersect(C, A, point, this.general.lastDrawPoint)
+				) {
+					this.general.words.splice(j, 1);
+
+					ok = false;
+
+					break;
+				}
+
+				wordData.nextLetter();
+			}
+		}
+
+		this.general.lastDrawPoint = point;
 	}
 
 	displayLetter(pos: Point, ang: number, letter: string) {

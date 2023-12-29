@@ -1,13 +1,48 @@
 import { SentensiPackage } from '@/lib/logic/sentensi-package';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create-general';
 import { Point } from '@/lib/logic/models';
-import { pyth } from '@/lib/logic/math';
+import { pointToLineDistance, pyth, segmentsIntersect } from '@/lib/logic/math';
 
 export class Draw extends SentensiPackage<CreateGeneral> {
 	static readonly MIN_POINT_DISTANCE = 8;
 
 	constructor(canvas: HTMLCanvasElement, general: CreateGeneral) {
 		super(canvas, general);
+	}
+
+	checkErase(point: Point) {
+		this.general.action = 'erase';
+
+		this.general.lastDrawPoint = point;
+	}
+
+	handleErase(point: Point) {
+		if (this.general.action !== 'erase') return;
+
+		for (let i = 0; i < this.general.lines.length; i++) {
+			const points = this.general.lines[i].points;
+
+			if (points.length < 4) {
+				for (let j = 0; j < points.length; j++) {
+					if (
+						pointToLineDistance(points[j], point, this.general.lastDrawPoint) <
+						this.general.lines[i].width + Draw.MIN_POINT_DISTANCE
+					) {
+						this.general.lines.splice(i, 1);
+						return;
+					}
+				}
+			} else {
+				for (let j = 1; j < points.length; j++) {
+					if (segmentsIntersect(this.general.lastDrawPoint, point,points[j - 1], points[j])) {
+						this.general.lines.splice(i, 1);
+						return;
+					}
+				}
+			}
+		}
+
+		this.general.lastDrawPoint = point;
 	}
 
 	checkDraw(point: Point) {
@@ -21,15 +56,15 @@ export class Draw extends SentensiPackage<CreateGeneral> {
 	}
 
 	handleDraw(point: Point): void {
-		if (this.general.action === 'draw') {
-			this.general.lastDrawPoint = point;
+		if (this.general.action !== 'draw') return;
 
-			if (this.general.lines.length) {
-				const points = this.general.lines[this.general.lines.length - 1].points;
+		this.general.lastDrawPoint = point;
 
-				if (pyth(points[points.length - 1], point) > Draw.MIN_POINT_DISTANCE) {
-					this.general.lines[this.general.lines.length - 1].points.push(point);
-				}
+		if (this.general.lines.length) {
+			const points = this.general.lines[this.general.lines.length - 1].points;
+
+			if (pyth(points[points.length - 1], point) > Draw.MIN_POINT_DISTANCE) {
+				this.general.lines[this.general.lines.length - 1].points.push(point);
 			}
 		}
 	}
@@ -72,7 +107,10 @@ export class Draw extends SentensiPackage<CreateGeneral> {
 				);
 			}
 
-			if (index === this.general.lines.length - 1 && this.general.action === 'draw') {
+			if (
+				index === this.general.lines.length - 1 &&
+				this.general.action === 'draw'
+			) {
 				this.ctx.quadraticCurveTo(
 					line.points[i].x,
 					line.points[i].y,

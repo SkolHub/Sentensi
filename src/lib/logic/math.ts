@@ -138,6 +138,56 @@ const groupRotateLengths = (
 	}));
 };
 
+const segmentsIntersect = (p1: Point, p2: Point, p3: Point, p4: Point): boolean => {
+	return (
+		(ccw(p1, p3, p4) !== ccw(p2, p3, p4)) &&
+		(ccw(p1, p2, p3) !== ccw(p1, p2, p4))
+	);
+}
+
+const ccw = (p1: Point, p2: Point, p3: Point): boolean => {
+	return (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x);
+}
+
+const pointToLineDistance = (point: Point, lineStart: Point, lineEnd: Point): number => {
+	const { x, y } = point;
+	const { x: x1, y: y1 } = lineStart;
+	const { x: x2, y: y2 } = lineEnd;
+
+	const A = x - x1;
+	const B = y - y1;
+	const C = x2 - x1;
+	const D = y2 - y1;
+
+	const dot = A * C + B * D;
+	const lenSq = C * C + D * D;
+
+	let xx, yy;
+
+	if (lenSq === 0) {
+		xx = x1;
+		yy = y1;
+	} else {
+		const param = dot / lenSq;
+
+		if (param < 0) {
+			xx = x1;
+			yy = y1;
+		} else if (param > 1) {
+			xx = x2;
+			yy = y2;
+		} else {
+			xx = x1 + param * C;
+			yy = y1 + param * D;
+		}
+	}
+
+	const dx = x - xx;
+	const dy = y - yy;
+
+	return Math.sqrt(dx * dx + dy * dy);
+}
+
 export {
 	pyth,
 	getPointOnBezier,
@@ -152,4 +202,6 @@ export {
 	getMedium,
 	groupRotateAngles,
 	groupRotateLengths,
+	segmentsIntersect,
+	pointToLineDistance
 };
