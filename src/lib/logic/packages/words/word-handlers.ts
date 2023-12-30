@@ -1,6 +1,5 @@
-import { Point, Word } from '../../models';
+import { Point } from '../../models';
 import {
-	contained,
 	getPointOnCircle,
 	getSlope,
 	getXOnCircle,
@@ -12,7 +11,6 @@ import {
 	HandleMoveModel,
 	HandleStretchModel
 } from '@/lib/logic/packages/words/models';
-import { SelectBox } from '@/lib/logic/packages/tools/models';
 
 export const handleMove = (details: HandleMoveModel, point: Point) => {
 	details.target.start.x += point.x - details.point.x;
@@ -73,40 +71,4 @@ export const handleStretch = (
 	if (scale) {
 		details.target.fontSize = (pyth(details.target.end) / textLength) * 64;
 	}
-};
-
-export const handleGroupSelect = (
-	words: Word[],
-	selectBox: SelectBox
-): Word[] => {
-	return words.filter(
-		(word) =>
-			contained(
-				word.start,
-				selectBox.x,
-				selectBox.y,
-				selectBox.width,
-				selectBox.height
-			) ||
-			contained(
-				{
-					x: word.start.x + word.control.x,
-					y: word.start.y + word.control.y
-				},
-				selectBox.x,
-				selectBox.y,
-				selectBox.width,
-				selectBox.height
-			) ||
-			contained(
-				{
-					x: word.start.x + word.end.x,
-					y: word.start.y + word.end.y
-				},
-				selectBox.x,
-				selectBox.y,
-				selectBox.width,
-				selectBox.height
-			)
-	);
 };

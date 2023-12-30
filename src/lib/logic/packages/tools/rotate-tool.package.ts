@@ -5,20 +5,23 @@ import {
 	getSlope,
 	getXOnCircle,
 	getYOnCircle,
-	pyth,
+	pyth
 } from '@/lib/logic/math';
-import { HandleGroupRotateModel, RotateToolModel } from '@/lib/logic/packages/tools/models';
+import {
+	HandleGroupRotateModel,
+	RotateToolModel
+} from '@/lib/logic/packages/tools/models';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
 const InitialRotateTool: RotateToolModel = {
 	thumb: {
 		x: -100,
-		y: -100,
+		y: -100
 	},
 	track: {
 		x: -100,
-		y: -100,
-	},
+		y: -100
+	}
 };
 
 export class RotateToolPackage extends Tool<RotateToolModel> {
@@ -44,7 +47,7 @@ export class RotateToolPackage extends Tool<RotateToolModel> {
 			this.state.track.y,
 			RotateToolPackage.TRACK_RADIUS,
 			0,
-			2 * Math.PI,
+			2 * Math.PI
 		);
 		this.ctx.stroke();
 
@@ -54,18 +57,20 @@ export class RotateToolPackage extends Tool<RotateToolModel> {
 			this.state.thumb.y,
 			RotateToolPackage.THUMB_RADIUS,
 			0,
-			2 * Math.PI,
+			2 * Math.PI
 		);
 		this.ctx.fill();
 	}
 
-	handleGroupRotate(details: HandleGroupRotateModel, point: Point) {
+	handleGroupRotate(point: Point) {
+		const details = this.general.details as HandleGroupRotateModel;
+
 		let ang = -getSlope(details.point, point);
 
 		this.state.thumb = getPointOnCircle(
 			details.point,
 			RotateToolPackage.TRACK_RADIUS,
-			ang,
+			ang
 		);
 
 		ang += Math.PI / 2;
@@ -73,14 +78,14 @@ export class RotateToolPackage extends Tool<RotateToolModel> {
 		details.target.forEach((word, index) => {
 			const x = getXOnCircle(
 				details.point.x,
-				details.lengths![index].startDistance,
-				details.angles![index].startAngle + ang,
+				details.lengths[index].startDistance,
+				details.angles[index].startAngle + ang
 			);
 
 			const y = getYOnCircle(
 				details.point.y,
-				details.lengths![index].startDistance,
-				details.angles![index].startAngle + ang,
+				details.lengths[index].startDistance,
+				details.angles[index].startAngle + ang
 			);
 
 			word.start.x = x;
@@ -89,29 +94,29 @@ export class RotateToolPackage extends Tool<RotateToolModel> {
 			word.control.x =
 				getXOnCircle(
 					details.point.x,
-					details.lengths![index].focusDistance,
-					details.angles![index].focusAngle + ang,
+					details.lengths[index].focusDistance,
+					details.angles[index].focusAngle + ang
 				) - x;
 
 			word.control.y =
 				getYOnCircle(
 					details.point.y,
-					details.lengths![index].focusDistance,
-					details.angles![index].focusAngle + ang,
+					details.lengths[index].focusDistance,
+					details.angles[index].focusAngle + ang
 				) - y;
 
 			word.end.x =
 				getXOnCircle(
 					details.point.x,
-					details.lengths![index].endDistance,
-					details.angles![index].endAngle + ang,
+					details.lengths[index].endDistance,
+					details.angles[index].endAngle + ang
 				) - x;
 
 			word.end.y =
 				getYOnCircle(
 					details.point.y,
-					details.lengths![index].endDistance,
-					details.angles![index].endAngle + ang,
+					details.lengths[index].endDistance,
+					details.angles[index].endAngle + ang
 				) - y;
 		});
 	}

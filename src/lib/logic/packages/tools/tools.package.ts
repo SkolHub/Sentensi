@@ -11,13 +11,6 @@ import {
 	groupRotateLengths,
 	pyth
 } from '@/lib/logic/math';
-import { handleGroupSelect } from '@/lib/logic/packages/words/word-handlers';
-import {
-	HandleGroupMoveModel,
-	HandleGroupRotateModel,
-	HandleGroupScaleModel,
-	HandleSelectModel
-} from '@/lib/logic/packages/tools/models';
 
 class ToolsPackage extends SentensiPackage<CreateGeneral> {
 	select: SelectTool;
@@ -126,34 +119,22 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 	handleTools(point: Point): boolean {
 		switch (this.general.action) {
 			case 'select':
-				this.select.handleSelect(
-					this.general.details as HandleSelectModel,
-					point
-				);
+				this.select.handleSelect(point);
 
 				return true;
 
 			case 'groupMove':
-				this.select.handleGroupMove(
-					this.general.details as HandleGroupMoveModel,
-					point
-				);
+				this.select.handleGroupMove(point);
 
 				return true;
 
 			case 'groupRotate':
-				this.rotate.handleGroupRotate(
-					this.general.details as HandleGroupRotateModel,
-					point
-				);
+				this.rotate.handleGroupRotate(point);
 
 				return true;
 
 			case 'groupScale':
-				this.scale.handleGroupScale(
-					this.general.details as HandleGroupScaleModel,
-					point.x
-				);
+				this.scale.handleGroupScale(point.x);
 
 				return true;
 		}
@@ -164,10 +145,7 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 	finishTools(): boolean {
 		switch (this.general.action) {
 			case 'select':
-				const selectedWords = handleGroupSelect(
-					this.general.words,
-					this.select.state
-				);
+				const selectedWords = this.select.finishSelect();
 
 				if (selectedWords.length) {
 					this.general.details.target = selectedWords;

@@ -1,18 +1,21 @@
 import { Point } from '@/lib/logic/models';
 import { Tool } from '@/lib/logic/packages/tools/tool';
 import { contained, getXOnCircle, getYOnCircle } from '@/lib/logic/math';
-import { HandleGroupScaleModel, ScaleToolModel } from '@/lib/logic/packages/tools/models';
+import {
+	HandleGroupScaleModel,
+	ScaleToolModel
+} from '@/lib/logic/packages/tools/models';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
 const InitialScaleTool: ScaleToolModel = {
 	thumb: {
 		x: -100,
-		y: -100,
+		y: -100
 	},
 	origin: {
 		x: -100,
-		y: -100,
-	},
+		y: -100
+	}
 };
 
 export class ScaleToolPackage extends Tool<ScaleToolModel> {
@@ -34,7 +37,7 @@ export class ScaleToolPackage extends Tool<ScaleToolModel> {
 			this.state.thumb.x - ScaleToolPackage.THUMB_WIDTH / 2,
 			this.state.thumb.y - ScaleToolPackage.THUMB_WIDTH / 2,
 			ScaleToolPackage.THUMB_WIDTH,
-			ScaleToolPackage.THUMB_WIDTH,
+			ScaleToolPackage.THUMB_WIDTH
 		);
 		this.ctx.fill();
 
@@ -46,19 +49,21 @@ export class ScaleToolPackage extends Tool<ScaleToolModel> {
 			this.state.origin.y,
 			ScaleToolPackage.ORIGIN_RADIUS,
 			0,
-			2 * Math.PI,
+			2 * Math.PI
 		);
 		this.ctx.fill();
 	}
 
-	handleGroupScale(details: HandleGroupScaleModel, x: number) {
+	handleGroupScale(x: number) {
+		const details = this.general.details as HandleGroupScaleModel;
+
 		const radius =
 				details.distance + (x - details.length) / Math.cos(details.angle),
 			mod = (radius / details.distance) * 2;
 
 		for (const word of details.origins) {
 			if (word.fontSize * mod < 55.59) {
-				console.log(word.fontSize, mod)
+				console.log(word.fontSize, mod);
 				return;
 			}
 		}
@@ -79,7 +84,7 @@ export class ScaleToolPackage extends Tool<ScaleToolModel> {
 
 		this.state.thumb = {
 			x: getXOnCircle(details.point.x, radius, -details.angle) - 5,
-			y: getYOnCircle(details.point.y, radius, -details.angle) - 5,
+			y: getYOnCircle(details.point.y, radius, -details.angle) - 5
 		};
 	}
 
@@ -89,7 +94,7 @@ export class ScaleToolPackage extends Tool<ScaleToolModel> {
 			this.state.thumb.x - ScaleToolPackage.THUMB_WIDTH / 2,
 			this.state.thumb.y - ScaleToolPackage.THUMB_WIDTH / 2,
 			ScaleToolPackage.THUMB_WIDTH,
-			ScaleToolPackage.THUMB_WIDTH,
+			ScaleToolPackage.THUMB_WIDTH
 		);
 	}
 }
