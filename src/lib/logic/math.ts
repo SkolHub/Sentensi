@@ -8,7 +8,7 @@ const getPointOnBezier = (
 	start: Point,
 	control: Point,
 	end: Point,
-	time: number,
+	time: number
 ): Point => {
 	return {
 		x:
@@ -18,25 +18,25 @@ const getPointOnBezier = (
 		y:
 			(1 - time) ** 2 * start.y +
 			2 * (1 - time) * time * control.y +
-			time ** 2 * end.y,
+			time ** 2 * end.y
 	};
 };
 
 const getPointOnCircle = (
 	origin: Point,
 	radius: number,
-	angle: number,
+	angle: number
 ): Point => {
 	return {
 		x: origin.x + radius * Math.cos(angle),
-		y: origin.y + radius * Math.sin(angle),
+		y: origin.y + radius * Math.sin(angle)
 	};
 };
 
 const getXOnCircle = (
 	origin: number,
 	radius: number,
-	angle: number,
+	angle: number
 ): number => {
 	return origin + radius * Math.cos(angle);
 };
@@ -44,7 +44,7 @@ const getXOnCircle = (
 const getYOnCircle = (
 	origin: number,
 	radius: number,
-	angle: number,
+	angle: number
 ): number => {
 	return origin + radius * Math.sin(angle);
 };
@@ -62,12 +62,16 @@ const stretchAngle = (word: Word): number => {
 const stretchLength = (word: Word): number => {
 	return Math.sqrt(
 		(word.control.x ** 2 + word.control.y ** 2) /
-			(word.end.x ** 2 + word.end.y ** 2),
+			(word.end.x ** 2 + word.end.y ** 2)
 	);
 };
 
 const getSlope = (A: Point, B: Point) => {
-	const slope = -Math.atan((A.y - B.y) / (A.x - B.x));
+	let slope = -Math.atan((A.y - B.y) / (A.x - B.x));
+
+	if (isNaN(slope)) {
+		slope = 0;
+	}
 
 	if (B.y <= A.y && B.x <= A.x) {
 		return slope + Math.PI;
@@ -85,7 +89,7 @@ const contained = (
 	x: number,
 	y: number,
 	w: number,
-	h: number,
+	h: number
 ): boolean => {
 	return P.x >= x && P.x <= x + w && P.y >= y && P.y <= y + h;
 };
@@ -100,56 +104,64 @@ const getMedium = (words: Word[]): Point => {
 
 	return {
 		x: x / words.length / 3,
-		y: y / words.length / 3,
+		y: y / words.length / 3
 	};
 };
 
 const groupRotateAngles = (
 	words: Word[],
-	origin: Point,
+	origin: Point
 ): { startAngle: number; focusAngle: number; endAngle: number }[] => {
 	return words.map((word) => ({
 		startAngle: -getSlope(origin, word.start),
 		focusAngle: -getSlope(origin, {
 			x: word.start.x + word.control.x,
-			y: word.start.y + word.control.y,
+			y: word.start.y + word.control.y
 		}),
 		endAngle: -getSlope(origin, {
 			x: word.start.x + word.end.x,
-			y: word.start.y + word.end.y,
-		}),
+			y: word.start.y + word.end.y
+		})
 	}));
 };
 
 const groupRotateLengths = (
 	words: Word[],
-	origin: Point,
+	origin: Point
 ): { startDistance: number; focusDistance: number; endDistance: number }[] => {
 	return words.map((word) => ({
 		startDistance: pyth(origin, word.start),
 		focusDistance: pyth(origin, {
 			x: word.start.x + word.control.x,
-			y: word.start.y + word.control.y,
+			y: word.start.y + word.control.y
 		}),
 		endDistance: pyth(origin, {
 			x: word.start.x + word.end.x,
-			y: word.start.y + word.end.y,
-		}),
+			y: word.start.y + word.end.y
+		})
 	}));
 };
 
-const segmentsIntersect = (p1: Point, p2: Point, p3: Point, p4: Point): boolean => {
+const segmentsIntersect = (
+	p1: Point,
+	p2: Point,
+	p3: Point,
+	p4: Point
+): boolean => {
 	return (
-		(ccw(p1, p3, p4) !== ccw(p2, p3, p4)) &&
-		(ccw(p1, p2, p3) !== ccw(p1, p2, p4))
+		ccw(p1, p3, p4) !== ccw(p2, p3, p4) && ccw(p1, p2, p3) !== ccw(p1, p2, p4)
 	);
-}
+};
 
 const ccw = (p1: Point, p2: Point, p3: Point): boolean => {
 	return (p3.y - p1.y) * (p2.x - p1.x) > (p2.y - p1.y) * (p3.x - p1.x);
-}
+};
 
-const pointToLineDistance = (point: Point, lineStart: Point, lineEnd: Point): number => {
+const pointToLineDistance = (
+	point: Point,
+	lineStart: Point,
+	lineEnd: Point
+): number => {
 	const { x, y } = point;
 	const { x: x1, y: y1 } = lineStart;
 	const { x: x2, y: y2 } = lineEnd;
@@ -186,7 +198,7 @@ const pointToLineDistance = (point: Point, lineStart: Point, lineEnd: Point): nu
 	const dy = y - yy;
 
 	return Math.sqrt(dx * dx + dy * dy);
-}
+};
 
 export {
 	pyth,
