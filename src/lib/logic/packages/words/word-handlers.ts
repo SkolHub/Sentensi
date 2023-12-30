@@ -1,17 +1,18 @@
-import { Point, SelectBox, Word } from '../../models';
+import { Point, Word } from '../../models';
 import {
 	contained,
 	getPointOnCircle,
 	getSlope,
 	getXOnCircle,
 	getYOnCircle,
-	pyth,
+	pyth
 } from '@/lib/logic/math';
-
-export interface HandleMoveModel {
-	target: Word;
-	point: Point;
-}
+import {
+	HandleBendModel,
+	HandleMoveModel,
+	HandleStretchModel
+} from '@/lib/logic/packages/words/models';
+import { SelectBox } from '@/lib/logic/packages/tools/models';
 
 export const handleMove = (details: HandleMoveModel, point: Point) => {
 	details.target.start.x += point.x - details.point.x;
@@ -20,21 +21,17 @@ export const handleMove = (details: HandleMoveModel, point: Point) => {
 	details.point = point;
 };
 
-export interface HandleBendModel {
-	target: Word;
-}
-
 export const handleBend = (details: HandleBendModel, point: Point) => {
 	const mid: Point = {
 			x: details.target.end.x / 2,
-			y: details.target.end.y / 2,
+			y: details.target.end.y / 2
 		},
 		radius = pyth(details.target.end) / 1.5;
 
 	if (
 		pyth(mid, {
 			x: point.x - details.target.start.x,
-			y: point.y - details.target.start.y,
+			y: point.y - details.target.start.y
 		}) < radius
 	) {
 		details.target.control.x = point.x - details.target.start.x;
@@ -42,7 +39,7 @@ export const handleBend = (details: HandleBendModel, point: Point) => {
 	} else {
 		const ang = getSlope(mid, {
 			x: point.x - details.target!.start.x,
-			y: point.y - details.target!.start.y,
+			y: point.y - details.target!.start.y
 		});
 
 		details.target.control.x = getXOnCircle(mid.x, radius, ang);
@@ -50,17 +47,11 @@ export const handleBend = (details: HandleBendModel, point: Point) => {
 	}
 };
 
-export interface HandleStretchModel {
-	target: Word;
-	length: number;
-	angle: number;
-}
-
 export const handleStretch = (
 	details: HandleStretchModel,
 	point: Point,
 	scale: boolean,
-	textLength: number,
+	textLength: number
 ) => {
 	if (pyth(details.target.start, point) > textLength) {
 		details.target.end.x = point.x - details.target.start.x;
@@ -69,14 +60,14 @@ export const handleStretch = (
 		details.target.end = getPointOnCircle(
 			{ x: 0, y: 0 },
 			textLength,
-			-getSlope(details.target.start, point),
+			-getSlope(details.target.start, point)
 		);
 	}
 
 	details.target.control = getPointOnCircle(
 		{ x: 0, y: 0 },
 		details.length! * pyth(details.target.end),
-		-getSlope({ x: 0, y: 0 }, details.target.end) + details.angle!,
+		-getSlope({ x: 0, y: 0 }, details.target.end) + details.angle!
 	);
 
 	if (scale) {
@@ -86,7 +77,7 @@ export const handleStretch = (
 
 export const handleGroupSelect = (
 	words: Word[],
-	selectBox: SelectBox,
+	selectBox: SelectBox
 ): Word[] => {
 	return words.filter(
 		(word) =>
@@ -95,27 +86,27 @@ export const handleGroupSelect = (
 				selectBox.x,
 				selectBox.y,
 				selectBox.width,
-				selectBox.height,
+				selectBox.height
 			) ||
 			contained(
 				{
 					x: word.start.x + word.control.x,
-					y: word.start.y + word.control.y,
+					y: word.start.y + word.control.y
 				},
 				selectBox.x,
 				selectBox.y,
 				selectBox.width,
-				selectBox.height,
+				selectBox.height
 			) ||
 			contained(
 				{
 					x: word.start.x + word.end.x,
-					y: word.start.y + word.end.y,
+					y: word.start.y + word.end.y
 				},
 				selectBox.x,
 				selectBox.y,
 				selectBox.width,
-				selectBox.height,
-			),
+				selectBox.height
+			)
 	);
 };

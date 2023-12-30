@@ -1,4 +1,4 @@
-import { Point, Word } from '@/lib/logic/models';
+import { Point } from '@/lib/logic/models';
 import { Tool } from '@/lib/logic/packages/tools/tool';
 import {
 	getPointOnCircle,
@@ -7,17 +7,8 @@ import {
 	getYOnCircle,
 	pyth,
 } from '@/lib/logic/math';
-
-interface RotateToolModel {
-	thumb: {
-		x: number;
-		y: number;
-	};
-	track: {
-		x: number;
-		y: number;
-	};
-}
+import { HandleGroupRotateModel, RotateToolModel } from '@/lib/logic/packages/tools/models';
+import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
 const InitialRotateTool: RotateToolModel = {
 	thumb: {
@@ -30,18 +21,7 @@ const InitialRotateTool: RotateToolModel = {
 	},
 };
 
-export interface HandleGroupRotateModel {
-	target: Word[];
-	point: Point;
-	lengths: {
-		startDistance: number;
-		focusDistance: number;
-		endDistance: number;
-	}[];
-	angles: { startAngle: number; focusAngle: number; endAngle: number }[];
-}
-
-export class RotateTool extends Tool<RotateToolModel> {
+export class RotateToolPackage extends Tool<RotateToolModel> {
 	static readonly THUMB_RADIUS = 10;
 	static readonly THUMB_COLOR = '#000000';
 
@@ -49,20 +29,20 @@ export class RotateTool extends Tool<RotateToolModel> {
 	static readonly TRACK_COLOR = '#000000';
 	static readonly TRACK_WIDTH = 1;
 
-	constructor(ctx: CanvasRenderingContext2D) {
-		super(InitialRotateTool, ctx);
+	constructor(general: CreateGeneral) {
+		super(InitialRotateTool, general);
 	}
 
 	render() {
-		this.ctx.fillStyle = RotateTool.THUMB_COLOR;
-		this.ctx.strokeStyle = RotateTool.TRACK_COLOR;
-		this.ctx.lineWidth = RotateTool.TRACK_WIDTH;
+		this.ctx.fillStyle = RotateToolPackage.THUMB_COLOR;
+		this.ctx.strokeStyle = RotateToolPackage.TRACK_COLOR;
+		this.ctx.lineWidth = RotateToolPackage.TRACK_WIDTH;
 
 		this.ctx.beginPath();
 		this.ctx.arc(
 			this.state.track.x,
 			this.state.track.y,
-			RotateTool.TRACK_RADIUS,
+			RotateToolPackage.TRACK_RADIUS,
 			0,
 			2 * Math.PI,
 		);
@@ -72,7 +52,7 @@ export class RotateTool extends Tool<RotateToolModel> {
 		this.ctx.arc(
 			this.state.thumb.x,
 			this.state.thumb.y,
-			RotateTool.THUMB_RADIUS,
+			RotateToolPackage.THUMB_RADIUS,
 			0,
 			2 * Math.PI,
 		);
@@ -84,7 +64,7 @@ export class RotateTool extends Tool<RotateToolModel> {
 
 		this.state.thumb = getPointOnCircle(
 			details.point,
-			RotateTool.TRACK_RADIUS,
+			RotateToolPackage.TRACK_RADIUS,
 			ang,
 		);
 
@@ -137,6 +117,6 @@ export class RotateTool extends Tool<RotateToolModel> {
 	}
 
 	activate(point: Point): boolean {
-		return pyth(point, this.state.thumb) <= RotateTool.THUMB_RADIUS;
+		return pyth(point, this.state.thumb) <= RotateToolPackage.THUMB_RADIUS;
 	}
 }

@@ -1,13 +1,13 @@
 import { SentensiPackage } from '@/lib/logic/sentensi-package';
-import { CreateGeneral } from '@/lib/logic/packages/generals/create-general';
+import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 import { Point } from '@/lib/logic/models';
 import { pointToLineDistance, pyth, segmentsIntersect } from '@/lib/logic/math';
 
-export class Draw extends SentensiPackage<CreateGeneral> {
+export class DrawPackage extends SentensiPackage<CreateGeneral> {
 	static readonly MIN_POINT_DISTANCE = 8;
 
-	constructor(canvas: HTMLCanvasElement, general: CreateGeneral) {
-		super(canvas, general);
+	constructor(general: CreateGeneral) {
+		super(general);
 	}
 
 	checkErase(point: Point) {
@@ -26,7 +26,7 @@ export class Draw extends SentensiPackage<CreateGeneral> {
 				for (let j = 0; j < points.length; j++) {
 					if (
 						pointToLineDistance(points[j], point, this.general.lastDrawPoint) <
-						this.general.lines[i].width + Draw.MIN_POINT_DISTANCE
+						this.general.lines[i].width + DrawPackage.MIN_POINT_DISTANCE
 					) {
 						this.general.lines.splice(i, 1);
 						return;
@@ -63,7 +63,7 @@ export class Draw extends SentensiPackage<CreateGeneral> {
 		if (this.general.lines.length) {
 			const points = this.general.lines[this.general.lines.length - 1].points;
 
-			if (pyth(points[points.length - 1], point) > Draw.MIN_POINT_DISTANCE) {
+			if (pyth(points[points.length - 1], point) > DrawPackage.MIN_POINT_DISTANCE) {
 				this.general.lines[this.general.lines.length - 1].points.push(point);
 			}
 		}

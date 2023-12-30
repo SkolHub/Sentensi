@@ -1,5 +1,5 @@
 import { SentensiPackage } from '@/lib/logic/sentensi-package';
-import { CreateGeneral } from '@/lib/logic/packages/generals/create-general';
+import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 import { Point, Word } from '@/lib/logic/models';
 import { WordData } from '@/lib/logic/packages/words/word-data';
 import {
@@ -11,24 +11,16 @@ import {
 } from '@/lib/logic/math';
 import {
 	handleBend,
-	HandleBendModel,
 	handleMove,
-	HandleMoveModel,
 	handleStretch,
-	HandleStretchModel
 } from '@/lib/logic/packages/words/word-handlers';
+import { HandleBendModel, HandleMoveModel, HandleStretchModel } from '@/lib/logic/packages/words/models';
 
-export class Words extends SentensiPackage<CreateGeneral> {
-	sizingMode: 'stretch' | 'scale';
+export class WordsPackage extends SentensiPackage<CreateGeneral> {
+	sizingMode: 'stretch' | 'scale' = 'stretch';
 
-	constructor(
-		canvas: HTMLCanvasElement,
-		general: CreateGeneral,
-		sizingMode: 'stretch' | 'scale'
-	) {
-		super(canvas, general);
-
-		this.sizingMode = sizingMode;
+	constructor(general: CreateGeneral) {
+		super(general);
 	}
 
 	static getLetterBox(
@@ -69,7 +61,7 @@ export class Words extends SentensiPackage<CreateGeneral> {
 
 				const dAng = Math.atan(actualHeight / wordData.prevLetterMetrics.width);
 
-				const { A, B, C, D } = Words.getLetterBox(
+				const { A, B, C, D } = WordsPackage.getLetterBox(
 					pos,
 					ang,
 					dAng,
@@ -169,7 +161,7 @@ export class Words extends SentensiPackage<CreateGeneral> {
 
 				const dAng = Math.atan(actualHeight / wordData.prevLetterMetrics.width);
 
-				const { A, B, C, D } = Words.getLetterBox(
+				const { A, B, C, D } = WordsPackage.getLetterBox(
 					pos,
 					ang,
 					dAng,
@@ -225,7 +217,7 @@ export class Words extends SentensiPackage<CreateGeneral> {
 		const { pos, ang } = wordData.getPosAndAngle();
 		this.displayLetter(pos, ang, word.content[word.content.length - 1]);
 
-		this.ctx.strokeStyle = 'red';
+		/*this.ctx.strokeStyle = 'red';
 
 		this.ctx.moveTo(word.start.x, word.start.y);
 		this.ctx.quadraticCurveTo(
@@ -233,7 +225,7 @@ export class Words extends SentensiPackage<CreateGeneral> {
 			word.control.y + word.start.y,
 			word.end.x + word.start.x,
 			word.end.y + word.start.y
-		);
+		);*/
 
 		this.ctx.stroke();
 	}

@@ -1,18 +1,16 @@
 import { Point } from '../../models';
+import { SentensiPackage } from '@/lib/logic/sentensi-package';
+import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
+import { Subset } from '@/lib/logic/packages/tools/models';
 
-type Subset<T> = {
-	[K in keyof T]?: T[K];
-};
-
-export abstract class Tool<T> {
+export abstract class Tool<T> extends SentensiPackage<CreateGeneral>{
 	initialState: T;
-	ctx: CanvasRenderingContext2D;
 
-	protected constructor(tool: T, ctx: CanvasRenderingContext2D) {
+	protected constructor(tool: T, general: CreateGeneral) {
+		super(general);
+
 		this.initialState = tool;
 		this._state = tool;
-
-		this.ctx = ctx;
 	}
 
 	private _state: T;

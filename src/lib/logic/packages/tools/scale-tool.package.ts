@@ -1,17 +1,8 @@
-import { Point, Word } from '@/lib/logic/models';
+import { Point } from '@/lib/logic/models';
 import { Tool } from '@/lib/logic/packages/tools/tool';
 import { contained, getXOnCircle, getYOnCircle } from '@/lib/logic/math';
-
-interface ScaleToolModel {
-	thumb: {
-		x: number;
-		y: number;
-	};
-	origin: {
-		x: number;
-		y: number;
-	};
-}
+import { HandleGroupScaleModel, ScaleToolModel } from '@/lib/logic/packages/tools/models';
+import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
 const InitialScaleTool: ScaleToolModel = {
 	thumb: {
@@ -24,59 +15,36 @@ const InitialScaleTool: ScaleToolModel = {
 	},
 };
 
-export interface HandleGroupScaleModel {
-	targets: Word[];
-	point: Point;
-	distance: number;
-	length: number;
-	angle: number;
-	origins: {
-		start: {
-			x: number;
-			y: number;
-		};
-		control: {
-			x: number;
-			y: number;
-		};
-		end: {
-			x: number;
-			y: number;
-		};
-		fontSize: number;
-	}[];
-}
-
-export class ScaleTool extends Tool<ScaleToolModel> {
+export class ScaleToolPackage extends Tool<ScaleToolModel> {
 	static readonly ORIGIN_RADIUS = 2;
 	static readonly ORIGIN_COLOR = '#000000';
 
 	static readonly THUMB_WIDTH = 20;
 	static readonly THUMB_COLOR = '#000000';
 
-	constructor(ctx: CanvasRenderingContext2D) {
-		super(InitialScaleTool, ctx);
+	constructor(general: CreateGeneral) {
+		super(InitialScaleTool, general);
 	}
 
 	render() {
-		this.ctx.fillStyle = ScaleTool.THUMB_COLOR;
+		this.ctx.fillStyle = ScaleToolPackage.THUMB_COLOR;
 
 		this.ctx.beginPath();
 		this.ctx.rect(
-			this.state.thumb.x - ScaleTool.THUMB_WIDTH / 2,
-			this.state.thumb.y - ScaleTool.THUMB_WIDTH / 2,
-			ScaleTool.THUMB_WIDTH,
-			ScaleTool.THUMB_WIDTH,
+			this.state.thumb.x - ScaleToolPackage.THUMB_WIDTH / 2,
+			this.state.thumb.y - ScaleToolPackage.THUMB_WIDTH / 2,
+			ScaleToolPackage.THUMB_WIDTH,
+			ScaleToolPackage.THUMB_WIDTH,
 		);
 		this.ctx.fill();
 
-		this.ctx.fillStyle = ScaleTool.ORIGIN_COLOR;
+		this.ctx.fillStyle = ScaleToolPackage.ORIGIN_COLOR;
 
 		this.ctx.beginPath();
 		this.ctx.arc(
 			this.state.origin.x,
 			this.state.origin.y,
-			ScaleTool.ORIGIN_RADIUS,
+			ScaleToolPackage.ORIGIN_RADIUS,
 			0,
 			2 * Math.PI,
 		);
@@ -118,10 +86,10 @@ export class ScaleTool extends Tool<ScaleToolModel> {
 	activate(point: Point): boolean {
 		return contained(
 			point,
-			this.state.thumb.x - ScaleTool.THUMB_WIDTH / 2,
-			this.state.thumb.y - ScaleTool.THUMB_WIDTH / 2,
-			ScaleTool.THUMB_WIDTH,
-			ScaleTool.THUMB_WIDTH,
+			this.state.thumb.x - ScaleToolPackage.THUMB_WIDTH / 2,
+			this.state.thumb.y - ScaleToolPackage.THUMB_WIDTH / 2,
+			ScaleToolPackage.THUMB_WIDTH,
+			ScaleToolPackage.THUMB_WIDTH,
 		);
 	}
 }

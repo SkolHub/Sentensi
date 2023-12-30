@@ -3,13 +3,6 @@ export interface Point {
 	y: number;
 }
 
-export interface SelectBox {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-}
-
 export interface Word {
 	start: {
 		x: number;
@@ -31,7 +24,7 @@ export interface Word {
 	content: string;
 }
 
-export type ActionType =
+export type ActivityType =
 	| 'Right or Wrong'
 	| 'Listen and Write'
 	| 'Remember and Write';
@@ -40,11 +33,4 @@ export interface LineModel {
 	color: string;
 	width: number;
 	points: Point[];
-}
-
-export interface PageModel {
-	words: [];
-	lines: LineModel[];
-	answer: string[];
-	type: ActionType;
 }

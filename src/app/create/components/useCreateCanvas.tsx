@@ -2,10 +2,6 @@
 
 import { useContext, useEffect, useRef } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
-import { Common } from '@/lib/logic/packages/common/common';
-import { Tools } from '@/lib/logic/packages/tools/tools';
-import { Words } from '@/lib/logic/packages/words/words';
-import { Draw } from '@/lib/logic/packages/drawing/draw';
 
 const useCreateCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,46 +22,33 @@ const useCreateCanvas = () => {
 		const canvas = canvasRef.current!;
 		const general = generalRef.current;
 
-		const common = new Common(canvas, general);
-		const tools = new Tools(canvas, general);
-		const words = new Words(canvas, general, sizingMode);
-		const draw = new Draw(canvas, general);
+		general.canvas = canvas;
 
-		general.common = common;
-
-		const render = () => {
-			common.clear();
-
-			draw.render();
-			words.render();
-			tools.render();
-		};
-
-		general.render = render;
+		general.toolsPkg.reset();
 
 		const handleMouseDown = (e: MouseEvent) => {
-			const point = common.getClick(e);
+			const point = general.getClick(e);
 
 			if (mode === 'canvas') {
 				if (eraser) {
-					draw.checkErase(point);
+					general.drawPkg.checkErase(point);
 				} else if (pen) {
-					draw.checkDraw(point);
+					general.drawPkg.checkDraw(point);
 				} else {
-					let ok = tools.checkTools(point);
+					let ok = general.toolsPkg.checkTools(point);
 
 					if (!ok) {
-						ok = words.checkWords(point);
+						ok = general.wordsPkg.checkWords(point);
 					}
 
 					if (!ok) {
-						tools.selectArea(point);
+						general.toolsPkg.selectArea(point);
 					}
 				}
 
-				render();
+				general.render();
 			} else {
-				const res = words.getClickedWord(point);
+				const res = general.wordsPkg.getClickedWord(point);
 
 				if (res) {
 					general.answer.push(res.word.content);
@@ -76,52 +59,52 @@ const useCreateCanvas = () => {
 		};
 
 		const handleMouseMove = (e: MouseEvent) => {
-			const point = common.getClick(e);
+			const point = general.getClick(e);
 
 			if (mode !== 'canvas') return;
 
 			if (eraser) {
 				if (pen) {
-					draw.handleErase(point);
+					general.drawPkg.handleErase(point);
 				} else {
-					words.handleErase(point);
+					general.wordsPkg.handleErase(point);
 				}
 			}
 
 			if (pen) {
-				draw.handleDraw(point);
+				general.drawPkg.handleDraw(point);
 			} else {
-				let ok = words.handleWords(point);
+				let ok = general.wordsPkg.handleWords(point);
 
 				if (!ok) {
-					tools.handleTools(point);
+					general.toolsPkg.handleTools(point);
 				}
 			}
 
-			render();
+			general.render();
 		};
 
 		const handleMouseUp = (e: MouseEvent) => {
-			const point = common.getClick(e);
+			const point = general.getClick(e);
 
 			if (mode !== 'canvas' || !general.action) return;
 
 			if (general.action === 'draw') {
-				draw.finishDraw(point);
+				general.drawPkg.finishDraw(point);
 			} else {
-				tools.finishTools();
+				general.toolsPkg.finishTools();
 			}
 
 			general.action = null;
 
-			render();
+			general.render();
 		};
 
 		const handleResize = () => {
 			canvas.width = canvas.getBoundingClientRect().width;
 			canvas.height = canvas.getBoundingClientRect().height;
 
-			render();
+			general.render();
 		};
 
 		handleResize();

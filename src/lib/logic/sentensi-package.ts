@@ -1,12 +1,9 @@
-export class SentensiPackage<T> {
-	canvas: HTMLCanvasElement;
-	ctx: CanvasRenderingContext2D;
+import { MainGeneral } from '@/lib/logic/packages/generals/main.general';
 
+export class SentensiPackage<T extends MainGeneral> {
 	general: T;
 
-	protected constructor(canvas: HTMLCanvasElement, general: T) {
-		this.canvas = canvas;
-		this.ctx = canvas.getContext('2d')!;
+	protected constructor(general: T) {
 		this.general = general;
 	}
 
@@ -15,12 +12,11 @@ export class SentensiPackage<T> {
 		return this.ctx.measureText(text);
 	}
 
-	getClick(e: MouseEvent) {
-		const rect = this.canvas.getBoundingClientRect();
+	get ctx(): CanvasRenderingContext2D {
+		return this.general._ctx!;
+	}
 
-		return {
-			x: e.clientX - rect.left,
-			y: e.clientY - rect.top,
-		};
+	get canvas(): HTMLCanvasElement {
+		return this.general._canvas!;
 	}
 }

@@ -17,7 +17,7 @@ const useCanvasMakerTextBox = (
 			let width = 0;
 
 			for (const letter of canvasTextBox[index]) {
-				width += general.common!.measure(letter, 64).width;
+				width += general.commonPkg.measure(letter, 64).width;
 			}
 
 			general.words.push({

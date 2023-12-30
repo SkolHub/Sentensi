@@ -9,7 +9,7 @@ import {
 	useRef,
 	useState,
 } from 'react';
-import { CreateGeneral } from '@/lib/logic/packages/generals/create-general';
+import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
 interface CreateContextModel {
 	color: string;
