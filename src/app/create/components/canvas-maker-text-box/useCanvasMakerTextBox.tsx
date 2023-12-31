@@ -43,6 +43,11 @@ const useCanvasMakerTextBox = (
 
 			general.action = 'move';
 
+			general.wordsPkg.wordHandlers.initMove(
+				general.words[general.words.length - 1],
+				{ x: 0, y: 0 }
+			);
+
 			general.details = {
 				point: { x: 0, y: 0 },
 				target: general.words[general.words.length - 1]

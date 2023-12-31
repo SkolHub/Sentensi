@@ -5,40 +5,17 @@ import { WordData } from '@/lib/logic/packages/words/word-data';
 import {
 	checkPointSide,
 	getPointOnCircle,
-	segmentsIntersect,
-	stretchAngle,
-	stretchLength
+	segmentsIntersect
 } from '@/lib/logic/math';
-import {
-	handleBend,
-	handleMove,
-	handleStretch,
-} from '@/lib/logic/packages/words/word-handlers';
-import { HandleBendModel, HandleMoveModel, HandleStretchModel } from '@/lib/logic/packages/words/models';
+import { WordHandler } from '@/lib/logic/packages/words/word-handler';
 
 export class WordsPackage extends SentensiPackage<CreateGeneral> {
 	sizingMode: 'stretch' | 'scale' = 'stretch';
 
+	wordHandlers: WordHandler = new WordHandler(this.general);
+
 	constructor(general: CreateGeneral) {
 		super(general);
-	}
-
-	static getLetterBox(
-		point: Point,
-		ang: number,
-		dAng: number,
-		width: number,
-		height: number
-	) {
-		// ang = rotation of letter, dAng = angle inside letter box determined by width and height
-		const radius = 0.5 * Math.sqrt(width ** 2 + height ** 2);
-
-		return {
-			A: getPointOnCircle(point, radius, Math.PI + ang + dAng),
-			B: getPointOnCircle(point, radius, ang - dAng),
-			C: getPointOnCircle(point, radius, ang + dAng),
-			D: getPointOnCircle(point, radius, Math.PI + ang - dAng)
-		};
 	}
 
 	getClickedWord(point: Point):
@@ -95,19 +72,16 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 			if (res.letter === 0) {
 				this.general.action = 'move';
 
-				this.general.details = { point };
+				this.wordHandlers.initMove(res.word, point);
 			} else if (res.letter === res.word.content.length - 1) {
-				this.general.action = 'stretch';
+				this.wordHandlers.initStretchOrScale(res.word, point);
 
-				this.general.details = {
-					length: stretchLength(res.word),
-					angle: stretchAngle(res.word)
-				};
+				this.general.action = this.sizingMode;
 			} else {
+				this.wordHandlers.initBend(res.word);
+
 				this.general.action = 'bend';
 			}
-
-			this.general.details.target = res.word;
 
 			return true;
 		}
@@ -118,25 +92,22 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 	handleWords(point: Point): boolean {
 		switch (this.general.action) {
 			case 'move':
-				handleMove(this.general.details as HandleMoveModel, point);
+				this.wordHandlers.handleMove(point);
 
 				return true;
 
 			case 'bend':
-				handleBend(this.general.details as HandleBendModel, point);
+				this.wordHandlers.handleBend(point);
 
 				return true;
 
 			case 'stretch':
-				handleStretch(
-					this.general.details as HandleStretchModel,
-					point,
-					this.sizingMode === 'stretch',
-					this.measure(
-						(this.general.details.target as Word).content,
-						(this.general.details.target as Word).fontSize
-					).width
-				);
+				this.wordHandlers.handleStretch(point);
+
+				return true;
+
+			case 'scale':
+				this.wordHandlers.handleScale(point);
 
 				return true;
 		}
@@ -234,5 +205,23 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 		for (const word of this.general.words) {
 			this.renderWord(word);
 		}
+	}
+
+	static getLetterBox(
+		point: Point,
+		ang: number,
+		dAng: number,
+		width: number,
+		height: number
+	) {
+		// ang = rotation of letter, dAng = angle inside letter box determined by width and height
+		const radius = 0.5 * Math.sqrt(width ** 2 + height ** 2);
+
+		return {
+			A: getPointOnCircle(radius, Math.PI + ang + dAng, point),
+			B: getPointOnCircle(radius, ang - dAng, point),
+			C: getPointOnCircle(radius, ang + dAng, point),
+			D: getPointOnCircle(radius, Math.PI + ang - dAng, point)
+		};
 	}
 }

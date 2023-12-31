@@ -1,11 +1,11 @@
-import { Point } from '../../models';
-import { getPointOnBezier, pyth } from '@/lib/logic/math';
+import { Point, Word } from '../../models';
+import { getPointOnBezier, getSlope, pyth } from '@/lib/logic/math';
 
 export const splitBezierIntoLengths = (
 	start: Point,
 	control: Point,
 	end: Point,
-	precision: number,
+	precision: number
 ) => {
 	const lengths = [];
 	let totalLength = 0;
@@ -23,7 +23,7 @@ export const splitBezierIntoLengths = (
 
 	return {
 		totalLength,
-		lengths,
+		lengths
 	};
 };
 
@@ -32,7 +32,7 @@ export const getPosAndAngle = (
 	control: Point,
 	end: Point,
 	t1: number,
-	t2: number,
+	t2: number
 ) => {
 	const P1 = getPointOnBezier(start, control, end, t1);
 	const P2 = getPointOnBezier(start, control, end, t2);
@@ -40,19 +40,30 @@ export const getPosAndAngle = (
 	if (P2.y <= P1.y && P2.x <= P1.x) {
 		return {
 			ang: Math.atan((P1.y - P2.y) / (P1.x - P2.x)) + Math.PI,
-			pos: P1,
+			pos: P1
 		};
 	}
 
 	if (P2.y >= P1.y && P2.x <= P1.x) {
 		return {
 			ang: Math.atan((P1.y - P2.y) / (P1.x - P2.x)) + Math.PI,
-			pos: P1,
+			pos: P1
 		};
 	}
 
 	return {
 		ang: Math.atan((P1.y - P2.y) / (P1.x - P2.x)),
-		pos: P1,
+		pos: P1
 	};
+};
+
+export const stretchAngle = (word: Word): number => {
+	return getSlope({x: 0, y: 0}, word.end) - getSlope({x: 0, y: 0}, word.control);
+};
+
+export const stretchLength = (word: Word): number => {
+	return Math.sqrt(
+		(word.control.x ** 2 + word.control.y ** 2) /
+			(word.end.x ** 2 + word.end.y ** 2)
+	);
 };

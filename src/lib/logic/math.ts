@@ -23,9 +23,9 @@ const getPointOnBezier = (
 };
 
 const getPointOnCircle = (
-	origin: Point,
 	radius: number,
-	angle: number
+	angle: number,
+	origin: Point = { x: 0, y: 0 }
 ): Point => {
 	return {
 		x: origin.x + radius * Math.cos(angle),
@@ -53,35 +53,8 @@ const checkPointSide = (P: Point, P1: Point, P2: Point): boolean => {
 	return (P2.x - P1.x) * (P.y - P1.y) - (P.x - P1.x) * (P2.y - P1.y) > 0;
 };
 
-const stretchAngle = (word: Word): number => {
-	return (
-		getSlope({ x: 0, y: 0 }, word.end) - getSlope({ x: 0, y: 0 }, word.control)
-	);
-};
-
-const stretchLength = (word: Word): number => {
-	return Math.sqrt(
-		(word.control.x ** 2 + word.control.y ** 2) /
-			(word.end.x ** 2 + word.end.y ** 2)
-	);
-};
-
 const getSlope = (A: Point, B: Point) => {
-	let slope = -Math.atan((A.y - B.y) / (A.x - B.x));
-
-	if (isNaN(slope)) {
-		slope = 0;
-	}
-
-	if (B.y <= A.y && B.x <= A.x) {
-		return slope + Math.PI;
-	}
-
-	if (B.y >= A.y && B.x <= A.x) {
-		return slope - Math.PI;
-	}
-
-	return slope;
+	return Math.atan2(A.y - B.y, A.x - B.x) + Math.PI;
 };
 
 const contained = (
@@ -205,8 +178,6 @@ export {
 	getPointOnBezier,
 	getPointOnCircle,
 	checkPointSide,
-	stretchAngle,
-	stretchLength,
 	getSlope,
 	getXOnCircle,
 	getYOnCircle,

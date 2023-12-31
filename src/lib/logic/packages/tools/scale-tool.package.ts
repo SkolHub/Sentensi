@@ -8,50 +8,48 @@ import {
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
 const InitialScaleTool: ScaleToolModel = {
-	thumb: {
-		x: -100,
-		y: -100
-	},
-	origin: {
-		x: -100,
-		y: -100
-	}
+	x: -100,
+	y: -100,
+	width: 0,
+	height: 0
 };
 
 export class ScaleToolPackage extends Tool<ScaleToolModel> {
-	static readonly ORIGIN_RADIUS = 2;
-	static readonly ORIGIN_COLOR = '#000000';
-
 	static readonly THUMB_WIDTH = 20;
-	static readonly THUMB_COLOR = '#000000';
+	static readonly THUMB_COLOR = '#FFFFFF';
+	static readonly THUMB_BORDER_COLOR = '#004B88';
+	static readonly THUMB_BORDER_WIDTH = 2;
 
 	constructor(general: CreateGeneral) {
 		super(InitialScaleTool, general);
 	}
 
-	render() {
-		this.ctx.fillStyle = ScaleToolPackage.THUMB_COLOR;
-
-		this.ctx.beginPath();
+	private renderCorner(x: number, y: number) {
 		this.ctx.rect(
-			this.state.thumb.x - ScaleToolPackage.THUMB_WIDTH / 2,
-			this.state.thumb.y - ScaleToolPackage.THUMB_WIDTH / 2,
+			x - ScaleToolPackage.THUMB_WIDTH / 2,
+			y - ScaleToolPackage.THUMB_WIDTH / 2,
 			ScaleToolPackage.THUMB_WIDTH,
 			ScaleToolPackage.THUMB_WIDTH
 		);
-		this.ctx.fill();
 
-		this.ctx.fillStyle = ScaleToolPackage.ORIGIN_COLOR;
+		this.ctx.fill();
+		this.ctx.stroke();
+	}
+
+	render() {
+		this.ctx.fillStyle = ScaleToolPackage.THUMB_COLOR;
+		this.ctx.strokeStyle = ScaleToolPackage.THUMB_BORDER_COLOR;
+		this.ctx.lineWidth = ScaleToolPackage.THUMB_BORDER_WIDTH;
 
 		this.ctx.beginPath();
-		this.ctx.arc(
-			this.state.origin.x,
-			this.state.origin.y,
-			ScaleToolPackage.ORIGIN_RADIUS,
-			0,
-			2 * Math.PI
+
+		this.renderCorner(this.state.x, this.state.y);
+		this.renderCorner(this.state.x + this.state.width, this.state.y);
+		this.renderCorner(this.state.x, this.state.y + this.state.height);
+		this.renderCorner(
+			this.state.x + this.state.width,
+			this.state.y + this.state.height
 		);
-		this.ctx.fill();
 	}
 
 	handleGroupScale(x: number) {
@@ -63,7 +61,6 @@ export class ScaleToolPackage extends Tool<ScaleToolModel> {
 
 		for (const word of details.origins) {
 			if (word.fontSize * mod < 55.59) {
-				console.log(word.fontSize, mod);
 				return;
 			}
 		}
@@ -82,17 +79,17 @@ export class ScaleToolPackage extends Tool<ScaleToolModel> {
 			word.fontSize = details.origins[index].fontSize * mod;
 		});
 
-		this.state.thumb = {
-			x: getXOnCircle(details.point.x, radius, -details.angle) - 5,
-			y: getYOnCircle(details.point.y, radius, -details.angle) - 5
-		};
+		// this.state.thumb = {
+		// 	x: getXOnCircle(details.point.x, radius, -details.angle) - 5,
+		// 	y: getYOnCircle(details.point.y, radius, -details.angle) - 5
+		// };
 	}
 
 	activate(point: Point): boolean {
 		return contained(
 			point,
-			this.state.thumb.x - ScaleToolPackage.THUMB_WIDTH / 2,
-			this.state.thumb.y - ScaleToolPackage.THUMB_WIDTH / 2,
+			this.state.x - ScaleToolPackage.THUMB_WIDTH / 2,
+			this.state.y - ScaleToolPackage.THUMB_WIDTH / 2,
 			ScaleToolPackage.THUMB_WIDTH,
 			ScaleToolPackage.THUMB_WIDTH
 		);

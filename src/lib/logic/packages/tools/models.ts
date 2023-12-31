@@ -22,16 +22,12 @@ export interface HandleGroupRotateModel {
 	angles: { startAngle: number; focusAngle: number; endAngle: number }[];
 }
 
-export interface ScaleToolModel {
-	thumb: {
-		x: number;
-		y: number;
-	};
-	origin: {
-		x: number;
-		y: number;
-	};
-}
+export type ScaleToolModel = {
+	x: number,
+	y: number,
+	width: number,
+	height: number
+};
 
 export interface HandleGroupScaleModel {
 	targets: Word[];
@@ -70,13 +66,6 @@ export interface HandleSelectModel {
 export interface HandleGroupMoveModel {
 	target: Word[];
 	point: Point;
-}
-
-export interface SelectBox {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
 }
 
 export type Subset<T> = {

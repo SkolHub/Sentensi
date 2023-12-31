@@ -3,6 +3,7 @@ import { ActivityType, LineModel, Point, Word } from '../../models';
 export type ActionType =
 	| 'move'
 	| 'stretch'
+	| 'scale'
 	| 'bend'
 	| 'select'
 	| 'groupMove'

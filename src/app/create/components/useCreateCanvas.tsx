@@ -3,6 +3,10 @@
 import { useContext, useEffect, useRef } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 
+const preventDefault = (e: Event) => {
+	e.preventDefault();
+}
+
 const useCreateCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -26,7 +30,11 @@ const useCreateCanvas = () => {
 
 		general.toolsPkg.reset();
 
+		general.wordsPkg.sizingMode = sizingMode;
+
 		const handleMouseDown = (e: MouseEvent) => {
+			if (e.button) return;
+
 			const point = general.getClick(e);
 
 			if (mode === 'canvas') {
@@ -59,6 +67,8 @@ const useCreateCanvas = () => {
 		};
 
 		const handleMouseMove = (e: MouseEvent) => {
+			if (e.button) return;
+
 			const point = general.getClick(e);
 
 			if (mode !== 'canvas') return;
@@ -85,6 +95,8 @@ const useCreateCanvas = () => {
 		};
 
 		const handleMouseUp = (e: MouseEvent) => {
+			if (e.button) return;
+
 			const point = general.getClick(e);
 
 			if (mode !== 'canvas' || !general.action) return;
@@ -113,6 +125,7 @@ const useCreateCanvas = () => {
 		window.addEventListener('mousemove', handleMouseMove);
 		window.addEventListener('mouseup', handleMouseUp);
 
+		canvas.addEventListener('contextmenu', preventDefault);
 		window.addEventListener('resize', handleResize);
 
 		return () => {
@@ -120,7 +133,8 @@ const useCreateCanvas = () => {
 			window.removeEventListener('mousemove', handleMouseMove);
 			window.removeEventListener('mouseup', handleMouseUp);
 
-			window.addEventListener('resize', handleResize);
+			canvas.removeEventListener('contextmenu', preventDefault);
+			window.removeEventListener('resize', handleResize);
 		};
 	}, [color, doubleColor, sizingMode, mode, setUpdater, updater, pen, eraser]);
 

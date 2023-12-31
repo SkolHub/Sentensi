@@ -6,10 +6,8 @@ import { ScaleToolPackage } from '@/lib/logic/packages/tools/scale-tool.package'
 import { Point, Word } from '@/lib/logic/models';
 import {
 	getMedium,
-	getSlope,
 	groupRotateAngles,
-	groupRotateLengths,
-	pyth
+	groupRotateLengths
 } from '@/lib/logic/math';
 
 class ToolsPackage extends SentensiPackage<CreateGeneral> {
@@ -41,7 +39,7 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 		if (this.scale.activate(point)) {
 			this.general.action = 'groupScale';
 
-			this.general.details = {
+			/*this.general.details = {
 				point: this.select.state,
 				angle: getSlope(this.select.state, {
 					x: this.select.state.x + this.select.state.width,
@@ -56,7 +54,7 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 				target: this.general.details.target
 			};
 
-			this.scale.state = { ...this.scale.state };
+			this.scale.state = { ...this.scale.state };*/
 
 			this.rotate.reset();
 			this.select.reset();
@@ -161,12 +159,7 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 						}
 					};
 
-					this.scale.state = {
-						thumb: {
-							x: this.select.state.x + this.select.state.width,
-							y: this.select.state.y + this.select.state.height
-						}
-					};
+					this.scale.state = this.select.state;
 				} else {
 					this.reset();
 				}
