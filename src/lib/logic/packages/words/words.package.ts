@@ -7,12 +7,12 @@ import {
 	getPointOnCircle,
 	segmentsIntersect
 } from '@/lib/logic/math';
-import { WordHandler } from '@/lib/logic/packages/words/word-handler';
+import { WordHandlerPackage } from '@/lib/logic/packages/words/word-handler.package';
 
 export class WordsPackage extends SentensiPackage<CreateGeneral> {
 	sizingMode: 'stretch' | 'scale' = 'stretch';
 
-	wordHandlers: WordHandler = new WordHandler(this.general);
+	wordHandlers: WordHandlerPackage = new WordHandlerPackage(this.general);
 
 	constructor(general: CreateGeneral) {
 		super(general);
@@ -187,16 +187,6 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 
 		const { pos, ang } = wordData.getPosAndAngle();
 		this.displayLetter(pos, ang, word.content[word.content.length - 1]);
-
-		/*this.ctx.strokeStyle = 'red';
-
-		this.ctx.moveTo(word.start.x, word.start.y);
-		this.ctx.quadraticCurveTo(
-			word.control.x + word.start.x,
-			word.control.y + word.start.y,
-			word.end.x + word.start.x,
-			word.end.y + word.start.y
-		);*/
 
 		this.ctx.stroke();
 	}

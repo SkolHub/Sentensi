@@ -1,18 +1,13 @@
 import { Point } from '@/lib/logic/models';
 import { MainGeneral } from '@/lib/logic/packages/generals/main.general';
-import {
-	ActionDetails,
-	ActionType,
-	PageModel
-} from '@/lib/logic/packages/generals/models';
+import { ActionType, PageModel } from '@/lib/logic/packages/generals/models';
 import { CommonPackage } from '@/lib/logic/packages/common/common.package';
 import { ToolsPackage } from '@/lib/logic/packages/tools/tools.package';
-import { WordsPackage } from '@/lib/logic/packages/words/words';
+import { WordsPackage } from '@/lib/logic/packages/words/words.package';
 import { DrawPackage } from '@/lib/logic/packages/drawing/draw.package';
 
 export class CreateGeneral extends MainGeneral {
 	action: ActionType = null;
-	details: ActionDetails = {};
 
 	lastDrawPoint: Point = { x: 0, y: 0 };
 
@@ -28,7 +23,7 @@ export class CreateGeneral extends MainGeneral {
 	clearPage() {
 		this.pages[this.currentPage].words = [];
 		this.pages[this.currentPage].lines = [];
-		this.render!();
+		this.render();
 	}
 
 	createPage() {

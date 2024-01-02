@@ -1,14 +1,10 @@
-import { Point, Word } from '@/lib/logic/models';
-import { Tool } from '@/lib/logic/packages/tools/tool';
-import { contained } from '@/lib/logic/math';
-import {
-	HandleGroupMoveModel,
-	HandleSelectModel,
-	SelectToolModel
-} from '@/lib/logic/packages/tools/models';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
+import { SelectToolModel } from '@/lib/logic/packages/tools/models';
+import { Tool } from '@/lib/logic/packages/tools/tool';
+import { Point, Word } from '@/lib/logic/models';
+import { contained } from '@/lib/logic/math';
 import { WordData } from '@/lib/logic/packages/words/word-data';
-import { WordsPackage } from '@/lib/logic/packages/words/words';
+import { WordsPackage } from '@/lib/logic/packages/words/words.package';
 
 const InitialSelectTool: SelectToolModel = {
 	x: -100,
@@ -24,6 +20,10 @@ export class SelectTool extends Tool<SelectToolModel> {
 
 	static readonly SELECT_EXTRA_SPACE = 30;
 
+	point!: Point;
+
+	targets!: Word[];
+
 	constructor(general: CreateGeneral) {
 		super(InitialSelectTool, general);
 	}
@@ -35,40 +35,36 @@ export class SelectTool extends Tool<SelectToolModel> {
 
 		this.ctx.beginPath();
 		this.ctx.rect(
-			this.state.x,
-			this.state.y,
-			this.state.width,
-			this.state.height
+			Math.round(this.state.x),
+			Math.round(this.state.y),
+			Math.round(this.state.width),
+			Math.round(this.state.height)
 		);
 
 		this.ctx.fill();
 		this.ctx.stroke();
 	}
 
-	handleSelect(point: Point) {
-		const details = this.general.details as HandleSelectModel;
+	initSelect(point: Point) {
+		this.point = point;
 
 		this.state = {
-			x: Math.min(details.point.x, point.x),
-			y: Math.min(details.point.y, point.y),
-			width: Math.abs(details.point.x - point.x),
-			height: Math.abs(details.point.y - point.y)
+			...point,
+			width: 0,
+			height: 0
 		};
 	}
 
-	handleGroupMove(point: Point) {
-		const details: HandleGroupMoveModel = this.general
-			.details as HandleGroupMoveModel;
-
-		for (const word of details.target) {
-			word.start.x += point.x - details.point.x;
-			word.start.y += point.y - details.point.y;
-		}
-
-		details.point = point;
+	handleSelect(point: Point) {
+		this.state = {
+			x: Math.min(this.point.x, point.x),
+			y: Math.min(this.point.y, point.y),
+			width: Math.abs(this.point.x - point.x),
+			height: Math.abs(this.point.y - point.y)
+		};
 	}
 
-	finishSelect(): Word[] {
+	finishSelect() {
 		let top = Number.MAX_SAFE_INTEGER,
 			bottom = 0,
 			left = Number.MAX_SAFE_INTEGER,
@@ -186,13 +182,32 @@ export class SelectTool extends Tool<SelectToolModel> {
 		return newWords;
 	}
 
-	activate(point: Point): boolean {
-		return contained(
-			point,
-			this.state.x,
-			this.state.y,
-			this.state.width,
-			this.state.height
-		);
+	initGroupMove(point: Point): boolean {
+		if (
+			contained(
+				point,
+				this.state.x,
+				this.state.y,
+				this.state.width,
+				this.state.height
+			)
+		) {
+			this.targets = this.general.toolsPkg.targets;
+
+			this.point = point;
+
+			return true;
+		}
+
+		return false;
+	}
+
+	handleGroupMove(point: Point) {
+		for (const word of this.targets) {
+			word.start.x += point.x - this.point.x;
+			word.start.y += point.y - this.point.y;
+		}
+
+		this.point = point;
 	}
 }

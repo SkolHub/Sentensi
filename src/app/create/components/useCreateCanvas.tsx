@@ -2,6 +2,7 @@
 
 import { useContext, useEffect, useRef } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
+import { Point } from '@/lib/logic/models';
 
 const preventDefault = (e: Event) => {
 	e.preventDefault();
@@ -32,27 +33,35 @@ const useCreateCanvas = () => {
 
 		general.wordsPkg.sizingMode = sizingMode;
 
+		const mouseDownCanvas = (point: Point) => {
+			if (eraser) {
+				general.drawPkg.checkErase(point);
+				return;
+			}
+
+			if (pen) {
+				general.drawPkg.checkDraw(point);
+				return;
+			}
+
+			if (general.toolsPkg.checkTools(point)) {
+				return;
+			}
+
+			if (general.wordsPkg.checkWords(point)) {
+				return;
+			}
+
+			general.toolsPkg.selectArea(point);
+		}
+
 		const handleMouseDown = (e: MouseEvent) => {
 			if (e.button) return;
 
 			const point = general.getClick(e);
 
 			if (mode === 'canvas') {
-				if (eraser) {
-					general.drawPkg.checkErase(point);
-				} else if (pen) {
-					general.drawPkg.checkDraw(point);
-				} else {
-					let ok = general.toolsPkg.checkTools(point);
-
-					if (!ok) {
-						ok = general.wordsPkg.checkWords(point);
-					}
-
-					if (!ok) {
-						general.toolsPkg.selectArea(point);
-					}
-				}
+				mouseDownCanvas(point);
 
 				general.render();
 			} else {
@@ -67,11 +76,9 @@ const useCreateCanvas = () => {
 		};
 
 		const handleMouseMove = (e: MouseEvent) => {
-			if (e.button) return;
+			if (e.button || mode !== 'canvas') return;
 
 			const point = general.getClick(e);
-
-			if (mode !== 'canvas') return;
 
 			if (eraser) {
 				if (pen) {
@@ -79,14 +86,10 @@ const useCreateCanvas = () => {
 				} else {
 					general.wordsPkg.handleErase(point);
 				}
-			}
-
-			if (pen) {
+			} else if (pen) {
 				general.drawPkg.handleDraw(point);
 			} else {
-				let ok = general.wordsPkg.handleWords(point);
-
-				if (!ok) {
+				if (!general.wordsPkg.handleWords(point)) {
 					general.toolsPkg.handleTools(point);
 				}
 			}
@@ -95,11 +98,9 @@ const useCreateCanvas = () => {
 		};
 
 		const handleMouseUp = (e: MouseEvent) => {
-			if (e.button) return;
+			if (e.button || mode !== 'canvas' || !general.action) return;
 
 			const point = general.getClick(e);
-
-			if (mode !== 'canvas' || !general.action) return;
 
 			if (general.action === 'draw') {
 				general.drawPkg.finishDraw(point);

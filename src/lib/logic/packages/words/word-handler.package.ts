@@ -7,7 +7,7 @@ import {
 	stretchLength
 } from '@/lib/logic/packages/words/word-math';
 
-export class WordHandler extends SentensiPackage<CreateGeneral> {
+export class WordHandlerPackage extends SentensiPackage<CreateGeneral> {
 	target!: Word;
 	point!: Point;
 

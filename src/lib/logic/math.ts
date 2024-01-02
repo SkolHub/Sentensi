@@ -84,14 +84,14 @@ const getMedium = (words: Word[]): Point => {
 const groupRotateAngles = (
 	words: Word[],
 	origin: Point
-): { startAngle: number; focusAngle: number; endAngle: number }[] => {
+): { start: number; control: number; end: number }[] => {
 	return words.map((word) => ({
-		startAngle: -getSlope(origin, word.start),
-		focusAngle: -getSlope(origin, {
+		start: getSlope(origin, word.start),
+		control: getSlope(origin, {
 			x: word.start.x + word.control.x,
 			y: word.start.y + word.control.y
 		}),
-		endAngle: -getSlope(origin, {
+		end: getSlope(origin, {
 			x: word.start.x + word.end.x,
 			y: word.start.y + word.end.y
 		})
@@ -101,14 +101,14 @@ const groupRotateAngles = (
 const groupRotateLengths = (
 	words: Word[],
 	origin: Point
-): { startDistance: number; focusDistance: number; endDistance: number }[] => {
+): { start: number; control: number; end: number }[] => {
 	return words.map((word) => ({
-		startDistance: pyth(origin, word.start),
-		focusDistance: pyth(origin, {
+		start: pyth(origin, word.start),
+		control: pyth(origin, {
 			x: word.start.x + word.control.x,
 			y: word.start.y + word.control.y
 		}),
-		endDistance: pyth(origin, {
+		end: pyth(origin, {
 			x: word.start.x + word.end.x,
 			y: word.start.y + word.end.y
 		})

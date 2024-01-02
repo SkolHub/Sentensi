@@ -1,26 +1,19 @@
 import { SentensiPackage } from '@/lib/logic/sentensi-package';
 import { RotateToolPackage } from '@/lib/logic/packages/tools/rotate-tool.package';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
-import { SelectTool } from '@/lib/logic/packages/tools/select-tool.package';
 import { ScaleToolPackage } from '@/lib/logic/packages/tools/scale-tool.package';
 import { Point, Word } from '@/lib/logic/models';
-import {
-	getMedium,
-	groupRotateAngles,
-	groupRotateLengths
-} from '@/lib/logic/math';
+import { SelectTool } from '@/lib/logic/packages/tools/select-tool.package';
 
 class ToolsPackage extends SentensiPackage<CreateGeneral> {
-	select: SelectTool;
-	scale: ScaleToolPackage;
-	rotate: RotateToolPackage;
+	select: SelectTool = new SelectTool(this.general);
+	scale: ScaleToolPackage = new ScaleToolPackage(this.general);
+	rotate: RotateToolPackage = new RotateToolPackage(this.general);
+
+	targets!: Word[];
 
 	constructor(general: CreateGeneral) {
 		super(general);
-
-		this.select = new SelectTool(general);
-		this.scale = new ScaleToolPackage(general);
-		this.rotate = new RotateToolPackage(general);
 	}
 
 	reset() {
@@ -36,25 +29,8 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 	}
 
 	checkTools(point: Point): boolean {
-		if (this.scale.activate(point)) {
+		if (this.scale.initGroupScale(point)) {
 			this.general.action = 'groupScale';
-
-			/*this.general.details = {
-				point: this.select.state,
-				angle: getSlope(this.select.state, {
-					x: this.select.state.x + this.select.state.width,
-					y: this.select.state.y + this.select.state.height
-				}),
-				distance: pyth(this.select.state, {
-					x: this.select.state.x + this.select.state.width,
-					y: this.select.state.y + this.select.state.height
-				}),
-				length: this.scale.state.thumb.x + this.select.state.width,
-				origins: this.general.details.target as Word[],
-				target: this.general.details.target
-			};
-
-			this.scale.state = { ...this.scale.state };*/
 
 			this.rotate.reset();
 			this.select.reset();
@@ -62,21 +38,8 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 			return true;
 		}
 
-		if (this.rotate.activate(point)) {
+		if (this.rotate.iniGroupRotate(point)) {
 			this.general.action = 'groupRotate';
-
-			this.general.details = {
-				point: this.rotate.state.track,
-				angles: groupRotateAngles(
-					this.general.details.target as Word[],
-					this.rotate.state.track
-				),
-				lengths: groupRotateLengths(
-					this.general.details.target as Word[],
-					this.rotate.state.track
-				),
-				target: this.general.details.target
-			};
 
 			this.select.reset();
 			this.scale.reset();
@@ -84,10 +47,8 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 			return true;
 		}
 
-		if (this.select.activate(point)) {
+		if (this.select.initGroupMove(point)) {
 			this.general.action = 'groupMove';
-
-			this.general.details.point = point;
 
 			this.reset();
 
@@ -99,19 +60,10 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 		return false;
 	}
 
-	selectArea(point: Point): boolean {
+	selectArea(point: Point) {
 		this.general.action = 'select';
 
-		this.general.details.point = point;
-
-		this.select.state = {
-			x: point.x,
-			y: point.y,
-			width: 0,
-			height: 0
-		};
-
-		return true;
+		this.select.initSelect(point);
 	}
 
 	handleTools(point: Point): boolean {
@@ -132,7 +84,7 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 				return true;
 
 			case 'groupScale':
-				this.scale.handleGroupScale(point.x);
+				this.scale.handleGroupScale(point);
 
 				return true;
 		}
@@ -146,10 +98,13 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 				const selectedWords = this.select.finishSelect();
 
 				if (selectedWords.length) {
-					this.general.details.target = selectedWords;
+					this.targets = selectedWords;
 
 					this.rotate.state = {
-						track: getMedium(selectedWords)
+						track: {
+							x: this.select.state.x + this.select.state.width / 2,
+							y: this.select.state.y + this.select.state.height / 2
+						}
 					};
 
 					this.rotate.state = {
@@ -159,7 +114,10 @@ class ToolsPackage extends SentensiPackage<CreateGeneral> {
 						}
 					};
 
-					this.scale.state = this.select.state;
+					this.scale.state = {
+						x: this.select.state.x + this.select.state.width,
+						y: this.select.state.y + this.select.state.height
+					};
 				} else {
 					this.reset();
 				}

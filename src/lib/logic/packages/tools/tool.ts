@@ -1,4 +1,3 @@
-import { Point } from '../../models';
 import { SentensiPackage } from '@/lib/logic/sentensi-package';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 import { Subset } from '@/lib/logic/packages/tools/models';
@@ -26,8 +25,4 @@ export abstract class Tool<T> extends SentensiPackage<CreateGeneral>{
 	reset(): void {
 		this._state = { ...this.initialState };
 	}
-
-	abstract render(): void;
-
-	abstract activate(point: Point): boolean;
 }

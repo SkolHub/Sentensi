@@ -1,16 +1,15 @@
-import { Point } from '@/lib/logic/models';
+import { Point, Word } from '@/lib/logic/models';
 import { Tool } from '@/lib/logic/packages/tools/tool';
 import {
 	getPointOnCircle,
 	getSlope,
 	getXOnCircle,
 	getYOnCircle,
+	groupRotateAngles,
+	groupRotateLengths,
 	pyth
 } from '@/lib/logic/math';
-import {
-	HandleGroupRotateModel,
-	RotateToolModel
-} from '@/lib/logic/packages/tools/models';
+import { RotateToolModel } from '@/lib/logic/packages/tools/models';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
 const InitialRotateTool: RotateToolModel = {
@@ -31,6 +30,16 @@ export class RotateToolPackage extends Tool<RotateToolModel> {
 	static readonly TRACK_RADIUS = 60;
 	static readonly TRACK_COLOR = '#000000';
 	static readonly TRACK_WIDTH = 1;
+
+	targets!: Word[];
+
+	lengths!: {
+		start: number;
+		control: number;
+		end: number;
+	}[];
+
+	angles!: { start: number; control: number; end: number }[];
 
 	constructor(general: CreateGeneral) {
 		super(InitialRotateTool, general);
@@ -62,66 +71,69 @@ export class RotateToolPackage extends Tool<RotateToolModel> {
 		this.ctx.fill();
 	}
 
-	handleGroupRotate(point: Point) {
-		const details = this.general.details as HandleGroupRotateModel;
+	iniGroupRotate(point: Point): boolean {
+		if (pyth(point, this.state.thumb) <= RotateToolPackage.THUMB_RADIUS) {
+			this.targets = this.general.toolsPkg.targets;
+			this.angles = groupRotateAngles(this.targets, this.state.track);
+			this.lengths = groupRotateLengths(this.targets, this.state.track);
 
-		let ang = -getSlope(details.point, point);
+			return true;
+		}
+
+		return false;
+	}
+
+	handleGroupRotate(point: Point) {
+		let ang = getSlope(this.state.track, point);
 
 		this.state.thumb = getPointOnCircle(
-			details.point,
 			RotateToolPackage.TRACK_RADIUS,
-			ang
+			ang,
+			this.state.track
 		);
 
 		ang += Math.PI / 2;
 
-		details.target.forEach((word, index) => {
-			const x = getXOnCircle(
-				details.point.x,
-				details.lengths[index].startDistance,
-				details.angles[index].startAngle + ang
+		this.targets.forEach((word, index) => {
+			word.start.x = getXOnCircle(
+				this.state.track.x,
+				this.lengths[index].start,
+				this.angles[index].start + ang
 			);
 
-			const y = getYOnCircle(
-				details.point.y,
-				details.lengths[index].startDistance,
-				details.angles[index].startAngle + ang
+			word.start.y = getYOnCircle(
+				this.state.track.y,
+				this.lengths[index].start,
+				this.angles[index].start + ang
 			);
-
-			word.start.x = x;
-			word.start.y = y;
 
 			word.control.x =
 				getXOnCircle(
-					details.point.x,
-					details.lengths[index].focusDistance,
-					details.angles[index].focusAngle + ang
-				) - x;
+					this.state.track.x,
+					this.lengths[index].control,
+					this.angles[index].control + ang
+				) - word.start.x;
 
 			word.control.y =
 				getYOnCircle(
-					details.point.y,
-					details.lengths[index].focusDistance,
-					details.angles[index].focusAngle + ang
-				) - y;
+					this.state.track.y,
+					this.lengths[index].control,
+					this.angles[index].control + ang
+				) - word.start.y;
 
 			word.end.x =
 				getXOnCircle(
-					details.point.x,
-					details.lengths[index].endDistance,
-					details.angles[index].endAngle + ang
-				) - x;
+					this.state.track.x,
+					this.lengths[index].end,
+					this.angles[index].end + ang
+				) - word.start.x;
 
 			word.end.y =
 				getYOnCircle(
-					details.point.y,
-					details.lengths[index].endDistance,
-					details.angles[index].endAngle + ang
-				) - y;
+					this.state.track.y,
+					this.lengths[index].end,
+					this.angles[index].end + ang
+				) - word.start.y;
 		});
-	}
-
-	activate(point: Point): boolean {
-		return pyth(point, this.state.thumb) <= RotateToolPackage.THUMB_RADIUS;
 	}
 }

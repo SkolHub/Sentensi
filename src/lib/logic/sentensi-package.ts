@@ -13,10 +13,10 @@ export class SentensiPackage<T extends MainGeneral> {
 	}
 
 	get ctx(): CanvasRenderingContext2D {
-		return this.general._ctx!;
+		return this.general._ctx;
 	}
 
 	get canvas(): HTMLCanvasElement {
-		return this.general._canvas!;
+		return this.general._canvas;
 	}
 }
