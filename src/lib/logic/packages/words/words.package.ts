@@ -5,6 +5,10 @@ import { WordData } from '@/lib/logic/packages/words/word-data';
 import {
 	checkPointSide,
 	getPointOnCircle,
+	getSlope,
+	getXOnCircle,
+	getYOnCircle,
+	pyth,
 	segmentsIntersect
 } from '@/lib/logic/math';
 import { WordHandlerPackage } from '@/lib/logic/packages/words/word-handler.package';
@@ -160,8 +164,46 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 		this.general.lastDrawPoint = point;
 	}
 
-	displayLetter(pos: Point, ang: number, letter: string) {
+	displayLetter(pos: Point, ang: number, letter: string, word: Word) {
+		this.ctx.fillStyle = 'black';
+
 		this.ctx.save();
+		this.ctx.translate(pos.x, pos.y - 2);
+		this.ctx.rotate(ang);
+		this.ctx.fillText(letter, 0, 0);
+		this.ctx.restore();
+
+		this.ctx.fillStyle = 'red';
+
+		this.ctx.save();
+
+		this.ctx.moveTo(word.start.x, word.start.y);
+		this.ctx.quadraticCurveTo(
+			word.control.x + word.start.x,
+			word.control.y + word.start.y,
+			word.end.x + word.start.x,
+			word.end.y + word.start.y
+		);
+
+		const radius = pyth(word.end);
+		const clipAng = getSlope({ x: 0, y: 0 }, word.end);
+
+		this.ctx.lineTo(
+			getXOnCircle(word.start.x, radius * 2, clipAng),
+			getYOnCircle(word.start.y, radius * 2, clipAng)
+		);
+
+		this.ctx.lineTo(
+			getXOnCircle(word.start.x, radius, clipAng + Math.PI / 4),
+			getYOnCircle(word.start.y, radius, clipAng + Math.PI / 4)
+		);
+
+		this.ctx.lineTo(
+			getXOnCircle(word.start.x + word.end.x, radius * 2, clipAng + Math.PI),
+			getYOnCircle(word.start.y + word.end.y, radius * 2, clipAng + Math.PI)
+		);
+
+		this.ctx.clip();
 		this.ctx.translate(pos.x, pos.y - 2);
 		this.ctx.rotate(ang);
 		this.ctx.fillText(letter, 0, 0);
@@ -180,15 +222,13 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 
 		for (let i = 0; i < word.content.length - 1; i++) {
 			const { pos, ang } = wordData.getPosAndAngle();
-			this.displayLetter(pos, ang, word.content[i]);
+			this.displayLetter(pos, ang, word.content[i], word);
 
 			wordData.nextLetter();
 		}
 
 		const { pos, ang } = wordData.getPosAndAngle();
-		this.displayLetter(pos, ang, word.content[word.content.length - 1]);
-
-		this.ctx.stroke();
+		this.displayLetter(pos, ang, word.content[word.content.length - 1], word);
 	}
 
 	render() {
