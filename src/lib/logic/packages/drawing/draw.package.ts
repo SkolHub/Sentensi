@@ -6,6 +6,8 @@ import { pointToLineDistance, pyth, segmentsIntersect } from '@/lib/logic/math';
 export class DrawPackage extends SentensiPackage<CreateGeneral> {
 	static readonly MIN_POINT_DISTANCE = 8;
 
+	lineWidth!: number;
+
 	constructor(general: CreateGeneral) {
 		super(general);
 	}
@@ -34,7 +36,14 @@ export class DrawPackage extends SentensiPackage<CreateGeneral> {
 				}
 			} else {
 				for (let j = 1; j < points.length; j++) {
-					if (segmentsIntersect(this.general.lastDrawPoint, point,points[j - 1], points[j])) {
+					if (
+						segmentsIntersect(
+							this.general.lastDrawPoint,
+							point,
+							points[j - 1],
+							points[j]
+						)
+					) {
 						this.general.lines.splice(i, 1);
 						return;
 					}
@@ -50,8 +59,8 @@ export class DrawPackage extends SentensiPackage<CreateGeneral> {
 
 		this.general.lines.push({
 			points: [point, point],
-			width: 5,
-			color: '#000000'
+			width: this.lineWidth,
+			color: this.general.color
 		});
 	}
 
@@ -63,7 +72,9 @@ export class DrawPackage extends SentensiPackage<CreateGeneral> {
 		if (this.general.lines.length) {
 			const points = this.general.lines[this.general.lines.length - 1].points;
 
-			if (pyth(points[points.length - 1], point) > DrawPackage.MIN_POINT_DISTANCE) {
+			if (
+				pyth(points[points.length - 1], point) > DrawPackage.MIN_POINT_DISTANCE
+			) {
 				this.general.lines[this.general.lines.length - 1].points.push(point);
 			}
 		}
@@ -75,14 +86,11 @@ export class DrawPackage extends SentensiPackage<CreateGeneral> {
 
 	render() {
 		this.general.lines.forEach((line, index) => {
-			this.ctx.lineWidth = line.width;
-			this.ctx.strokeStyle = line.color;
-			this.ctx.lineCap = 'round';
-
 			this.ctx.beginPath();
-			this.ctx.moveTo(line.points[0].x, line.points[0].y);
 
 			if (line.points.length < 3) {
+				this.ctx.fillStyle = line.color;
+
 				this.ctx.arc(
 					line.points[0].x,
 					line.points[0].y,
@@ -97,6 +105,13 @@ export class DrawPackage extends SentensiPackage<CreateGeneral> {
 			}
 
 			let i;
+
+			this.ctx.lineWidth = line.width;
+			this.ctx.strokeStyle = line.color;
+			this.ctx.lineCap = 'round';
+
+			this.ctx.beginPath();
+			this.ctx.moveTo(line.points[0].x, line.points[0].y);
 
 			for (i = 1; i < line.points.length - 1; i++) {
 				this.ctx.quadraticCurveTo(

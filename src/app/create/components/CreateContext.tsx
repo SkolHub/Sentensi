@@ -7,7 +7,7 @@ import {
 	ReactNode,
 	SetStateAction,
 	useRef,
-	useState,
+	useState
 } from 'react';
 import { CreateGeneral } from '@/lib/logic/packages/generals/create.general';
 
@@ -26,6 +26,8 @@ interface CreateContextModel {
 	setPen: Dispatch<SetStateAction<boolean>>;
 	eraser: boolean;
 	setEraser: Dispatch<SetStateAction<boolean>>;
+	lineWidth: number;
+	setLineWidth: Dispatch<SetStateAction<number>>;
 	generalRef: MutableRefObject<CreateGeneral>;
 	canvasTextBox: string[];
 	setCanvasTextBox: Dispatch<SetStateAction<string[]>>;
@@ -36,11 +38,11 @@ interface CreateContextModel {
 }
 
 export const CreateContext = createContext<CreateContextModel | undefined>(
-	undefined,
+	undefined
 );
 
 export const CreateContextProvider = ({
-	children,
+	children
 }: {
 	children: ReactNode;
 }) => {
@@ -51,6 +53,7 @@ export const CreateContextProvider = ({
 	const [mode, setMode] = useState<'canvas' | 'text'>('canvas');
 	const [pen, setPen] = useState<boolean>(false);
 	const [eraser, setEraser] = useState<boolean>(false);
+	const [lineWidth, setLineWidth] = useState(5);
 
 	const generalRef = useRef<CreateGeneral>(new CreateGeneral());
 
@@ -77,6 +80,8 @@ export const CreateContextProvider = ({
 				setPen,
 				eraser,
 				setEraser,
+				lineWidth,
+				setLineWidth,
 				generalRef,
 				canvasTextBox,
 				setCanvasTextBox,

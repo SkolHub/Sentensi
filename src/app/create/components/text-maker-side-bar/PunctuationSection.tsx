@@ -2,7 +2,7 @@ import styles from '@/app/create/page.module.scss';
 import SimpleButton from '@/components/SimpleButton/SimpleButton';
 import Button from '@/components/Button/Button';
 import { Glue, Text } from '../../../../../public/icons/icons-module';
-import { useContext } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 
 const symbols = ['.', '?', ';', ',', '!', ':', '"', "'", '-'];
@@ -13,7 +13,7 @@ const PunctuationSection = () => {
 
 	const general = generalRef.current;
 
-	const handleGlueClick = () => {
+	const handleGlueClick = useCallback(() => {
 		const sel = selected != -1 ? selected : general.answer.length - 1;
 
 		if (general.answer.length && sel != 0) {
@@ -28,9 +28,9 @@ const PunctuationSection = () => {
 			setUpdater(!updater);
 			setSelected(-1);
 		}
-	};
+	}, [selected, updater]);
 
-	const handleCapitaliseClick = () => {
+	const handleCapitaliseClick = useCallback(() => {
 		const sel = selected != -1 ? selected : general.answer.length - 1;
 
 		if (general.answer.length) {
@@ -54,41 +54,51 @@ const PunctuationSection = () => {
 			setUpdater(!updater);
 			setSelected(-1);
 		}
-	};
+	}, [selected, updater]);
 
-	return (
-		<div className="section">
-			<div className={styles.symbols}>
-				{symbols.map((symbol: string, index: number) => (
-					<SimpleButton
-						onClick={() => {
-							if (general.answer.length) {
-								const sel = selected === -1 ? general.answer.length - 1 : selected;
-								general.answer[sel] += symbol;
+	const handlePunctuationClick = useCallback(
+		(symbol: string) => {
+			if (general.answer.length) {
+				const sel = selected === -1 ? general.answer.length - 1 : selected;
+				general.answer[sel] += symbol;
 
-								setSelected(-1);
+				setSelected(-1);
 
-								setUpdater(!updater);
-							}
-						}}
-						symbol={symbol}
-						key={index}
-					/>
-				))}
+				setUpdater(!updater);
+			}
+		},
+		[selected, updater]
+	);
+
+	return useMemo(
+		() => (
+			<div className="section">
+				<div className={styles.symbols}>
+					{symbols.map((symbol: string, index: number) => (
+						<SimpleButton
+							onClick={() => {
+								handlePunctuationClick(symbol);
+							}}
+							symbol={symbol}
+							key={index}
+						/>
+					))}
+				</div>
+				<Button
+					onClick={handleGlueClick}
+					title={'Glue'}
+					Logo={Glue}
+					active={true}
+				/>
+				<Button
+					onClick={handleCapitaliseClick}
+					title={'Capitalise'}
+					Logo={Text}
+					active={true}
+				/>
 			</div>
-			<Button
-				onClick={handleGlueClick}
-				title={'Glue'}
-				Logo={Glue}
-				active={true}
-			/>
-			<Button
-				onClick={handleCapitaliseClick}
-				title={'Capitalise'}
-				Logo={Text}
-				active={true}
-			/>
-		</div>
+		),
+		[]
 	);
 };
 export default PunctuationSection;

@@ -6,7 +6,7 @@ import { Point } from '@/lib/logic/models';
 
 const preventDefault = (e: Event) => {
 	e.preventDefault();
-}
+};
 
 const useCreateCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -20,7 +20,8 @@ const useCreateCanvas = () => {
 		setUpdater,
 		updater,
 		pen,
-		eraser
+		eraser,
+		lineWidth
 	} = useContext(CreateContext)!;
 
 	useEffect(() => {
@@ -28,6 +29,9 @@ const useCreateCanvas = () => {
 		const general = generalRef.current;
 
 		general.canvas = canvas;
+		general.color = color;
+		general.wordsPkg.doubleColor = doubleColor;
+		general.drawPkg.lineWidth = lineWidth;
 
 		general.toolsPkg.reset();
 
@@ -44,16 +48,12 @@ const useCreateCanvas = () => {
 				return;
 			}
 
-			if (general.toolsPkg.checkTools(point)) {
-				return;
-			}
+			if (general.toolsPkg.checkTools(point)) return;
 
-			if (general.wordsPkg.checkWords(point)) {
-				return;
-			}
+			if (general.wordsPkg.checkWords(point)) return;
 
 			general.toolsPkg.selectArea(point);
-		}
+		};
 
 		const handleMouseDown = (e: MouseEvent) => {
 			if (e.button) return;
@@ -108,14 +108,18 @@ const useCreateCanvas = () => {
 				general.toolsPkg.finishTools();
 			}
 
-			general.action = null;
+			if (general.action !== 'color') {
+				general.action = null;
+			}
 
 			general.render();
 		};
 
 		const handleResize = () => {
-			canvas.width = canvas.getBoundingClientRect().width;
-			canvas.height = canvas.getBoundingClientRect().height;
+			const zoom = window.devicePixelRatio;
+
+			canvas.width = canvas.getBoundingClientRect().width * zoom;
+			canvas.height = canvas.getBoundingClientRect().height * zoom;
 
 			general.render();
 		};
@@ -137,7 +141,7 @@ const useCreateCanvas = () => {
 			canvas.removeEventListener('contextmenu', preventDefault);
 			window.removeEventListener('resize', handleResize);
 		};
-	}, [color, doubleColor, sizingMode, mode, setUpdater, updater, pen, eraser]);
+	}, [color, doubleColor, sizingMode, mode, updater, pen, eraser, lineWidth]);
 
 	return {
 		canvasRef,

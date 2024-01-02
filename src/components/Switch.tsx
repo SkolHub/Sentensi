@@ -1,10 +1,15 @@
 'use client';
 
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 import { Switch, switchClasses } from '@mui/joy';
 
-const CustomSwitch = () => {
-	const [checked, setChecked] = useState<boolean>(false);
+const CustomSwitch = ({
+	checked,
+	setChecked
+}: {
+	checked: boolean,
+	setChecked: Dispatch<SetStateAction<boolean>>
+}) => {
 	return (
 		<Switch
 			checked={checked}

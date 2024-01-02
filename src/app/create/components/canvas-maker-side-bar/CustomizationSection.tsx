@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import {
 	Eraser,
@@ -34,7 +34,10 @@ const CustomizationSection = () => {
 		setPen,
 		eraser,
 		setEraser,
-		setFontSize
+		setFontSize,
+		fontSize,
+		lineWidth,
+		setLineWidth
 	} = useContext(CreateContext)!;
 
 	const handleStretchClick = () => {
@@ -52,7 +55,7 @@ const CustomizationSection = () => {
 		setEraser(!eraser);
 	};
 
-	const handleSlider = (
+	const handleFontSize = (
 		_event: Event,
 		value: number | number[],
 		_activeThumb: number
@@ -60,29 +63,58 @@ const CustomizationSection = () => {
 		setFontSize(value as number);
 	};
 
-	return (
-		<div className="section">
-			<Button onClick={handleStretchClick} title={title} Logo={logo} active />
-			<label style={{ userSelect: 'none' }}>Font size</label>
-			<ThemeProvider theme={muiTheme}>
-				<Slider
-					onChange={handleSlider}
-					defaultValue={3}
-					min={1}
-					max={4}
-					step={1}
-					valueLabelDisplay="auto"
-					marks
+	const handleLineWidth = (
+		_event: Event,
+		value: number | number[],
+		_activeThumb: number
+	) => {
+		setLineWidth(value as number);
+	};
+
+	return useMemo(
+		() => (
+			<div className="section">
+				<Button onClick={handleStretchClick} title={title} Logo={logo} active />
+				<label style={{ userSelect: 'none' }}>
+					{pen ? 'Line width' : 'Font size'}
+				</label>
+				<ThemeProvider theme={muiTheme}>
+					{pen ? (
+						<Slider
+							onChange={handleLineWidth}
+							value={lineWidth}
+							min={2}
+							max={30}
+							step={1}
+							valueLabelDisplay="auto"
+						/>
+					) : (
+						<Slider
+							onChange={handleFontSize}
+							value={fontSize}
+							min={1}
+							max={4}
+							step={1}
+							valueLabelDisplay="auto"
+							marks
+						/>
+					)}
+				</ThemeProvider>
+				<Button
+					onClick={handlePenClick}
+					title={'Pen'}
+					Logo={Pen}
+					active={pen}
 				/>
-			</ThemeProvider>
-			<Button onClick={handlePenClick} title={'Pen'} Logo={Pen} active={pen} />
-			<Button
-				onClick={handleEraserClick}
-				title={'Eraser'}
-				Logo={Eraser}
-				active={eraser}
-			/>
-		</div>
+				<Button
+					onClick={handleEraserClick}
+					title={'Eraser'}
+					Logo={Eraser}
+					active={eraser}
+				/>
+			</div>
+		),
+		[pen, eraser, fontSize, lineWidth]
 	);
 };
 

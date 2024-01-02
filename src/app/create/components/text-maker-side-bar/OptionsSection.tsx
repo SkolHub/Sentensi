@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import Button from '@/components/Button/Button';
 import {
@@ -12,7 +12,8 @@ import {
 import Counter from '@/app/create/components/text-maker-side-bar/Counter';
 
 const OptionsSection = () => {
-	const { setMode, generalRef, updater, setUpdater } = useContext(CreateContext)!;
+	const { setMode, generalRef, updater, setUpdater } =
+		useContext(CreateContext)!;
 	const [value, setValue] = useState<number>(
 		generalRef.current.currentPage + 1
 	);
@@ -64,31 +65,34 @@ const OptionsSection = () => {
 		setVal(generalRef.current.currentPage + 1);
 	};
 
-	return (
-		<div className="section">
-			<Counter
-				onChange={handleChange}
-				onBlur={handleBlur}
-				onPlus={handlePlus}
-				onMinus={handleMinus}
-				value={value}
-			/>
-			<Button onClick={handleNewPage} title={'New page'} Logo={New} active />
-			<Button
-				onClick={handleDeletePage}
-				title={'Delete page'}
-				Logo={Trash}
-				color={'#EB445A'}
-				active
-			/>
-			<Button
-				onClick={handleCanvasMakerClick}
-				title={'Canvas maker'}
-				Logo={Canvas}
-				active
-			/>
-			<Button title={'Save'} Logo={Save} active />
-		</div>
+	return useMemo(
+		() => (
+			<div className="section">
+				<Counter
+					onChange={handleChange}
+					onBlur={handleBlur}
+					onPlus={handlePlus}
+					onMinus={handleMinus}
+					value={value}
+				/>
+				<Button onClick={handleNewPage} title={'New page'} Logo={New} active />
+				<Button
+					onClick={handleDeletePage}
+					title={'Delete page'}
+					Logo={Trash}
+					color={'#EB445A'}
+					active
+				/>
+				<Button
+					onClick={handleCanvasMakerClick}
+					title={'Canvas maker'}
+					Logo={Canvas}
+					active
+				/>
+				<Button title={'Save'} Logo={Save} active />
+			</div>
+		),
+		[]
 	);
 };
 

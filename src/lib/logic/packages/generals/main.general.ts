@@ -14,7 +14,7 @@ export abstract class MainGeneral {
 				lines: [],
 				type: 'Remember and Write',
 				answer: []
-			},
+			}
 		];
 	}
 
@@ -38,9 +38,11 @@ export abstract class MainGeneral {
 	getClick(e: MouseEvent) {
 		const rect = this._canvas.getBoundingClientRect();
 
+		const zoom = window.devicePixelRatio;
+
 		return {
-			x: e.clientX - rect.left,
-			y: e.clientY - rect.top,
+			x: (e.clientX - rect.left) * zoom,
+			y: (e.clientY - rect.top) * zoom
 		};
 	}
 

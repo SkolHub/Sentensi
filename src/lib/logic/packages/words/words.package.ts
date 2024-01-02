@@ -15,6 +15,7 @@ import { WordHandlerPackage } from '@/lib/logic/packages/words/word-handler.pack
 
 export class WordsPackage extends SentensiPackage<CreateGeneral> {
 	sizingMode: 'stretch' | 'scale' = 'stretch';
+	doubleColor!: boolean;
 
 	wordHandlers: WordHandlerPackage = new WordHandlerPackage(this.general);
 
@@ -73,6 +74,17 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 		const res = this.getClickedWord(point);
 
 		if (res) {
+			if (this.general.action === 'color') {
+				if (this.doubleColor) {
+					res.word.color.bottom = res.word.color.top;
+					res.word.color.top = this.general.color;
+				} else {
+					res.word.color.top = res.word.color.bottom = this.general.color;
+				}
+
+				return true;
+			}
+
 			if (res.letter === 0) {
 				this.general.action = 'move';
 
@@ -165,7 +177,7 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 	}
 
 	displayLetter(pos: Point, ang: number, letter: string, word: Word) {
-		this.ctx.fillStyle = 'black';
+		this.ctx.fillStyle = word.color.top;
 
 		this.ctx.save();
 		this.ctx.translate(pos.x, pos.y - 2);
@@ -173,7 +185,7 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 		this.ctx.fillText(letter, 0, 0);
 		this.ctx.restore();
 
-		this.ctx.fillStyle = 'red';
+		this.ctx.fillStyle = word.color.bottom;
 
 		this.ctx.save();
 
@@ -211,7 +223,6 @@ export class WordsPackage extends SentensiPackage<CreateGeneral> {
 	}
 
 	renderWord(word: Word) {
-		this.ctx.fillStyle = word.color.top;
 		this.ctx.font = `${word.fontSize}px Whiteboard`;
 		this.ctx.textBaseline = 'middle';
 		this.ctx.textAlign = 'center';

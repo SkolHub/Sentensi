@@ -16,6 +16,8 @@ export class CreateGeneral extends MainGeneral {
 	wordsPkg: WordsPackage = new WordsPackage(this);
 	drawPkg: DrawPackage = new DrawPackage(this);
 
+	color!: string;
+
 	constructor() {
 		super();
 	}

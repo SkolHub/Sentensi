@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import Canvas from './Canvas';
 import { CreateContext } from './CreateContext';
 import styles from '../page.module.scss';
@@ -16,8 +16,8 @@ import TextMakerTextBox from '@/app/create/components/text-maker-text-box/TextMa
 const CreateLayout = () => {
 	const { mode } = useContext(CreateContext)!;
 
-	return (
-		<div className={styles.create}>
+	return useMemo(() => {
+		return <div className={styles.create}>
 			<div className="board">
 				<Canvas />
 				{mode === 'canvas' ? <CanvasMakerTextBox /> : <TextMakerTextBox />}
@@ -37,8 +37,8 @@ const CreateLayout = () => {
 					</>
 				)}
 			</div>
-		</div>
-	);
+		</div>;
+	}, [mode]);
 };
 
 export default CreateLayout;
