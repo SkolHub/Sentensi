@@ -8,3 +8,5 @@ export { default as Save } from './Save.svg';
 export { default as Text } from './Text.svg';
 export { default as Trash } from './Trash.svg';
 export { default as Glue } from './Glue.svg';
+export { default as X } from './X.svg';
+export { default as Checkmark } from './Checkmark.svg';

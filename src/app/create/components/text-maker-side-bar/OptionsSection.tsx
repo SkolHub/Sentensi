@@ -92,7 +92,7 @@ const OptionsSection = () => {
 				<Button title={'Save'} Logo={Save} active />
 			</div>
 		),
-		[]
+		[updater]
 	);
 };
 

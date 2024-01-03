@@ -14,7 +14,7 @@ const Button = (props: {
 	return (
 		<div
 			onClick={onClick}
-			className={`${styles.button} ${active ? styles.active : styles.inactive}`}
+			className={`button ${styles.button} ${active ? styles.active : styles.inactive}`}
 		>
 			<Logo />
 			<label

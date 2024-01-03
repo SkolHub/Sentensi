@@ -1,4 +1,4 @@
-import { ActivityType, LineModel, Point, Word } from '../../models';
+import { ActivityData, ActivityType, LineModel, Point, Word } from '../../models';
 
 export type ActionType =
 	| 'move'
@@ -40,6 +40,7 @@ export interface PageModel {
 	lines: LineModel[];
 	answer: string[];
 	type: ActivityType;
+	data: ActivityData;
 }
 
 export interface CreateGeneralOptionsModel {

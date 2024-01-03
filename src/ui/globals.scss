@@ -3,6 +3,7 @@
 body, html {
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 .board {
@@ -129,6 +130,36 @@ input[type=number] {
     label {
       display: none;
       gap: 0;
+    }
+  }
+}
+
+.questionRight {
+  .button {
+    background: #2DD36F;
+    border: none;
+
+    &:hover {
+      background: #2DD36F;
+    }
+
+    label {
+      color: white;
+    }
+  }
+}
+
+.questionWrong {
+  .button {
+    background: #EB445A;
+    border: none;
+
+    &:hover {
+      background: #EB445A;
+    }
+
+    label {
+      color: white;
     }
   }
 }

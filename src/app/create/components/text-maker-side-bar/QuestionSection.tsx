@@ -1,5 +1,91 @@
+import { Input, Option, Select } from '@mui/joy';
+import { SyntheticEvent, useContext, useMemo } from 'react';
+import { CreateContext } from '@/app/create/components/CreateContext';
+import Button from '@/components/Button/Button';
+import { Checkmark, X } from '../../../../../public/icons/icons-module';
+
 const QuestionSection = () => {
-	return <div className="section"></div>;
+	const { generalRef, updater, setUpdater } = useContext(CreateContext)!;
+
+	const handleSelectChange = (
+		event: SyntheticEvent | null,
+		newValue: 'r&w' | 'l&w' | 'r|w' | null
+	) => {
+		generalRef.current.pages[generalRef.current.currentPage].type = newValue!;
+
+		switch (newValue) {
+			case 'l&w':
+				generalRef.current.pages[generalRef.current.currentPage].data = '';
+				break;
+
+			case 'r&w':
+				generalRef.current.pages[generalRef.current.currentPage].data = null;
+				break;
+
+			case 'r|w':
+				generalRef.current.pages[generalRef.current.currentPage].data = true;
+		}
+
+		setUpdater(!updater);
+	};
+
+	return useMemo(
+		() => (
+			<div
+				className={`section ${
+					generalRef.current.activityType === 'r|w'
+						? generalRef.current.activityData
+							? 'questionRight'
+							: 'questionWrong'
+						: ''
+				}`}
+				style={{
+					flexGrow: 0
+				}}
+			>
+				<Select
+					onChange={handleSelectChange}
+					value={generalRef.current.activityType}
+				>
+					<Option value="r&w">Remember & Write</Option>
+					<Option value="l&w">Listen & Write</Option>
+					<Option value="r|w">Right or Wrong</Option>
+				</Select>
+				{
+					{
+						'r&w': <></>,
+						'l&w': (
+							<Input
+								value={generalRef.current.activityData as string}
+								onChange={(e) => {
+									generalRef.current.pages[
+										generalRef.current.currentPage
+									].data = e.target.value;
+
+									setUpdater(!updater);
+								}}
+								placeholder="Sound url…"
+							/>
+						),
+						'r|w': (
+							<Button
+								onClick={() => {
+									generalRef.current.pages[
+										generalRef.current.currentPage
+									].data = !generalRef.current.activityData;
+									setUpdater(!updater);
+								}}
+								title={generalRef.current.activityData ? 'Right' : 'Wrong'}
+								active={false}
+								Logo={generalRef.current.activityData ? Checkmark : X}
+							/>
+						)
+					}[generalRef.current.pages[generalRef.current.currentPage].type]
+				}
+			</div>
+		),
+		[updater]
+	);
 };
 
-export default  QuestionSection;
+export default QuestionSection;

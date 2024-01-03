@@ -12,7 +12,8 @@ export abstract class MainGeneral {
 			{
 				words: [],
 				lines: [],
-				type: 'Remember and Write',
+				type: 'r&w',
+				data: null,
 				answer: []
 			}
 		];
@@ -28,6 +29,14 @@ export abstract class MainGeneral {
 
 	get lines(): LineModel[] {
 		return this.pages[this.currentPage].lines;
+	}
+
+	get activityType(): 'l&w' | 'r&w' | 'r|w' {
+		return this.pages[this.currentPage].type;
+	}
+
+	get activityData(): string | boolean | null {
+		return this.pages[this.currentPage].data;
 	}
 
 	set canvas(canvas: HTMLCanvasElement) {

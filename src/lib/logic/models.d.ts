@@ -24,10 +24,9 @@ export interface Word {
 	content: string;
 }
 
-export type ActivityType =
-	| 'Right or Wrong'
-	| 'Listen and Write'
-	| 'Remember and Write';
+export type ActivityType = 'l&w' | 'r&w' | 'r|w';
+
+export type ActivityData = string | boolean | null;
 
 export interface LineModel {
 	color: string;
