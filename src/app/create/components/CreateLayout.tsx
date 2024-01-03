@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import Canvas from './Canvas';
 import { CreateContext } from './CreateContext';
 import styles from '../page.module.scss';
@@ -12,32 +12,47 @@ import QuestionSection from '@/app/create/components/text-maker-side-bar/Questio
 import PunctuationSection from '@/app/create/components/text-maker-side-bar/PunctuationSection';
 import CanvasMakerTextBox from '@/app/create/components/canvas-maker-text-box/CanvasMakerTextBox';
 import TextMakerTextBox from '@/app/create/components/text-maker-text-box/TextMakerTextBox';
+import { useSearchParams } from 'next/navigation';
 
 const CreateLayout = () => {
-	const { mode } = useContext(CreateContext)!;
+	const { mode, generalRef, setSavedName } = useContext(CreateContext)!;
+	const router = useSearchParams();
+
+	useEffect(() => {
+		if (router.get('id')) {
+			fetch(`/api/lesson/${router.get('id')}/`).then((res) => {
+				res.json().then((data) => {
+					generalRef.current.pages = data.content.data;
+					setSavedName(data.name);
+				});
+			});
+		}
+	}, []);
 
 	return useMemo(() => {
-		return <div className={styles.create}>
-			<div className="board">
-				<Canvas />
-				{mode === 'canvas' ? <CanvasMakerTextBox /> : <TextMakerTextBox />}
+		return (
+			<div className={styles.create}>
+				<div className="board">
+					<Canvas />
+					{mode === 'canvas' ? <CanvasMakerTextBox /> : <TextMakerTextBox />}
+				</div>
+				<div className="side-bar">
+					{mode === 'canvas' ? (
+						<>
+							<ColorSection />
+							<CustomizationSection />
+							<OtherSection />
+						</>
+					) : (
+						<>
+							<PunctuationSection />
+							<QuestionSection />
+							<OptionsSection />
+						</>
+					)}
+				</div>
 			</div>
-			<div className="side-bar">
-				{mode === 'canvas' ? (
-					<>
-						<ColorSection />
-						<CustomizationSection />
-						<OtherSection />
-					</>
-				) : (
-					<>
-						<PunctuationSection />
-						<QuestionSection />
-						<OptionsSection />
-					</>
-				)}
-			</div>
-		</div>;
+		);
 	}, [mode]);
 };
 
