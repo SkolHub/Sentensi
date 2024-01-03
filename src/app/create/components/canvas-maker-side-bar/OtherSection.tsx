@@ -20,20 +20,22 @@ const OtherSection = () => {
 	return useMemo(
 		() => (
 			<div className={`section ${styles.otherSection}`}>
-				<Button onClick={handleSaveClick} title={'Save'} Logo={Save} active />
 				<Button
 					onClick={handleTextMakerClick}
 					title={'Text maker'}
 					Logo={Text}
 					active
 				/>
-				<Button
-					onClick={handleClearClick}
-					title={'Clear page'}
-					Logo={Trash}
-					active={true}
-					color={'#EB445A'}
-				/>
+				<div className='other-section-1'>
+					<Button onClick={handleSaveClick} title={'Save'} Logo={Save} active />
+					<Button
+						onClick={handleClearClick}
+						title={'Clear page'}
+						Logo={Trash}
+						active={true}
+						color={'#EB445A'}
+					/>
+				</div>
 			</div>
 		),
 		[]

@@ -84,23 +84,18 @@ const PunctuationSection = () => {
 						/>
 					))}
 				</div>
-				<div style={{
-					display: 'flex',
-					gap: '1rem'
-				}}>
 				<Button
 					onClick={handleGlueClick}
-					title={''}
+					title={'Glue'}
 					Logo={Glue}
 					active={true}
 				/>
 				<Button
 					onClick={handleCapitaliseClick}
-					title={''}
+					title={'Capitalize'}
 					Logo={Text}
 					active={true}
 				/>
-				</div>
 			</div>
 		),
 		[]

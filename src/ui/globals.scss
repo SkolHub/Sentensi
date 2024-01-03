@@ -132,6 +132,11 @@ input[type=number] {
       gap: 0;
     }
   }
+
+  .simple-button {
+    width: 2rem !important;
+    height: 2rem !important;
+  }
 }
 
 .questionRight {
@@ -160,6 +165,55 @@ input[type=number] {
 
     label {
       color: white;
+    }
+  }
+}
+
+.other-section-1 {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media screen and (max-height: 850px) {
+  .other-section-1 {
+    flex-direction: row;
+
+    .button {
+      justify-content: center;
+    }
+
+    div {
+      label {
+        display: none;
+      }
+    }
+  }
+
+  .simple-button {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+}
+
+@media screen and (max-height: 650px) {
+  .button {
+    label {
+      font-size: .6rem;
+    }
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    padding: .2rem !important;
+  }
+
+  .side-bar {
+    .section {
+      padding: .6rem !important;
+      gap: .3rem !important;
     }
   }
 }

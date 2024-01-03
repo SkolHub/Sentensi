@@ -23,8 +23,14 @@ import { Modal } from '@mui/joy';
 import { useRouter } from 'next/navigation';
 
 const OptionsSection = () => {
-	const { setMode, generalRef, updater, setUpdater, savedName: name, setSavedName: setName } =
-		useContext(CreateContext)!;
+	const {
+		setMode,
+		generalRef,
+		updater,
+		setUpdater,
+		savedName: name,
+		setSavedName: setName
+	} = useContext(CreateContext)!;
 	const [value, setValue] = useState<number>(
 		generalRef.current.currentPage + 1
 	);
@@ -94,21 +100,34 @@ const OptionsSection = () => {
 					onMinus={handleMinus}
 					value={value}
 				/>
-				<Button onClick={handleNewPage} title={'New page'} Logo={New} active />
-				<Button
-					onClick={handleDeletePage}
-					title={'Delete page'}
-					Logo={Trash}
-					color={'#EB445A'}
-					active
-				/>
-				<Button
-					onClick={handleCanvasMakerClick}
-					title={'Canvas maker'}
-					Logo={Canvas}
-					active
-				/>
-				<Button onClick={handleSave} title={'Save'} Logo={Save} active />
+				<div style={{
+					flexGrow: '1'
+				}} className="other-section-1">
+					<Button
+						onClick={handleNewPage}
+						title={'New page'}
+						Logo={New}
+						active
+					/>
+					<Button
+						onClick={handleDeletePage}
+						title={'Delete page'}
+						Logo={Trash}
+						color={'#EB445A'}
+						active
+					/>
+				</div>
+				<div style={{
+					flexGrow: '1'
+				}} className="other-section-1">
+					<Button
+						onClick={handleCanvasMakerClick}
+						title={'Canvas maker'}
+						Logo={Canvas}
+						active
+					/>
+					<Button onClick={handleSave} title={'Save'} Logo={Save} active />
+				</div>
 				<Modal open={open} onClose={() => setOpen(false)}>
 					<ModalDialog variant="outlined" role="alertdialog">
 						<DialogTitle>Save</DialogTitle>
