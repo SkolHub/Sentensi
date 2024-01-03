@@ -2,6 +2,7 @@ import { useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import Button from '@/components/Button/Button';
 import { Save, Text, Trash } from '../../../../../public/icons/icons-module';
+import styles from './canvas-maker-side-bar.module.scss';
 
 const OtherSection = () => {
 	const { setMode, generalRef } = useContext(CreateContext)!;
@@ -18,7 +19,7 @@ const OtherSection = () => {
 
 	return useMemo(
 		() => (
-			<div className="section">
+			<div className={`section ${styles.otherSection}`}>
 				<Button onClick={handleSaveClick} title={'Save'} Logo={Save} active />
 				<Button
 					onClick={handleTextMakerClick}

@@ -1,4 +1,5 @@
 'use client';
+
 import { createContext, ReactNode, useEffect, useState } from 'react';
 
 export const fontSizes = [1, 4 / 3, 2, 4];
@@ -10,19 +11,21 @@ export const TextBoxContextProvider = ({
 }: {
 	children: ReactNode;
 }) => {
-	const [zoom, setZoom] = useState<number>(window.devicePixelRatio);
+	const [zoom, setZoom] = useState<number>(1);
 
 	useEffect(() => {
 		const handleResize = () => {
 			setZoom(window.devicePixelRatio);
 		};
 
+		handleResize();
+
 		window.addEventListener('resize', handleResize);
 
 		return () => {
 			window.removeEventListener('resize', handleResize);
 		};
-	}, [zoom]);
+	}, []);
 
 	return (
 		<TextBoxContext.Provider value={zoom}>{children}</TextBoxContext.Provider>

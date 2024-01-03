@@ -1,0 +1,21 @@
+.otherSection {
+  * {
+    flex-grow: 1;
+  }
+}
+
+.customizationSection {
+  * {
+    flex-grow: 1;
+  }
+}
+
+.colorSection {
+  flex-grow: 0 !important;
+}
+
+.doubleColor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

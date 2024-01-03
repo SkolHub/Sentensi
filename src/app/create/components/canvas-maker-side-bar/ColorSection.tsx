@@ -1,4 +1,4 @@
-import styles from '../../page.module.scss';
+import styles from './canvas-maker-side-bar.module.scss';
 import CustomSwitch from '@/components/Switch';
 import ColorPicker from '@/app/create/components/canvas-maker-side-bar/color-picker/ColorPicker';
 import { useContext, useMemo } from 'react';
@@ -9,7 +9,7 @@ const ColorSection = () => {
 
 	return useMemo(
 		() => (
-			<div className="section">
+			<div className={`section ${styles.colorSection}`}>
 				<ColorPicker />
 				<div className={styles.doubleColor}>
 					<label style={{ userSelect: 'none' }}>Double color</label>
