@@ -37,6 +37,8 @@ interface CreateContextModel {
 	setSelected: Dispatch<SetStateAction<number>>;
 	savedName: string;
 	setSavedName: Dispatch<SetStateAction<string>>;
+	isSaveOpen: boolean;
+	setIsSaveOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const CreateContext = createContext<CreateContextModel | undefined>(
@@ -66,6 +68,7 @@ export const CreateContextProvider = ({
 	const [selected, setSelected] = useState<number>(-1);
 
 	const [savedName, setSavedName] = useState<string>('');
+	const [isSaveOpen, setIsSaveOpen] = useState<boolean>(false);
 
 	return (
 		<CreateContext.Provider
@@ -94,7 +97,9 @@ export const CreateContextProvider = ({
 				selected,
 				setSelected,
 				savedName,
-				setSavedName
+				setSavedName,
+				isSaveOpen,
+				setIsSaveOpen
 			}}
 		>
 			{children}

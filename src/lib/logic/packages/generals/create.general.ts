@@ -57,8 +57,4 @@ export class CreateGeneral extends MainGeneral {
 		this.wordsPkg.render();
 		this.toolsPkg.render();
 	}
-
-	export(): string {
-		return JSON.stringify(this.pages);
-	}
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import './page.module.scss';
+import Link from 'next/link';
 
 export default function Home() {
 	const [data, setData] = useState<any[]>([]);
@@ -24,10 +24,15 @@ export default function Home() {
 			}}
 		>
 			<header>
-				<button>Create</button>
-				{
-					data.map(el => <p>{el.id}. {el.name}: <a href={`/play/?id=${el.id}`}>Play</a>; <a>View Results</a></p>)
-				}
+				<Link href={'/create'}>
+					<button>Create</button>
+				</Link>
+				{data.map((el) => (
+					<p>
+						{el.id}. {el.name}: <a href={`/play/?id=${el.id}`}>Play</a>;{' '}
+						<a>View Results</a>
+					</p>
+				))}
 			</header>
 			<div></div>
 		</main>

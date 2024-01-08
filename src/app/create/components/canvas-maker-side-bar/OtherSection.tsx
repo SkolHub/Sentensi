@@ -4,13 +4,15 @@ import { Save, Text, Trash } from '../../../../../public/icons/icons-module';
 import Button from '@/components/Button';
 
 const OtherSection = () => {
-	const { setMode, generalRef } = useContext(CreateContext)!;
+	const { setMode, generalRef, setIsSaveOpen } = useContext(CreateContext)!;
 
 	const handleTextMakerClick = () => {
 		setMode('text');
 	};
 
-	const handleSaveClick = () => {};
+	const handleSaveClick = () => {
+		setIsSaveOpen(true);
+	};
 
 	const handleClearClick = () => {
 		generalRef.current.clearPage();

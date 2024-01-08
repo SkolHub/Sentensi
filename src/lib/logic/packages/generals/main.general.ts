@@ -56,4 +56,39 @@ export abstract class MainGeneral {
 	}
 
 	abstract render(): void;
+
+	export(): PageModel[] {
+		for (const page of this.pages) {
+			for (const line of page.lines) {
+				let ptStr = '';
+
+				for (const point of line.points) {
+					ptStr += `${point.x} ${point.y} `;
+				}
+
+				line.points = ptStr.slice(0, -1) as any;
+			}
+		}
+
+		return this.pages;
+	}
+
+	import(pages: PageModel[]) {
+		this.pages = pages;
+
+		for (const page of this.pages) {
+			for (const line of page.lines) {
+				let points = (line.points as any as string).split(' ');
+
+				line.points = [];
+
+				for (let i = 0; i < points.length; i += 2) {
+					line.points.push({
+						x: +points[i],
+						y: +points[i + 1]
+					});
+				}
+			}
+		}
+	}
 }

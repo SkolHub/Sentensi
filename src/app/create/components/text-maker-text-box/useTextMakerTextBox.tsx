@@ -4,13 +4,15 @@ import { CreateContext } from '@/app/create/components/CreateContext';
 const punctuation = ['.', '?', ';', ',', '!', ':', '"', "'", '-'];
 
 const useTextMakerTextBox = () => {
-	const { generalRef, updater, setUpdater, selected, setSelected } = useContext(CreateContext)!;
+	const { generalRef, updater, setUpdater, selected, setSelected, isSaveOpen } = useContext(CreateContext)!;
 
 	useEffect(() => {
 
 		const general = generalRef.current;
 
 		const handleKeyDown = (e: KeyboardEvent) => {
+			if (isSaveOpen) return;
+
 			const sel = selected === -1 ? general.answer.length - 1 : selected;
 
 			if (e.key === 'Backspace' && general.answer.length) {
@@ -31,7 +33,7 @@ const useTextMakerTextBox = () => {
 		return () => {
 			window.removeEventListener('keydown', handleKeyDown);
 		}
-	}, [updater, setUpdater, selected, setSelected]);
+	}, [updater, setUpdater, selected, setSelected, isSaveOpen]);
 }
 
 export default useTextMakerTextBox;

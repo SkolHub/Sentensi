@@ -7,7 +7,7 @@ const useCanvasMakerTextBox = (
 	words: string[],
 	setWords: Dispatch<SetStateAction<string[]>>
 ) => {
-	const { generalRef, canvasTextBox, setCanvasTextBox, pen } =
+	const { generalRef, canvasTextBox, setCanvasTextBox, pen, isSaveOpen } =
 		useContext(CreateContext)!;
 
 	const handleTextBoxWordClick = (index: number, _e: MouseEvent) => {
@@ -59,6 +59,8 @@ const useCanvasMakerTextBox = (
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
+			if (isSaveOpen) return;
+
 			switch (e.key) {
 				case ' ':
 					if (words[words.length - 1] != '') {
@@ -88,7 +90,7 @@ const useCanvasMakerTextBox = (
 		return () => {
 			window.removeEventListener('keydown', handleKeyDown);
 		};
-	}, [words, setWords]);
+	}, [words, setWords, isSaveOpen]);
 
 	return handleTextBoxWordClick;
 };

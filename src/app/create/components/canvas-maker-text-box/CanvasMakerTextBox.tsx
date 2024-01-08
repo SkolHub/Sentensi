@@ -1,5 +1,3 @@
-'use client';
-
 import { useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import useTextBox from '@/app/create/components/canvas-maker-text-box/useCanvasMakerTextBox';

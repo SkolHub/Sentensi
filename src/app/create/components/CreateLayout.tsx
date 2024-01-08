@@ -3,7 +3,6 @@
 import { useContext, useEffect, useMemo } from 'react';
 import Canvas from './Canvas';
 import { CreateContext } from './CreateContext';
-import styles from '../page.module.scss';
 import ColorSection from '@/app/create/components/canvas-maker-side-bar/ColorSection';
 import CustomizationSection from '@/app/create/components/canvas-maker-side-bar/CustomizationSection';
 import OtherSection from '@/app/create/components/canvas-maker-side-bar/OtherSection';
@@ -22,7 +21,7 @@ const CreateLayout = () => {
 		if (router.get('id')) {
 			fetch(`/api/lesson/${router.get('id')}/`).then((res) => {
 				res.json().then((data) => {
-					generalRef.current.pages = data.content.data;
+					generalRef.current.import(data.content.data);
 					setSavedName(data.name);
 				});
 			});

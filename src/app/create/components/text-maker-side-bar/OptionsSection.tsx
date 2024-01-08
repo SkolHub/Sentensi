@@ -1,16 +1,5 @@
-'use client';
-
 import { useContext, useMemo, useState } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
-import {
-	DialogActions,
-	DialogContent,
-	DialogTitle,
-	Divider,
-	Input,
-	Button as MUIButton,
-	ModalDialog
-} from '@mui/joy';
 import {
 	Canvas,
 	New,
@@ -18,8 +7,6 @@ import {
 	Trash
 } from '../../../../../public/icons/icons-module';
 import Counter from '@/app/create/components/text-maker-side-bar/Counter';
-import { Modal } from '@mui/joy';
-import { useRouter } from 'next/navigation';
 import Button from '@/components/Button';
 
 const OptionsSection = () => {
@@ -28,16 +15,11 @@ const OptionsSection = () => {
 		generalRef,
 		updater,
 		setUpdater,
-		savedName: name,
-		setSavedName: setName
+		setIsSaveOpen
 	} = useContext(CreateContext)!;
 	const [value, setValue] = useState<number>(
 		generalRef.current.currentPage + 1
 	);
-
-	const [open, setOpen] = useState<boolean>(false);
-
-	const router = useRouter();
 
 	const handleCanvasMakerClick = () => {
 		setMode('canvas');
@@ -87,7 +69,7 @@ const OptionsSection = () => {
 	};
 
 	const handleSave = () => {
-		setOpen(true);
+		setIsSaveOpen(true);
 	};
 
 	return useMemo(
@@ -128,54 +110,9 @@ const OptionsSection = () => {
 					/>
 					<Button onClick={handleSave} title={'Save'} Logo={Save} active />
 				</div>
-				<Modal open={open} onClose={() => setOpen(false)}>
-					<ModalDialog variant="outlined" role="alertdialog">
-						<DialogTitle>Save</DialogTitle>
-						<Divider />
-						<DialogContent>
-							Provide a name for the lesson
-							<Input
-								value={name}
-								onChange={(e) => setName(e.target.value)}
-								placeholder="Lesson name"
-							/>
-						</DialogContent>
-						<DialogActions>
-							<MUIButton
-								variant="solid"
-								color="primary"
-								onClick={() => {
-									setOpen(false);
-									fetch(`/api/lesson`, {
-										method: 'POST',
-										headers: {
-											'Content-Type': 'application/json'
-										},
-										body: JSON.stringify({
-											data: generalRef.current.pages,
-											name: name
-										})
-									}).then(() => {
-										router.push('/');
-									});
-								}}
-								disabled={name.length === 0}
-							>
-								Save
-							</MUIButton>
-							<MUIButton
-								variant="plain"
-								color="neutral"
-								onClick={() => setOpen(false)}
-							>
-								Cancel
-							</MUIButton>
-						</DialogActions>
-					</ModalDialog>
-				</Modal>
 			</div>
 		),
-		[updater, open, name]
+		[updater, open]
 	);
 };
 

@@ -13,6 +13,7 @@ datasource db {
 model Lesson {
   id      Int            @id @default(autoincrement())
   name    String
+  label   String
   content LessonContent?
 }
 
@@ -20,4 +21,10 @@ model LessonContent {
   id     Int    @id @default(autoincrement())
   data   Json
   lesson Lesson @relation(fields: [id], references: [id])
+}
+
+model LessonSubmission {
+  id     Int    @id @default(autoincrement())
+  name   String
+  result String
 }
