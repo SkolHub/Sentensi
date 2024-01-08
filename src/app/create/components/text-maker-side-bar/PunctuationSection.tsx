@@ -58,11 +58,15 @@ const PunctuationSection = () => {
 
 	const handlePunctuationClick = useCallback(
 		(symbol: string) => {
+			console.log(symbol)
+
 			if (general.answer.length) {
 				const sel = selected === -1 ? general.answer.length - 1 : selected;
 				general.answer[sel] += symbol;
 
 				setSelected(-1);
+
+				console.log(111)
 
 				setUpdater(!updater);
 			}
@@ -98,7 +102,7 @@ const PunctuationSection = () => {
 				/>
 			</div>
 		),
-		[]
+		[updater]
 	);
 };
 export default PunctuationSection;
