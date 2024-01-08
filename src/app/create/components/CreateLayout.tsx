@@ -31,7 +31,7 @@ const CreateLayout = () => {
 
 	return useMemo(() => {
 		return (
-			<div className={styles.create}>
+			<div className='w-screen h-screen flex box-border gap-2.5 overflow-hidden p-2.5 bg-[#97c8ff]'>
 				<div className="board">
 					<Canvas />
 					{mode === 'canvas' ? <CanvasMakerTextBox /> : <TextMakerTextBox />}

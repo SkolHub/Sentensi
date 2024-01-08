@@ -1,9 +1,8 @@
-import styles from '@/app/create/page.module.scss';
-import SimpleButton from '@/components/SimpleButton/SimpleButton';
-import Button from '@/components/Button/Button';
 import { Glue, Text } from '../../../../../public/icons/icons-module';
 import { useCallback, useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
+import SimpleButton from '@/components/SimpleButton';
+import Button from '@/components/Button';
 
 const symbols = ['.', '?', ';', ',', '!', ':', '"', "'", '-'];
 
@@ -58,15 +57,11 @@ const PunctuationSection = () => {
 
 	const handlePunctuationClick = useCallback(
 		(symbol: string) => {
-			console.log(symbol)
-
 			if (general.answer.length) {
 				const sel = selected === -1 ? general.answer.length - 1 : selected;
 				general.answer[sel] += symbol;
 
 				setSelected(-1);
-
-				console.log(111)
 
 				setUpdater(!updater);
 			}
@@ -76,8 +71,8 @@ const PunctuationSection = () => {
 
 	return useMemo(
 		() => (
-			<div className="section">
-				<div className={styles.symbols}>
+			<div className='section grow'>
+				<div className='grid grid-cols-[1fr_1fr_1fr] grid-rows-[1fr_1fr_1fr] gap-4'>
 					{symbols.map((symbol: string, index: number) => (
 						<SimpleButton
 							onClick={() => {
@@ -102,7 +97,7 @@ const PunctuationSection = () => {
 				/>
 			</div>
 		),
-		[updater]
+		[updater, selected]
 	);
 };
 export default PunctuationSection;

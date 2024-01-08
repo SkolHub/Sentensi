@@ -1,8 +1,7 @@
 import { useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
-import Button from '@/components/Button/Button';
 import { Save, Text, Trash } from '../../../../../public/icons/icons-module';
-import styles from './canvas-maker-side-bar.module.scss';
+import Button from '@/components/Button';
 
 const OtherSection = () => {
 	const { setMode, generalRef } = useContext(CreateContext)!;
@@ -19,16 +18,24 @@ const OtherSection = () => {
 
 	return useMemo(
 		() => (
-			<div className={`section ${styles.otherSection}`}>
+			<div className='section grow'>
 				<Button
+					className='grow'
 					onClick={handleTextMakerClick}
 					title={'Text maker'}
 					Logo={Text}
 					active
 				/>
-				<div className='other-section-1'>
-					<Button onClick={handleSaveClick} title={'Save'} Logo={Save} active />
+				<div className='flex flex-col gap-4 grow'>
 					<Button
+						className='grow'
+						onClick={handleSaveClick}
+						title={'Save'}
+						Logo={Save}
+						active
+					/>
+					<Button
+						className='grow'
 						onClick={handleClearClick}
 						title={'Clear page'}
 						Logo={Trash}

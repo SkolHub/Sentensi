@@ -6,9 +6,8 @@ import {
 	Resize,
 	Stretch
 } from '../../../../../public/icons/icons-module';
-import Button from '@/components/Button/Button';
 import { extendTheme, Slider, ThemeProvider } from '@mui/joy';
-import styles from './canvas-maker-side-bar.module.scss';
+import Button from '@/components/Button';
 
 const muiTheme = extendTheme({
 	components: {
@@ -74,14 +73,15 @@ const CustomizationSection = () => {
 
 	return useMemo(
 		() => (
-			<div className={`section ${styles.customizationSection}`}>
-				<Button onClick={handleStretchClick} title={title} Logo={logo} active />
-				<label style={{ userSelect: 'none' }}>
+			<div className='section grow'>
+				<Button className='grow' onClick={handleStretchClick} title={title} Logo={logo} active />
+				<label  className='grow select-none'>
 					{pen ? 'Line width' : 'Font size'}
 				</label>
 				<ThemeProvider theme={muiTheme}>
 					{pen ? (
 						<Slider
+							className='grow'
 							onChange={handleLineWidth}
 							value={lineWidth}
 							min={2}
@@ -91,6 +91,7 @@ const CustomizationSection = () => {
 						/>
 					) : (
 						<Slider
+							className='grow'
 							onChange={handleFontSize}
 							value={fontSize}
 							min={1}
@@ -101,14 +102,16 @@ const CustomizationSection = () => {
 						/>
 					)}
 				</ThemeProvider>
-				<div className="drawAndErase">
+				<div className="flex gap-4 flex-col drawAndErase max-[900px]:flex-row">
 					<Button
+						className='grow'
 						onClick={handlePenClick}
 						title={'Pen'}
 						Logo={Pen}
 						active={pen}
 					/>
 					<Button
+						className='grow'
 						onClick={handleEraserClick}
 						title={'Eraser'}
 						Logo={Eraser}

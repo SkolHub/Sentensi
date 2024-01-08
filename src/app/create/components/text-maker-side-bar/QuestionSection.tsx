@@ -1,8 +1,8 @@
 import { Input, Option, Select } from '@mui/joy';
 import { SyntheticEvent, useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
-import Button from '@/components/Button/Button';
 import { Checkmark, X } from '../../../../../public/icons/icons-module';
+import Button from '@/components/Button';
 
 const QuestionSection = () => {
 	const { generalRef, updater, setUpdater } = useContext(CreateContext)!;
@@ -32,7 +32,7 @@ const QuestionSection = () => {
 	return useMemo(
 		() => (
 			<div
-				className={`section ${
+				className={`section grow ${
 					generalRef.current.activityType === 'r|w'
 						? generalRef.current.activityData
 							? 'questionRight'
@@ -47,9 +47,9 @@ const QuestionSection = () => {
 					onChange={handleSelectChange}
 					value={generalRef.current.activityType}
 				>
-					<Option value="r&w">Remember & Write</Option>
-					<Option value="l&w">Listen & Write</Option>
-					<Option value="r|w">Right or Wrong</Option>
+					<Option value='r&w'>Remember & Write</Option>
+					<Option value='l&w'>Listen & Write</Option>
+					<Option value='r|w'>Right or Wrong</Option>
 				</Select>
 				{
 					{
@@ -64,7 +64,7 @@ const QuestionSection = () => {
 
 									setUpdater(!updater);
 								}}
-								placeholder="Sound url…"
+								placeholder='Sound url…'
 							/>
 						),
 						'r|w': (

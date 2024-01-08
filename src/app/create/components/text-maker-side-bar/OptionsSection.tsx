@@ -2,7 +2,6 @@
 
 import { useContext, useMemo, useState } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
-import Button from '@/components/Button/Button';
 import {
 	DialogActions,
 	DialogContent,
@@ -21,6 +20,7 @@ import {
 import Counter from '@/app/create/components/text-maker-side-bar/Counter';
 import { Modal } from '@mui/joy';
 import { useRouter } from 'next/navigation';
+import Button from '@/components/Button';
 
 const OptionsSection = () => {
 	const {
@@ -92,7 +92,7 @@ const OptionsSection = () => {
 
 	return useMemo(
 		() => (
-			<div className="section">
+			<div className="section grow">
 				<Counter
 					onChange={handleChange}
 					onBlur={handleBlur}
@@ -102,7 +102,7 @@ const OptionsSection = () => {
 				/>
 				<div style={{
 					flexGrow: '1'
-				}} className="other-section-1">
+				}} className="flex flex-col gap-4">
 					<Button
 						onClick={handleNewPage}
 						title={'New page'}
@@ -119,7 +119,7 @@ const OptionsSection = () => {
 				</div>
 				<div style={{
 					flexGrow: '1'
-				}} className="other-section-1">
+				}} className="flex flex-col gap-4">
 					<Button
 						onClick={handleCanvasMakerClick}
 						title={'Canvas maker'}
