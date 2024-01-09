@@ -3,7 +3,7 @@ import { useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 
 const Canvas = () => {
-	const { canvasRef } = useCreateCanvas();
+	const canvasRef = useCreateCanvas();
 
 	const { pen, eraser } = useContext(CreateContext)!;
 

@@ -10,3 +10,5 @@ export { default as Trash } from './Trash.svg';
 export { default as Glue } from './Glue.svg';
 export { default as X } from './X.svg';
 export { default as Checkmark } from './Checkmark.svg';
+export { default as Retry } from './Retry.svg';
+export { default as Continue } from './Continue.svg';

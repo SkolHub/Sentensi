@@ -143,10 +143,7 @@ const useCreateCanvas = () => {
 		};
 	}, [color, doubleColor, sizingMode, mode, updater, pen, eraser, lineWidth]);
 
-	return {
-		canvasRef,
-		generalRef
-	};
+	return canvasRef;
 };
 
 export default useCreateCanvas;
