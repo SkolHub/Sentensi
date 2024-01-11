@@ -8,7 +8,7 @@ const PunctuationSection = () => {
 
 	return (
 		<PunctuationSectionModel
-			generalRef={generalRef}
+			wordList={generalRef.current.answer}
 			updater={updater}
 			setUpdater={setUpdater}
 			selected={selected}
