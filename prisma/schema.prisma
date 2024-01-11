@@ -24,7 +24,8 @@ model LessonContent {
 }
 
 model LessonSubmission {
-  id     Int    @id @default(autoincrement())
-  name   String
-  result String
+  id       Int    @id @default(autoincrement())
+  name     String
+  result   String
+  lessonID Int
 }

@@ -1,27 +1,24 @@
-import { Dispatch, MutableRefObject, SetStateAction } from 'react';
-import { MainGeneral } from '@/lib/logic/packages/generals/main.general';
+import { Dispatch, SetStateAction } from 'react';
 
 export const symbols = ['.', '?', ';', ',', '!', ':', '"', "'", '-'];
 
 export const usePunctuation = (
-	generalRef: MutableRefObject<MainGeneral>,
+	wordList: string[],
 	updater: boolean,
 	setUpdater: Dispatch<SetStateAction<boolean>>,
 	selected: number,
 	setSelected: Dispatch<SetStateAction<number>>
 ) => {
-	const general = generalRef.current;
-
 	const handleGlueClick = () => {
-		const sel = selected != -1 ? selected : general.answer.length - 1;
+		const sel = selected != -1 ? selected : wordList.length - 1;
 
-		if (general.answer.length && sel != 0) {
-			const word = general.answer[sel];
+		if (wordList.length && sel != 0) {
+			const word = wordList[sel];
 
 			if (word[0] === '\x80') {
-				general.answer[sel] = word.substring(1);
+				wordList[sel] = word.substring(1);
 			} else {
-				general.answer[sel] = '\x80' + word;
+				wordList[sel] = '\x80' + word;
 			}
 
 			setUpdater(!updater);
@@ -30,21 +27,21 @@ export const usePunctuation = (
 	};
 
 	const handleCapitaliseClick = () => {
-		const sel = selected != -1 ? selected : general.answer.length - 1;
+		const sel = selected != -1 ? selected : wordList.length - 1;
 
-		if (general.answer.length) {
-			const word = general.answer[sel];
+		if (wordList.length) {
+			const word = wordList[sel];
 			const glued = +(word[0] === '\x80');
 
-			const char = general.answer[sel][glued];
+			const char = wordList[sel][glued];
 
 			if (char.toUpperCase() === char) {
-				general.answer[sel] =
+				wordList[sel] =
 					(glued ? '\x80' : '') +
 					char.toLowerCase() +
 					word.substring(1 + glued);
 			} else {
-				general.answer[sel] =
+				wordList[sel] =
 					(glued ? '\x80' : '') +
 					char.toUpperCase() +
 					word.substring(1 + glued);
@@ -56,9 +53,9 @@ export const usePunctuation = (
 	};
 
 	const handlePunctuationClick = (symbol: string) => {
-		if (general.answer.length) {
-			const sel = selected === -1 ? general.answer.length - 1 : selected;
-			general.answer[sel] += symbol;
+		if (wordList.length) {
+			const sel = selected === -1 ? wordList.length - 1 : selected;
+			wordList[sel] += symbol;
 
 			setSelected(-1);
 

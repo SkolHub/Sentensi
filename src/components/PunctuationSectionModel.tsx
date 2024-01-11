@@ -1,12 +1,11 @@
 import { symbols, usePunctuation } from '@/lib/hooks/usePunctuation';
-import { Dispatch, MutableRefObject, SetStateAction, useMemo } from 'react';
+import { Dispatch, SetStateAction, useMemo } from 'react';
 import SimpleButton from '@/components/SimpleButton';
 import Button from '@/components/Button';
 import { Glue, Text } from '../../public/icons/icons-module';
-import { MainGeneral } from '@/lib/logic/packages/generals/main.general';
 
 interface Props {
-	generalRef: MutableRefObject<MainGeneral>;
+	wordList: string[];
 	updater: boolean;
 	setUpdater: Dispatch<SetStateAction<boolean>>;
 	selected: number;
@@ -14,14 +13,14 @@ interface Props {
 }
 
 export const PunctuationSectionModel = ({
-	generalRef,
+	wordList,
 	updater,
 	setUpdater,
 	selected,
 	setSelected
 }: Props) => {
 	const { handlePunctuationClick, handleGlueClick, handleCapitaliseClick } =
-		usePunctuation(generalRef, updater, setUpdater, selected, setSelected);
+		usePunctuation(wordList, updater, setUpdater, selected, setSelected);
 
 	return useMemo(
 		() => (

@@ -3,10 +3,7 @@
 import { useContext, useEffect, useRef } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import { Point } from '@/lib/logic/models';
-
-const preventDefault = (e: Event) => {
-	e.preventDefault();
-};
+import preventDefault from '@/lib/other/prevent-default';
 
 const useCreateCanvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);

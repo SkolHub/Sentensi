@@ -17,11 +17,11 @@ const TextMakerTextBox = () => {
 		<TextMakerTextBoxModel
 			setSelected={setSelected}
 			selected={selected}
-			generalRef={generalRef}
 			fontSize={fontSize}
 			updater={updater}
 			setUpdater={setUpdater}
 			canEdit={!isSaveOpen}
+			wordList={generalRef.current.answer}
 		/>
 	);
 };

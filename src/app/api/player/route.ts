@@ -1,19 +1,15 @@
-import prisma from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
-	const { data, name, label } = await req.json();
+	const { name, result, lessonID } = await req.json();
 
 	try {
-		await prisma.lesson.create({
+		await prisma.lessonSubmission.create({
 			data: {
 				name,
-				label,
-				content: {
-					create: {
-						data
-					}
-				}
+				result,
+				lessonID: +lessonID
 			}
 		});
 
@@ -31,5 +27,5 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET(_req: NextRequest) {
-	return NextResponse.json(await prisma.lesson.findMany());
+	return NextResponse.json(await prisma.lessonSubmission.findMany());
 }

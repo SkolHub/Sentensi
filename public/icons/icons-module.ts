@@ -12,3 +12,4 @@ export { default as X } from './X.svg';
 export { default as Checkmark } from './Checkmark.svg';
 export { default as Retry } from './Retry.svg';
 export { default as Continue } from './Continue.svg';
+export { default as Solve } from './Solve.svg';
