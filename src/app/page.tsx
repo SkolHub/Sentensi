@@ -17,6 +17,8 @@ export default function Home() {
 	const [data2, setData2] = useState<any[]>([]);
 	const [openId, setOpenId] = useState<number>(-1);
 
+	const [label, setLabel] = useState<string>('');
+
 	useEffect(() => {
 		fetch(`/api/lesson/`).then((res) => {
 			res.json().then((data) => {
@@ -45,25 +47,41 @@ export default function Home() {
 				<Link href={'/create'}>
 					<button>Create</button>
 				</Link>
-				{data.map((el, index) => (
-					<p key={index}>
-						{index + 1}. {el.name}: <a href={`/play/?id=${el.id}`}>Play</a>;{' '}
-						<button
-							onClick={() => {
-								setOpenId(el.id);
-							}}
-						>
-							View Results
-						</button>
-					</p>
-				))}
+				<input
+					value={label}
+					onChange={(e) => {
+						setLabel(e.target.value);
+					}}
+					placeholder='filter (label)'
+				/>
+				{data
+					.filter((el) => el.label.includes(label))
+					.map((el, index) => (
+						<p key={index}>
+							{index + 1}. {el.name}: <a href={`/play/?id=${el.id}`}>Play</a>;{' '}
+							<button
+								onClick={() => {
+									setOpenId(el.id);
+								}}
+							>
+								View Results
+							</button>
+							; Label: {el.label}
+						</p>
+					))}
 			</header>
 			<Modal open={openId !== -1} onClose={() => setOpenId(-1)}>
 				<ModalDialog variant='outlined' role='alertdialog'>
 					<DialogTitle>Results</DialogTitle>
 					<Divider />
 					<DialogContent>
-						{data2.filter(el => el.lessonID === openId).map((el2, index) => <p key={index}>{el2.name}: {el2.result}</p>)}
+						{data2
+							.filter((el) => el.lessonID === openId)
+							.map((el2, index) => (
+								<p key={index}>
+									{el2.name}: {el2.result}
+								</p>
+							))}
 					</DialogContent>
 					<DialogActions>
 						<MUIButton
