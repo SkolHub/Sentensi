@@ -83,24 +83,36 @@ const OptionsSection = () => {
 						onClick={handleNewPage}
 						title={'New page'}
 						Logo={New}
+						fill='white'
+						stroke='none'
 						active
 					/>
 					<Button
 						onClick={handleDeletePage}
 						title={'Delete page'}
 						Logo={Trash}
-						color={'#EB445A'}
+						fill='#EB445A'
+						stroke='none'
 						active
 					/>
 				</div>
-				<div className='flex flex-col gap-4 grow height-2:gap-2 height-1:flex-row'>
+				<div className='flex flex-col gap-4 grow height-2:gap-2 height-1:flex-row '>
 					<Button
 						onClick={handleCanvasMakerClick}
 						title={'Canvas maker'}
 						Logo={Canvas}
+						fill='none'
+						stroke='white'
 						active
 					/>
-					<Button onClick={handleSave} title={'Save'} Logo={Save} active />
+					<Button
+						onClick={handleSave}
+						title={'Save'}
+						Logo={Save}
+						fill='white'
+						stroke='none'
+						active
+					/>
 				</div>
 			</SidebarSection>
 		),

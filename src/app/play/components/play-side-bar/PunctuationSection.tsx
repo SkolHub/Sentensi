@@ -18,6 +18,7 @@ const PunctuationSection = () => {
 			setUpdater={setUpdater}
 			selected={selected}
 			setSelected={setSelected}
+			className='!grow-0'
 		/>
 	);
 };

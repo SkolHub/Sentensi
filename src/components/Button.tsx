@@ -8,8 +8,11 @@ const Button = (props: {
 	onClick?: () => void;
 	children?: ReactNode;
 	className?: string;
+	fill?: string;
+	stroke?: string;
 }) => {
-	const { title, active, Logo, color, onClick, className } = props;
+	const { title, active, Logo, color, onClick, className, fill, stroke } =
+		props;
 
 	return (
 		<div
@@ -22,7 +25,11 @@ const Button = (props: {
 					: 'bg-[#FFFFFF] border-[rgb(61,71,86)] hover:bg-[#e8e8e8]'
 			}`}
 		>
-			<Logo className={`height-2:w-6 height-2:h-6 ${active ? '' : 'fill-[#3D4756] stroke-[#3D4756]'}`} />
+			<Logo
+				fill={fill ?? (active ? '' : '#3D4756')}
+				stroke={stroke ?? (stroke ? '' : '#3D4756')}
+				className={`height-2:w-6 height-2:h-6 `}
+			/>
 			<label
 				className={`select-none cursor-pointer height-1:hidden ${
 					active ? 'text-white' : ''

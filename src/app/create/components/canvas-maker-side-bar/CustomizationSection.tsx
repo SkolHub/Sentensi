@@ -80,6 +80,8 @@ const CustomizationSection = () => {
 					onClick={handleStretchClick}
 					title={title}
 					Logo={logo}
+					fill='none'
+					stroke='white'
 					active
 				/>
 				<label className='grow select-none height-3:text-[.5rem]'>
@@ -115,6 +117,8 @@ const CustomizationSection = () => {
 						onClick={handlePenClick}
 						title={'Pen'}
 						Logo={Pen}
+						fill='none'
+						stroke={pen ? 'white' : '#3D4756'}
 						active={pen}
 					/>
 					<Button
@@ -122,6 +126,8 @@ const CustomizationSection = () => {
 						onClick={handleEraserClick}
 						title={'Eraser'}
 						Logo={Eraser}
+						fill={eraser ? 'white' : '#3D4756'}
+						stroke={'none'}
 						active={eraser}
 					/>
 				</div>

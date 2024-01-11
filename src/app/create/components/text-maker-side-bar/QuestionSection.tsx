@@ -33,7 +33,7 @@ const QuestionSection = () => {
 	return useMemo(
 		() => (
 			<SidebarSection
-				className={`section grow ${
+				className={`!grow-0 ${
 					generalRef.current.activityType === 'r|w'
 						? generalRef.current.activityData
 							? 'questionRight'
@@ -74,6 +74,8 @@ const QuestionSection = () => {
 									setUpdater(!updater);
 								}}
 								title={generalRef.current.activityData ? 'Right' : 'Wrong'}
+								fill='black'
+								stroke='none'
 								active={false}
 								Logo={generalRef.current.activityData ? Checkmark : X}
 							/>

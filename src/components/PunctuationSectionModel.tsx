@@ -11,6 +11,7 @@ interface Props {
 	setUpdater: Dispatch<SetStateAction<boolean>>;
 	selected: number;
 	setSelected: Dispatch<SetStateAction<number>>;
+	className?: string;
 }
 
 export const PunctuationSectionModel = ({
@@ -18,14 +19,15 @@ export const PunctuationSectionModel = ({
 	updater,
 	setUpdater,
 	selected,
-	setSelected
+	setSelected,
+	className
 }: Props) => {
 	const { handlePunctuationClick, handleGlueClick, handleCapitaliseClick } =
 		usePunctuation(wordList, updater, setUpdater, selected, setSelected);
 
 	return useMemo(
 		() => (
-			<SidebarSection>
+			<SidebarSection className={className ?? ''}>
 				<div className='grid grid-cols-[1fr_1fr_1fr] grid-rows-[1fr_1fr_1fr] gap-4'>
 					{symbols.map((symbol: string, index: number) => (
 						<SimpleButton
@@ -49,6 +51,8 @@ export const PunctuationSectionModel = ({
 						title={'Capitalize'}
 						Logo={Text}
 						active={true}
+						fill={'white'}
+						stroke={'none'}
 					/>
 				</div>
 			</SidebarSection>

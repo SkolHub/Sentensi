@@ -7,6 +7,7 @@ import {
 } from '../../../../../public/icons/icons-module';
 import { useContext } from 'react';
 import { PlayContext } from '@/app/play/components/PlayContext';
+import SidebarSection from '@/components/SidebarSection';
 
 export default () => {
 	const {
@@ -19,8 +20,8 @@ export default () => {
 	} = useContext(PlayContext)!;
 
 	return (
-		<div className='section grow'>
-			<p>
+		<SidebarSection className='!grow-0'>
+			<p className='font-semibold text-center select-none'>
 				Question {generalRef.current.currentPage + 1}/
 				{generalRef.current.pages.length}
 			</p>
@@ -39,10 +40,12 @@ export default () => {
 						onClick={repeatQuestion}
 						title={'Try again'}
 						Logo={Retry}
+						fill={'none'}
 						active
 					/>
 					<Button
 						onClick={nextQuestion}
+						fill={'none'}
 						title={'Continue'}
 						Logo={Continue}
 						active
@@ -54,10 +57,11 @@ export default () => {
 						onClick={answerQuestion}
 						title={'Submit'}
 						Logo={Checkmark}
+						fill='white'
 						active
 					/>
 				</>
 			)}
-		</div>
+		</SidebarSection>
 	);
 };

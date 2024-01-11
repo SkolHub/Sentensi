@@ -25,6 +25,8 @@ const OtherSection = () => {
 				<Button
 					onClick={handleTextMakerClick}
 					title={'Text maker'}
+					fill='white'
+					stroke='none'
 					Logo={Text}
 					active
 				/>
@@ -32,6 +34,8 @@ const OtherSection = () => {
 					<Button
 						onClick={handleSaveClick}
 						title={'Save'}
+						fill='white'
+						stroke='none'
 						Logo={Save}
 						active
 					/>
@@ -39,6 +43,8 @@ const OtherSection = () => {
 						onClick={handleClearClick}
 						title={'Clear page'}
 						Logo={Trash}
+						fill='#EB445A'
+						stroke='none'
 						active={true}
 						color={'#EB445A'}
 					/>
