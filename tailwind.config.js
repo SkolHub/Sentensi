@@ -9,11 +9,16 @@ module.exports = {
 		extend: {
 			screens: {
 				'height-1': {
-					'raw': '(max-height: 900px)'
+					raw: '(max-height: 800px)'
+				},
+				'height-2': {
+					raw: '(max-height: 675px)'
+				},
+				'height-3': {
+					raw: '(max-height: 530px)'
 				}
 			}
 		}
 	},
 	plugins: []
 };
-

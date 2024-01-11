@@ -8,6 +8,7 @@ import {
 } from '../../../../../public/icons/icons-module';
 import { extendTheme, Slider, ThemeProvider } from '@mui/joy';
 import Button from '@/components/Button';
+import SidebarSection from '@/components/SidebarSection';
 
 const muiTheme = extendTheme({
 	components: {
@@ -73,9 +74,15 @@ const CustomizationSection = () => {
 
 	return useMemo(
 		() => (
-			<div className='section grow'>
-				<Button className='grow' onClick={handleStretchClick} title={title} Logo={logo} active />
-				<label  className='grow select-none'>
+			<SidebarSection>
+				<Button
+					className='grow'
+					onClick={handleStretchClick}
+					title={title}
+					Logo={logo}
+					active
+				/>
+				<label className='grow select-none height-3:text-[.5rem]'>
 					{pen ? 'Line width' : 'Font size'}
 				</label>
 				<ThemeProvider theme={muiTheme}>
@@ -87,7 +94,7 @@ const CustomizationSection = () => {
 							min={2}
 							max={30}
 							step={1}
-							valueLabelDisplay="auto"
+							valueLabelDisplay='auto'
 						/>
 					) : (
 						<Slider
@@ -97,12 +104,12 @@ const CustomizationSection = () => {
 							min={1}
 							max={4}
 							step={1}
-							valueLabelDisplay="auto"
+							valueLabelDisplay='auto'
 							marks
 						/>
 					)}
 				</ThemeProvider>
-				<div className="flex gap-4 flex-col drawAndErase max-[900px]:flex-row">
+				<div className='flex gap-4 flex-col drawAndErase height-1:flex-row'>
 					<Button
 						className='grow'
 						onClick={handlePenClick}
@@ -118,9 +125,9 @@ const CustomizationSection = () => {
 						active={eraser}
 					/>
 				</div>
-			</div>
+			</SidebarSection>
 		),
-		[pen, eraser, fontSize, lineWidth]
+		[pen, eraser, fontSize, lineWidth, sizingMode]
 	);
 };
 

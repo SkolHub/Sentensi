@@ -16,6 +16,7 @@ const CustomSwitch = ({
 			onChange={(event: ChangeEvent<HTMLInputElement>) =>
 				setChecked(event.target.checked)
 			}
+
 			sx={() => ({
 				'--Switch-thumbShadow': '0 3px 7px 0 rgba(0 0 0 / 0.12)',
 				'--Switch-thumbSize': '27px',

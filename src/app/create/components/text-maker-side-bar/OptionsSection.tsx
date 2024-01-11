@@ -8,15 +8,11 @@ import {
 } from '../../../../../public/icons/icons-module';
 import Counter from '@/app/create/components/text-maker-side-bar/Counter';
 import Button from '@/components/Button';
+import SidebarSection from '@/components/SidebarSection';
 
 const OptionsSection = () => {
-	const {
-		setMode,
-		generalRef,
-		updater,
-		setUpdater,
-		setIsSaveOpen
-	} = useContext(CreateContext)!;
+	const { setMode, generalRef, updater, setUpdater, setIsSaveOpen } =
+		useContext(CreateContext)!;
 	const [value, setValue] = useState<number>(
 		generalRef.current.currentPage + 1
 	);
@@ -74,7 +70,7 @@ const OptionsSection = () => {
 
 	return useMemo(
 		() => (
-			<div className="section grow">
+			<SidebarSection>
 				<Counter
 					onChange={handleChange}
 					onBlur={handleBlur}
@@ -82,9 +78,7 @@ const OptionsSection = () => {
 					onMinus={handleMinus}
 					value={value}
 				/>
-				<div style={{
-					flexGrow: '1'
-				}} className="flex flex-col gap-4">
+				<div className='flex flex-col gap-4 grow height-2:gap-2 height-1:flex-row'>
 					<Button
 						onClick={handleNewPage}
 						title={'New page'}
@@ -99,9 +93,7 @@ const OptionsSection = () => {
 						active
 					/>
 				</div>
-				<div style={{
-					flexGrow: '1'
-				}} className="flex flex-col gap-4">
+				<div className='flex flex-col gap-4 grow height-2:gap-2 height-1:flex-row'>
 					<Button
 						onClick={handleCanvasMakerClick}
 						title={'Canvas maker'}
@@ -110,7 +102,7 @@ const OptionsSection = () => {
 					/>
 					<Button onClick={handleSave} title={'Save'} Logo={Save} active />
 				</div>
-			</div>
+			</SidebarSection>
 		),
 		[updater, open]
 	);

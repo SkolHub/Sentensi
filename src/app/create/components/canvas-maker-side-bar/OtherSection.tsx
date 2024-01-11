@@ -2,6 +2,7 @@ import { useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import { Save, Text, Trash } from '../../../../../public/icons/icons-module';
 import Button from '@/components/Button';
+import SidebarSection from '@/components/SidebarSection';
 
 const OtherSection = () => {
 	const { setMode, generalRef, setIsSaveOpen } = useContext(CreateContext)!;
@@ -20,9 +21,8 @@ const OtherSection = () => {
 
 	return useMemo(
 		() => (
-			<div className='section grow'>
+			<SidebarSection className='height-1:!flex-row'>
 				<Button
-					className='grow'
 					onClick={handleTextMakerClick}
 					title={'Text maker'}
 					Logo={Text}
@@ -30,14 +30,12 @@ const OtherSection = () => {
 				/>
 				<div className='flex flex-col gap-4 grow'>
 					<Button
-						className='grow'
 						onClick={handleSaveClick}
 						title={'Save'}
 						Logo={Save}
 						active
 					/>
 					<Button
-						className='grow'
 						onClick={handleClearClick}
 						title={'Clear page'}
 						Logo={Trash}
@@ -45,7 +43,7 @@ const OtherSection = () => {
 						color={'#EB445A'}
 					/>
 				</div>
-			</div>
+			</SidebarSection>
 		),
 		[]
 	);

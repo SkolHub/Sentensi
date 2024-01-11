@@ -3,6 +3,7 @@ import { SyntheticEvent, useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import { Checkmark, X } from '../../../../../public/icons/icons-module';
 import Button from '@/components/Button';
+import SidebarSection from '@/components/SidebarSection';
 
 const QuestionSection = () => {
 	const { generalRef, updater, setUpdater } = useContext(CreateContext)!;
@@ -31,7 +32,7 @@ const QuestionSection = () => {
 
 	return useMemo(
 		() => (
-			<div
+			<SidebarSection
 				className={`section grow ${
 					generalRef.current.activityType === 'r|w'
 						? generalRef.current.activityData
@@ -39,9 +40,6 @@ const QuestionSection = () => {
 							: 'questionWrong'
 						: ''
 				}`}
-				style={{
-					flexGrow: 0
-				}}
 			>
 				<Select
 					onChange={handleSelectChange}
@@ -82,7 +80,7 @@ const QuestionSection = () => {
 						)
 					}[generalRef.current.pages[generalRef.current.currentPage].type]
 				}
-			</div>
+			</SidebarSection>
 		),
 		[updater]
 	);
