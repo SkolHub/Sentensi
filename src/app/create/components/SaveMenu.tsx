@@ -10,15 +10,14 @@ import {
 	Modal,
 	ModalDialog
 } from '@mui/joy';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
 import { CreateContext } from '@/app/create/components/CreateContext';
 import { useRouter } from 'next/navigation';
+import { POST } from '@/app/api/lesson/[id]/route';
 
 const SaveMenu = () => {
-	const { isSaveOpen, setIsSaveOpen, savedName, setSavedName, generalRef } =
+	const { isSaveOpen, setIsSaveOpen, savedInfo, setSavedInfo, generalRef } =
 		useContext(CreateContext)!;
-
-	const [label, setLabel] = useState<string>('');
 
 	const router = useRouter();
 
@@ -31,13 +30,17 @@ const SaveMenu = () => {
 					<DialogContent>
 						Provide a name for the lesson
 						<Input
-							value={savedName}
-							onChange={(e) => setSavedName(e.target.value)}
+							value={savedInfo.name}
+							onChange={(e) =>
+								setSavedInfo({ ...savedInfo, name: e.target.value })
+							}
 							placeholder='Lesson name'
 						/>
 						<Input
-							value={label}
-							onChange={(e) => setLabel(e.target.value)}
+							value={savedInfo.label}
+							onChange={(e) =>
+								setSavedInfo({ ...savedInfo, label: e.target.value })
+							}
 							placeholder='Lesson label (optional)'
 						/>
 					</DialogContent>
@@ -47,21 +50,37 @@ const SaveMenu = () => {
 							color='primary'
 							onClick={() => {
 								setIsSaveOpen(false);
-								fetch(`/api/lesson`, {
-									method: 'POST',
-									headers: {
-										'Content-Type': 'application/json'
-									},
-									body: JSON.stringify({
-										data: generalRef.current.export(),
-										name: savedName,
-										label
-									})
-								}).then(() => {
-									router.push('/');
-								});
+								if (savedInfo.id) {
+									fetch(`/api/lesson/${savedInfo.id}`, {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											data: generalRef.current.export(),
+											name: savedInfo.name,
+											label: savedInfo.label
+										})
+									}).then(() => {
+										router.push('/');
+									});
+								} else {
+									fetch(`/api/lesson`, {
+										method: 'POST',
+										headers: {
+											'Content-Type': 'application/json'
+										},
+										body: JSON.stringify({
+											data: generalRef.current.export(),
+											name: savedInfo.name,
+											label: savedInfo.label
+										})
+									}).then(() => {
+										router.push('/');
+									});
+								}
 							}}
-							disabled={savedName.length === 0}
+							disabled={savedInfo.name.length === 0}
 						>
 							Save
 						</MUIButton>
@@ -76,7 +95,7 @@ const SaveMenu = () => {
 				</ModalDialog>
 			</Modal>
 		),
-		[isSaveOpen, savedName, label]
+		[isSaveOpen, savedInfo]
 	);
 };
 

@@ -3,13 +3,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
-	Button as MUIButton,
+	Button,
 	DialogActions,
 	DialogContent,
 	DialogTitle,
 	Divider,
+	Input,
 	Modal,
-	ModalDialog
+	ModalDialog,
+	Table
 } from '@mui/joy';
 
 export default function Home() {
@@ -43,34 +45,83 @@ export default function Home() {
 				overflow: 'auto'
 			}}
 		>
-			<header>
+			<header className='flex'>
 				<Link href={'/create'}>
-					<button>Create</button>
+					<Button variant='soft' color='primary'>
+						Create new lesson
+					</Button>
 				</Link>
-				<input
+				<Input
 					value={label}
-					onChange={(e) => {
-						setLabel(e.target.value);
-					}}
-					placeholder='filter (label)'
+					onChange={(e) => setLabel(e.target.value)}
+					placeholder='Filter by label'
 				/>
-				{data
-					.filter((el) => el.label.includes(label))
-					.map((el, index) => (
-						<p key={index}>
-							{index + 1}. {el.name}: <a href={`/play/?id=${el.id}`}>Play</a>;{' '}
-							<button
-								onClick={() => {
-									setOpenId(el.id);
-								}}
-							>
-								View Results
-							</button>
-							; Label: {el.label};{' '}
-							<a href={`/create/?id=${el.id}`}>Edit</a>;{' '}
-						</p>
-					))}
 			</header>
+			<main>
+				<Table>
+					<thead>
+						<tr>
+							<th>Row</th>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Label</th>
+							<th>Play</th>
+							<th>Results</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						{data
+							.filter((el) => el.label.includes(label))
+							.map((el, index) => (
+								<tr key={index}>
+									<td>{index + 1}</td>
+									<td>{el.id}</td>
+									<td>{el.name}</td>
+									<td>{el.label}</td>
+									<td>
+										<Link href={`/create/?id=${el.id}`}>
+											<Button variant='soft' color='primary'>
+												Play
+											</Button>
+										</Link>
+									</td>
+									<td>
+										<Button
+											variant='soft'
+											color='success'
+											onClick={() => {
+												setOpenId(el.id);
+											}}
+										>
+											View results
+										</Button>
+									</td>
+									<td>
+										<Button
+											onClick={() => {
+												fetch(`/api/lesson/${el.id}`, {
+													method: 'DELETE'
+												}).then(() => {
+													window.location.reload();
+												});
+											}}
+											variant='soft'
+											color='danger'
+										>
+											Delete
+										</Button>
+										<Link href={`/create/?id=${el.id}`}>
+											<Button variant='soft' color='primary'>
+												Edit
+											</Button>
+										</Link>
+									</td>
+								</tr>
+							))}
+					</tbody>
+				</Table>
+			</main>
 			<Modal open={openId !== -1} onClose={() => setOpenId(-1)}>
 				<ModalDialog variant='outlined' role='alertdialog'>
 					<DialogTitle>Results</DialogTitle>
@@ -85,13 +136,13 @@ export default function Home() {
 							))}
 					</DialogContent>
 					<DialogActions>
-						<MUIButton
+						<Button
 							variant='plain'
 							color='neutral'
 							onClick={() => setOpenId(-1)}
 						>
 							Close
-						</MUIButton>
+						</Button>
 					</DialogActions>
 				</ModalDialog>
 			</Modal>

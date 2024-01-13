@@ -20,7 +20,7 @@ model Lesson {
 model LessonContent {
   id     Int    @id @default(autoincrement())
   data   Json
-  lesson Lesson @relation(fields: [id], references: [id])
+  lesson Lesson @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model LessonSubmission {

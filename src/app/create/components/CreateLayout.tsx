@@ -14,7 +14,7 @@ import TextMakerTextBox from '@/app/create/components/text-maker-text-box/TextMa
 import { useSearchParams } from 'next/navigation';
 
 const CreateLayout = () => {
-	const { mode, generalRef, setSavedName } = useContext(CreateContext)!;
+	const { mode, generalRef, setSavedInfo } = useContext(CreateContext)!;
 	const router = useSearchParams();
 
 	useEffect(() => {
@@ -22,7 +22,11 @@ const CreateLayout = () => {
 			fetch(`/api/lesson/${router.get('id')}/`).then((res) => {
 				res.json().then((data) => {
 					generalRef.current.import(data.content.data);
-					setSavedName(data.name);
+					setSavedInfo({
+						name: data.name,
+						label: data.label,
+						id: data.id
+					});
 				});
 			});
 		}
@@ -31,11 +35,11 @@ const CreateLayout = () => {
 	return useMemo(() => {
 		return (
 			<div className='w-screen h-screen flex box-border gap-2.5 overflow-hidden p-2.5 bg-[#97c8ff]'>
-				<div className="board">
+				<div className='board'>
 					<Canvas />
 					{mode === 'canvas' ? <CanvasMakerTextBox /> : <TextMakerTextBox />}
 				</div>
-				<div className="side-bar">
+				<div className='side-bar'>
 					{mode === 'canvas' ? (
 						<>
 							<ColorSection />
