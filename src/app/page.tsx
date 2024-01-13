@@ -66,7 +66,8 @@ export default function Home() {
 							>
 								View Results
 							</button>
-							; Label: {el.label}
+							; Label: {el.label};{' '}
+							<a href={`/create/?id=${el.id}`}>Edit</a>;{' '}
 						</p>
 					))}
 			</header>
