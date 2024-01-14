@@ -80,7 +80,7 @@ export default function Home() {
 									<td>{el.name}</td>
 									<td>{el.label}</td>
 									<td>
-										<Link href={`/create/?id=${el.id}`}>
+										<Link href={`/play/?id=${el.id}`}>
 											<Button variant='soft' color='primary'>
 												Play
 											</Button>
