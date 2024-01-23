@@ -32,7 +32,7 @@ export const TextMakerTextBoxModel = ({
 
 	return useMemo(
 		() => (
-			<div className='section text-box'>
+			<div className='section text-box !pl-0'>
 				{wordList.map((word: string, index: number) => {
 					return (
 						<span

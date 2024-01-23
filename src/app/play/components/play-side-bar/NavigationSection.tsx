@@ -48,6 +48,7 @@ export default () => {
 						fill={'none'}
 						title={'Continue'}
 						Logo={Continue}
+						className={'opacity-60'}
 						active
 					/>
 				</>

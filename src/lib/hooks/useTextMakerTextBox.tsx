@@ -30,11 +30,12 @@ export const useTextMakerTextBox = (
 		(index: number, word: string) => ({
 			fontSize: `${(fontSizes[fontSize - 1] / zoom) * 31}px`,
 			paddingLeft:
-				index === 0 || word[0] !== '\x80'
-					? `${(fontSizes[fontSize - 1] / 2 / zoom) * 31}px`
-					: '',
+				word[0] !== '\x80'
+					? `${(fontSizes[fontSize - 1] / 2 / zoom) * 22}px`
+					: '0',
 			color:
-				selected === -1 || selected === index ? '#000000' : 'rgba(0,0,0,0.5)'
+				selected === -1 || selected === index ? '#000000' : 'rgba(0,0,0,0.5)',
+			lineHeight: '1'
 		}),
 		[fontSize, zoom, selected]
 	);

@@ -21,9 +21,9 @@ interface PlayContextModel {
 	setSelected: Dispatch<SetStateAction<number>>;
 	playerName: string;
 	setPlayerName: Dispatch<SetStateAction<string>>;
-	status: 'init' | 'idle' | 'solve' | 'revise' | 'finish';
+	status: 'init' | 'idle' | 'solve' | 'revise' | 'finish' | 'correct';
 	setStatus: Dispatch<
-		SetStateAction<'init' | 'idle' | 'solve' | 'revise' | 'finish'>
+		SetStateAction<'init' | 'idle' | 'solve' | 'revise' | 'finish' | 'correct'>
 	>;
 	boolAnswer: boolean;
 	setBoolAnswer: Dispatch<SetStateAction<boolean>>;
@@ -55,7 +55,7 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 	const [playerName, setPlayerName] = useState<string>('');
 
 	const [status, setStatus] = useState<
-		'init' | 'idle' | 'solve' | 'revise' | 'finish'
+		'init' | 'idle' | 'solve' | 'revise' | 'finish' | 'correct'
 	>('init');
 
 	const [boolAnswer, setBoolAnswer] = useState<boolean>(true);
@@ -103,21 +103,25 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 			return;
 		}
 
-		general.currentPage++;
-		general.playerAnswer = [];
+		setStatus('correct');
 
-		switch (general.type) {
-			case 'l&w':
-			case 'r|w':
-				setStatus('solve');
-				break;
+		setTimeout(() => {
+			general.currentPage++;
+			general.playerAnswer = [];
 
-			case 'r&w':
-				setStatus('idle');
-				break;
-		}
+			switch (general.type) {
+				case 'l&w':
+				case 'r|w':
+					setStatus('solve');
+					break;
 
-		setUpdater(!updater);
+				case 'r&w':
+					setStatus('idle');
+					break;
+			}
+
+			setUpdater(!updater);
+		}, 1000);
 	};
 
 	const repeatQuestion = () => {

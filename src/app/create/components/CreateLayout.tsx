@@ -22,6 +22,7 @@ const CreateLayout = () => {
 			fetch(`/api/lesson/${router.get('id')}/`).then((res) => {
 				res.json().then((data) => {
 					generalRef.current.import(data.content.data);
+					generalRef.current.currentPage = generalRef.current.pages.length - 1;
 					setSavedInfo({
 						name: data.name,
 						label: data.label,

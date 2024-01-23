@@ -29,6 +29,20 @@ export default () => {
 			setUpdater(!updater);
 		};
 
+		const handleMouseMove = (e: MouseEvent) => {
+			if (status !== 'solve' || general.type === 'r|w') return;
+
+			const point = general.getClick(e);
+
+			const res = general.wordsPkg.getClickedWord(point);
+
+			if (res) {
+				canvas.style.cursor = 'cell';
+			} else {
+				canvas.style.cursor = '';
+			}
+		};
+
 		const handleResize = () => {
 			const zoom = window.devicePixelRatio;
 
@@ -45,12 +59,14 @@ export default () => {
 		window.addEventListener('mouseup', handleMouseUp);
 
 		canvas.addEventListener('contextmenu', preventDefault);
+		canvas.addEventListener('mousemove', handleMouseMove);
 		window.addEventListener('resize', handleResize);
 
 		return () => {
 			window.removeEventListener('mouseup', handleMouseUp);
 
 			canvas.removeEventListener('contextmenu', preventDefault);
+			canvas.removeEventListener('mousemove', handleMouseMove);
 			window.removeEventListener('resize', handleResize);
 		};
 	}, [updater]);

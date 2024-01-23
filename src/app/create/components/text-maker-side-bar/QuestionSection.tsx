@@ -60,6 +60,18 @@ const QuestionSection = () => {
 										generalRef.current.currentPage
 									].data = e.target.value;
 
+									console.log(e.target.value);
+
+									if (
+										e.target.value.includes('https://drive.google.com/file')
+									) {
+										generalRef.current.pages[
+											generalRef.current.currentPage
+										].data = `https://drive.google.com/uc?export=download&id=${
+											e.target.value.split('/')[5]
+										}`;
+									}
+
 									setUpdater(!updater);
 								}}
 								placeholder='Sound url…'

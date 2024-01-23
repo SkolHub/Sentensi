@@ -1,9 +1,10 @@
 import { useContext } from 'react';
 import { PlayContext } from '@/app/play/components/PlayContext';
 import SidebarSection from '@/components/SidebarSection';
+import { GreenCheck, RedX } from '../../../../../public/icons/icons-module';
 
 export default () => {
-	const { right, wrong, retries } = useContext(PlayContext)!;
+	const { right, wrong, retries, status } = useContext(PlayContext)!;
 
 	return (
 		<SidebarSection>
@@ -19,6 +20,8 @@ export default () => {
 				<span className='text-[#FFC409]'>{retries === 0 ? 'no' : retries}</span>{' '}
 				retr{retries !== 1 ? 'ies' : 'y'}
 			</p>
+			{status === 'revise' ? <RedX className='self-center' /> : ''}
+			{status === 'correct' ? <GreenCheck className='self-center' /> : ''}
 		</SidebarSection>
 	);
 };

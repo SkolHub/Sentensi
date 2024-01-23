@@ -7,13 +7,19 @@ const useCanvasMakerTextBox = (
 	words: string[],
 	setWords: Dispatch<SetStateAction<string[]>>
 ) => {
-	const { generalRef, canvasTextBox, setCanvasTextBox, pen, isSaveOpen } =
-		useContext(CreateContext)!;
+	const {
+		generalRef,
+		canvasTextBox,
+		setCanvasTextBox,
+		pen,
+		isSaveOpen,
+		eraser
+	} = useContext(CreateContext)!;
 
 	const handleTextBoxWordClick = (index: number, _e: MouseEvent) => {
 		const general = generalRef.current;
 
-		if (!pen) {
+		if (!pen && !eraser) {
 			let width = 0;
 
 			for (const letter of canvasTextBox[index]) {

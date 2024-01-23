@@ -9,6 +9,16 @@ const Create = () => {
 			<TextBoxContextProvider>
 				<CreateLayout />
 				<SaveMenu />
+				<div
+					style={{
+						fontFamily: '"Whiteboard"',
+						position: 'fixed',
+						top: '-100vh',
+						right: '-100vw'
+					}}
+				>
+					.
+				</div>
 			</TextBoxContextProvider>
 		</CreateContextProvider>
 	);

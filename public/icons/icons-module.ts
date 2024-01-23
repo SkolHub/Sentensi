@@ -13,3 +13,5 @@ export { default as Checkmark } from './Checkmark.svg';
 export { default as Retry } from './Retry.svg';
 export { default as Continue } from './Continue.svg';
 export { default as Solve } from './Solve.svg';
+export { default as RedX } from './RedX.svg';
+export { default as GreenCheck } from './GreenCheck.svg';

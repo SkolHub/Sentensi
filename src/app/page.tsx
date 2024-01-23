@@ -80,11 +80,19 @@ export default function Home() {
 									<td>{el.name}</td>
 									<td>{el.label}</td>
 									<td>
-										<Link href={`/play/?id=${el.id}`}>
+										<Link href={`/play/?id=${el.id}`} target={'_blank'}>
 											<Button variant='soft' color='primary'>
 												Play
 											</Button>
 										</Link>
+										<label
+											className='cursor-pointer'
+											onClick={() => {
+												navigator.clipboard.writeText(`${window.location.host}/play/?id=${el.id}`);
+											}}
+										>
+											Copy
+										</label>
 									</td>
 									<td>
 										<Button

@@ -12,7 +12,8 @@
 }
 
 .side-bar {
-  max-width: 20vw;
+  max-width: 14vw;
+  width: 14vw;
   height: 100%;
   gap: 0.625rem;
   display: flex;
@@ -43,6 +44,7 @@
   align-content: flex-start;
   overflow-y: auto;
   padding: 1rem;
+  z-index: 100;
 
   span {
     font-family: 'Whiteboard', serif;

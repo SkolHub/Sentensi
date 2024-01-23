@@ -18,7 +18,10 @@ const useCreateCanvas = () => {
 		updater,
 		pen,
 		eraser,
-		lineWidth
+		lineWidth,
+		selected,
+		setSelected,
+		expanded
 	} = useContext(CreateContext)!;
 
 	useEffect(() => {
@@ -31,6 +34,7 @@ const useCreateCanvas = () => {
 		general.drawPkg.lineWidth = lineWidth;
 
 		general.toolsPkg.reset();
+		general.render();
 
 		general.wordsPkg.sizingMode = sizingMode;
 
@@ -65,7 +69,12 @@ const useCreateCanvas = () => {
 				const res = general.wordsPkg.getClickedWord(point);
 
 				if (res) {
-					general.answer.push(res.word.content);
+					if (selected !== -1) {
+						general.answer.splice(selected, 0, res.word.content);
+						setSelected(-1);
+					} else {
+						general.answer.push(res.word.content);
+					}
 				}
 
 				setUpdater(!updater);
@@ -73,9 +82,20 @@ const useCreateCanvas = () => {
 		};
 
 		const handleMouseMove = (e: MouseEvent) => {
-			if (e.button || mode !== 'canvas') return;
+			if (e.button) return;
 
 			const point = general.getClick(e);
+
+			if (mode === 'text') {
+				const res = general.wordsPkg.getClickedWord(point);
+
+				if (res) {
+					canvas.style.cursor = 'cell';
+				} else {
+					canvas.style.cursor = '';
+				}
+				return;
+			}
 
 			if (eraser) {
 				if (pen) {
@@ -138,7 +158,18 @@ const useCreateCanvas = () => {
 			canvas.removeEventListener('contextmenu', preventDefault);
 			window.removeEventListener('resize', handleResize);
 		};
-	}, [color, doubleColor, sizingMode, mode, updater, pen, eraser, lineWidth]);
+	}, [
+		color,
+		doubleColor,
+		sizingMode,
+		mode,
+		updater,
+		pen,
+		eraser,
+		lineWidth,
+		selected,
+		expanded
+	]);
 
 	return canvasRef;
 };
