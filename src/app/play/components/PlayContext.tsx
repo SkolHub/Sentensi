@@ -33,6 +33,8 @@ interface PlayContextModel {
 	setWrong: Dispatch<SetStateAction<number>>;
 	retries: number;
 	setRetries: Dispatch<SetStateAction<number>>;
+	fontSize: number;
+	setFontSize: Dispatch<SetStateAction<number>>;
 
 	nextQuestion(): void;
 
@@ -63,6 +65,8 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 	const [right, setRight] = useState<number>(0);
 	const [wrong, setWrong] = useState<number>(0);
 	const [retries, setRetries] = useState<number>(0);
+
+	const [fontSize, setFontSize] = useState<number>(3);
 
 	const general = generalRef.current;
 
@@ -190,7 +194,9 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 				nextQuestion,
 				repeatQuestion,
 				answerQuestion,
-				beginRememberAndWrite
+				beginRememberAndWrite,
+				fontSize,
+				setFontSize
 			}}
 		>
 			{children}

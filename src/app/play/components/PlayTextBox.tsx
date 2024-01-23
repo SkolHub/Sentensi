@@ -3,8 +3,15 @@ import { TextMakerTextBoxModel } from '@/components/TextMakerTextBoxModel';
 import { PlayContext } from '@/app/play/components/PlayContext';
 
 const TextMakerTextBox = () => {
-	const { selected, setSelected, updater, setUpdater, status, generalRef } =
-		useContext(PlayContext)!;
+	const {
+		selected,
+		setSelected,
+		updater,
+		setUpdater,
+		status,
+		generalRef,
+		fontSize
+	} = useContext(PlayContext)!;
 
 	const general = generalRef.current;
 
@@ -12,7 +19,7 @@ const TextMakerTextBox = () => {
 		<TextMakerTextBoxModel
 			setSelected={setSelected}
 			selected={selected}
-			fontSize={2}
+			fontSize={fontSize}
 			updater={updater}
 			setUpdater={setUpdater}
 			canEdit={status === 'solve' && general.type !== 'r|w'}

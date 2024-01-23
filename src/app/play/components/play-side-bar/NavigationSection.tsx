@@ -8,6 +8,7 @@ import {
 import { useContext } from 'react';
 import { PlayContext } from '@/app/play/components/PlayContext';
 import SidebarSection from '@/components/SidebarSection';
+import { Slider } from '@mui/joy';
 
 export default () => {
 	const {
@@ -16,11 +17,32 @@ export default () => {
 		beginRememberAndWrite,
 		nextQuestion,
 		repeatQuestion,
-		answerQuestion
+		answerQuestion,
+		fontSize,
+		setFontSize
 	} = useContext(PlayContext)!;
+
+	const handleFontSize = (
+		_event: Event,
+		value: number | number[],
+		_activeThumb: number
+	) => {
+		setFontSize(value as number);
+	};
 
 	return (
 		<SidebarSection className='!grow-0'>
+			<p>Font size</p>
+			<Slider
+				className='grow'
+				onChange={handleFontSize}
+				value={fontSize}
+				min={1}
+				max={4}
+				step={1}
+				valueLabelDisplay='auto'
+				marks
+			/>
 			<p className='font-semibold text-center select-none'>
 				Question {generalRef.current.currentPage + 1}/
 				{generalRef.current.pages.length}
