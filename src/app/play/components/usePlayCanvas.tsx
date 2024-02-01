@@ -5,7 +5,15 @@ import { PlayContext } from '@/app/play/components/PlayContext';
 import preventDefault from '@/lib/other/prevent-default';
 
 export default () => {
-	const { generalRef, setUpdater, updater, status } = useContext(PlayContext)!;
+	const {
+		generalRef,
+		setUpdater,
+		updater,
+		status,
+		selected,
+		setSelected,
+		setExpanded
+	} = useContext(PlayContext)!;
 
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -23,9 +31,15 @@ export default () => {
 			const res = general.wordsPkg.getClickedWord(point);
 
 			if (res) {
-				general.playerAnswer.push(res.word.content);
+				if (selected !== -1) {
+					general.answer.splice(selected, 0, res.word.content);
+					setSelected(-1);
+				} else {
+					general.playerAnswer.push(res.word.content);
+				}
 			}
 
+			setExpanded(true);
 			setUpdater(!updater);
 		};
 
@@ -69,7 +83,7 @@ export default () => {
 			canvas.removeEventListener('mousemove', handleMouseMove);
 			window.removeEventListener('resize', handleResize);
 		};
-	}, [updater]);
+	}, [updater, selected]);
 
 	return canvasRef;
 };

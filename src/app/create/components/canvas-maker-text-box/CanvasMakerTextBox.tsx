@@ -4,7 +4,7 @@ import useTextBox from '@/app/create/components/canvas-maker-text-box/useCanvasM
 import { fontSizes, TextBoxContext } from '@/lib/contexts/TextBoxContext';
 
 const CanvasMakerTextBox = () => {
-	const { canvasTextBox, setCanvasTextBox, fontSize, pen, setExpanded } =
+	const { canvasTextBox, setCanvasTextBox, fontSize, pen } =
 		useContext(CreateContext)!;
 
 	const handleTextBoxWordClick = useTextBox(canvasTextBox, setCanvasTextBox);
@@ -23,11 +23,7 @@ const CanvasMakerTextBox = () => {
 
 	return useMemo(
 		() => (
-			<div
-				className='section text-box'
-				onMouseEnter={() => setExpanded(true)}
-				onMouseLeave={() => setExpanded(false)}
-			>
+			<div className='section text-box'>
 				{canvasTextBox.map((word: string, index: number) => (
 					<span
 						onMouseDown={(e: any) => {

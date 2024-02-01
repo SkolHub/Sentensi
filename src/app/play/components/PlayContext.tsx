@@ -35,6 +35,8 @@ interface PlayContextModel {
 	setRetries: Dispatch<SetStateAction<number>>;
 	fontSize: number;
 	setFontSize: Dispatch<SetStateAction<number>>;
+	expanded: boolean;
+	setExpanded: Dispatch<SetStateAction<boolean>>;
 
 	nextQuestion(): void;
 
@@ -67,6 +69,8 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 	const [retries, setRetries] = useState<number>(0);
 
 	const [fontSize, setFontSize] = useState<number>(3);
+
+	const [expanded, setExpanded] = useState<boolean>(false);
 
 	const general = generalRef.current;
 
@@ -101,15 +105,15 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 	}, [right, wrong, retries, status]);
 
 	const nextQuestion = () => {
-		if (general.currentPage + 1 === general.pages.length) {
-			setStatus('finish');
-			setUpdater(!updater);
-			return;
-		}
-
 		setStatus('correct');
 
 		setTimeout(() => {
+			if (general.currentPage + 1 === general.pages.length) {
+				setStatus('finish');
+				setUpdater(!updater);
+				return;
+			}
+
 			general.currentPage++;
 			general.playerAnswer = [];
 
@@ -196,7 +200,9 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 				answerQuestion,
 				beginRememberAndWrite,
 				fontSize,
-				setFontSize
+				setFontSize,
+				expanded,
+				setExpanded
 			}}
 		>
 			{children}

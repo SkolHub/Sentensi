@@ -1,5 +1,5 @@
 import { useTextMakerTextBox } from '@/lib/hooks/useTextMakerTextBox';
-import { Dispatch, SetStateAction, useMemo } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useRef } from 'react';
 
 interface Props {
 	updater: boolean;
@@ -9,6 +9,8 @@ interface Props {
 	fontSize: number;
 	canEdit: boolean;
 	wordList: string[];
+	expanded: boolean;
+	setExpanded: Dispatch<SetStateAction<boolean>>;
 }
 
 export const TextMakerTextBoxModel = ({
@@ -18,7 +20,9 @@ export const TextMakerTextBoxModel = ({
 	setSelected,
 	fontSize,
 	canEdit,
-	wordList
+	wordList,
+	expanded,
+	setExpanded
 }: Props) => {
 	const { wordClick, calcStyle, zoom } = useTextMakerTextBox(
 		updater,
@@ -27,29 +31,38 @@ export const TextMakerTextBoxModel = ({
 		setSelected,
 		fontSize,
 		canEdit,
-		wordList
+		wordList,
+		setExpanded
 	);
+
+	const textBoxRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (expanded) {
+			setExpanded(false);
+
+			textBoxRef.current!.scrollTo(0, 10000);
+		}
+	}, [expanded]);
 
 	return useMemo(
 		() => (
-			<div className='section text-box !pl-0'>
-				{wordList.map((word: string, index: number) => {
-					return (
-						<span
-							onMouseDown={() => {
-								if (canEdit) {
-									wordClick(index);
-								}
-							}}
-							style={calcStyle(index, word)}
-							key={index}
-						>
-							{word.replace('\x80', '')}
-						</span>
-					);
-				})}
+			<div ref={textBoxRef} className='section text-box !pl-0'>
+				{wordList.map((word: string, index: number) => (
+					<span
+						onMouseDown={() => {
+							if (canEdit) {
+								wordClick(index);
+							}
+						}}
+						style={calcStyle(index, word)}
+						key={index}
+					>
+						{word.replace('\x80', '')}
+					</span>
+				))}
 			</div>
 		),
-		[updater, zoom, selected, canEdit]
+		[updater, zoom, selected, canEdit, fontSize]
 	);
 };

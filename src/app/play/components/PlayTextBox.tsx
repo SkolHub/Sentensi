@@ -10,7 +10,9 @@ const TextMakerTextBox = () => {
 		setUpdater,
 		status,
 		generalRef,
-		fontSize
+		fontSize,
+		expanded,
+		setExpanded
 	} = useContext(PlayContext)!;
 
 	const general = generalRef.current;
@@ -28,6 +30,8 @@ const TextMakerTextBox = () => {
 					? general.answer
 					: general.playerAnswer
 			}
+			expanded={expanded}
+			setExpanded={setExpanded}
 		/>
 	);
 };

@@ -15,7 +15,8 @@ export const useTextMakerTextBox = (
 	setSelected: Dispatch<SetStateAction<number>>,
 	fontSize: number,
 	canEdit: boolean,
-	wordList: string[]
+	wordList: string[],
+	setExpanded: Dispatch<SetStateAction<boolean>>
 ) => {
 	const zoom = useContext(TextBoxContext)!;
 
@@ -53,6 +54,10 @@ export const useTextMakerTextBox = (
 					wordList.splice(sel, 1);
 
 					setSelected(-1);
+				}
+
+				if (selected === -1) {
+					setExpanded(true);
 				}
 
 				setUpdater(!updater);

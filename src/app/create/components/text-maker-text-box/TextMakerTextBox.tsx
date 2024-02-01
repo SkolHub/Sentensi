@@ -10,7 +10,9 @@ const TextMakerTextBox = () => {
 		setSelected,
 		updater,
 		setUpdater,
-		isSaveOpen
+		isSaveOpen,
+		expanded,
+		setExpanded
 	} = useContext(CreateContext)!;
 
 	return (
@@ -22,6 +24,8 @@ const TextMakerTextBox = () => {
 			setUpdater={setUpdater}
 			canEdit={!isSaveOpen}
 			wordList={generalRef.current.answer}
+			expanded={expanded}
+			setExpanded={setExpanded}
 		/>
 	);
 };

@@ -21,7 +21,7 @@ const useCreateCanvas = () => {
 		lineWidth,
 		selected,
 		setSelected,
-		expanded
+		setExpanded
 	} = useContext(CreateContext)!;
 
 	useEffect(() => {
@@ -74,6 +74,7 @@ const useCreateCanvas = () => {
 						setSelected(-1);
 					} else {
 						general.answer.push(res.word.content);
+						setExpanded(true);
 					}
 				}
 
@@ -167,8 +168,7 @@ const useCreateCanvas = () => {
 		pen,
 		eraser,
 		lineWidth,
-		selected,
-		expanded
+		selected
 	]);
 
 	return canvasRef;
