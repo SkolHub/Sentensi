@@ -18,7 +18,7 @@ const CanvasMakerTextBox = () => {
 			color: '#000000',
 			lineHeight: 1
 		}),
-		[fontSize, zoom]
+		[fontSize, zoom] //
 	);
 
 	return useMemo(
