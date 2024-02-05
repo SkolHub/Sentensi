@@ -1,7 +1,7 @@
 import { Point, Word } from '../../models';
 import {
 	getPosAndAngle,
-	splitBezierIntoLengths,
+	splitBezierIntoLengths
 } from '@/lib/logic/packages/words/word-math';
 
 export class WordData {
@@ -33,12 +33,12 @@ export class WordData {
 
 		this.control = {
 			x: word.start.x + word.control.x,
-			y: word.start.y + word.control.y,
+			y: word.start.y + word.control.y
 		};
 
 		this.end = {
 			x: word.start.x + word.end.x,
-			y: word.start.y + word.end.y,
+			y: word.start.y + word.end.y
 		};
 
 		this.word = word;
@@ -47,7 +47,7 @@ export class WordData {
 			this.start,
 			this.control,
 			this.end,
-			WordData.PATH_LENGTH_PRECISION,
+			WordData.PATH_LENGTH_PRECISION
 		);
 
 		this.totalLength = totalLength;
@@ -61,6 +61,7 @@ export class WordData {
 
 		this.gap = (totalLength - width) / (word.content.length - 1);
 
+		this.ctx.font = `${this.word.fontSize}px Whiteboard`;
 		this.prevLetterMetrics = ctx.measureText(word.content[0]);
 
 		for (
@@ -76,13 +77,13 @@ export class WordData {
 			this.control,
 			this.end,
 			this.pointOnBezier / WordData.PATH_LENGTH_PRECISION,
-			(this.pointOnBezier + 1) / WordData.PATH_LENGTH_PRECISION,
+			(this.pointOnBezier + 1) / WordData.PATH_LENGTH_PRECISION
 		);
 	}
 
 	nextLetter() {
 		const letterMetrics = this.ctx.measureText(
-			this.word.content[++this.letterIndex],
+			this.word.content[++this.letterIndex]
 		);
 
 		for (

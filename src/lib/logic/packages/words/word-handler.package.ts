@@ -75,13 +75,13 @@ export class WordHandlerPackage extends SentensiPackage<CreateGeneral> {
 		this.angle = stretchAngle(target);
 	}
 
-	handleStretch(cursor: Point): void {
-		if (pyth(this.target.start, cursor) > this.textLength) {
+	handleCommon(cursor: Point, length: number) {
+		if (pyth(this.target.start, cursor) > length) {
 			this.target.end.x = cursor.x - this.target.start.x;
 			this.target.end.y = cursor.y - this.target.start.y;
 		} else {
 			this.target.end = getPointOnCircle(
-				this.textLength,
+				length,
 				getSlope(this.target.start, cursor)
 			);
 		}
@@ -92,8 +92,12 @@ export class WordHandlerPackage extends SentensiPackage<CreateGeneral> {
 		);
 	}
 
+	handleStretch(cursor: Point): void {
+		this.handleCommon(cursor, this.textLength);
+	}
+
 	handleScale(cursor: Point): void {
-		this.handleStretch(cursor);
+		this.handleCommon(cursor, this.baseLength);
 
 		this.target.fontSize = (pyth(this.target.end) / this.baseLength) * 64;
 	}

@@ -32,7 +32,7 @@ export default () => {
 
 			if (res) {
 				if (selected !== -1) {
-					general.answer.splice(selected, 0, res.word.content);
+					general.playerAnswer.splice(selected, 0, res.word.content);
 					setSelected(-1);
 				} else {
 					general.playerAnswer.push(res.word.content);

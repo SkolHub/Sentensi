@@ -149,6 +149,12 @@ export class SelectTool extends Tool<SelectToolModel> {
 						wordData.prevLetterMetrics.actualBoundingBoxAscent +
 						wordData.prevLetterMetrics.actualBoundingBoxDescent;
 
+					console.log(
+						wordData.prevLetterMetrics.width,
+						actualHeight,
+						wordData.word.content
+					);
+
 					const dAng = Math.atan(
 						actualHeight / wordData.prevLetterMetrics.width
 					);
