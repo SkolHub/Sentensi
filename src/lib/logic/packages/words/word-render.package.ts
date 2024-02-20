@@ -1,7 +1,13 @@
 import { SentensiPackage } from '@/lib/logic/sentensi-package';
 import { MainGeneral } from '@/lib/logic/packages/generals/main.general';
 import { Point, Word } from '@/lib/logic/models';
-import { checkPointSide, getSlope, getXOnCircle, getYOnCircle, pyth } from '@/lib/logic/math';
+import {
+	checkPointSide,
+	getSlope,
+	getXOnCircle,
+	getYOnCircle,
+	pyth
+} from '@/lib/logic/math';
 import { WordData } from '@/lib/logic/packages/words/word-data';
 import { WordsPackage } from '@/lib/logic/packages/words/words.package';
 
@@ -84,9 +90,9 @@ export class WordRenderPackage extends SentensiPackage<MainGeneral> {
 
 	getClickedWord(point: Point):
 		| {
-		word: Word;
-		letter: number;
-	}
+				word: Word;
+				letter: number;
+		  }
 		| undefined {
 		const words = this.general.words;
 

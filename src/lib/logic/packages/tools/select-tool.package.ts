@@ -118,6 +118,9 @@ export class SelectTool extends Tool<SelectToolModel> {
 				points.push(...pointList);
 
 				for (let j = 0; j < pointList.length; j++) {
+					if (word.content === 'sdssd') {
+						console.log(word, this.state);
+					}
 					if (
 						contained(
 							pointList[j],

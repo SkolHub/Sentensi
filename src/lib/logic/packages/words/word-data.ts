@@ -29,6 +29,8 @@ export class WordData {
 	constructor(word: Word, ctx: CanvasRenderingContext2D) {
 		this.ctx = ctx;
 
+		this.ctx.font = `${word.fontSize}px Whiteboard`;
+
 		this.start = word.start;
 
 		this.control = {
@@ -61,7 +63,6 @@ export class WordData {
 
 		this.gap = (totalLength - width) / (word.content.length - 1);
 
-		this.ctx.font = `${this.word.fontSize}px Whiteboard`;
 		this.prevLetterMetrics = ctx.measureText(word.content[0]);
 
 		for (
