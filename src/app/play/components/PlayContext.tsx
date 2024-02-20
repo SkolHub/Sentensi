@@ -13,6 +13,20 @@ import {
 import { PlayGeneral } from '@/lib/logic/packages/generals/play.general';
 import { useSearchParams } from 'next/navigation';
 
+const parseAnswer = (answer: string[]): string => {
+	let result = '';
+
+	for (const word of answer) {
+		if (word[0] === '\x80') {
+			result += word.replace('\x80', '');
+		} else {
+			result += ' ' + word;
+		}
+	}
+
+	return result;
+};
+
 interface PlayContextModel {
 	generalRef: MutableRefObject<PlayGeneral>;
 	updater: boolean;
@@ -157,7 +171,8 @@ export const PlayContextProvider = ({ children }: { children: ReactNode }) => {
 		switch (general.type) {
 			case 'l&w':
 			case 'r&w':
-				correct = general.playerAnswer.join(' ') === general.answer.join(' ');
+				correct =
+					parseAnswer(general.playerAnswer) === parseAnswer(general.answer);
 				break;
 
 			case 'r|w':
